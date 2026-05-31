@@ -10,6 +10,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="מונדיאל 26">
 <link rel="apple-touch-icon" href="/icon-192.png">
+<script src="/i18n.js"></script>
 <meta property="og:title" content="TikiTaka — ניחושי מונדיאל 2026">
 <meta property="og:description" content="נחשו תוצאות, תחרו בחברים, נצחו את הקוף. ניחוש הפתעה שווה יותר נקודות!">
 <meta property="og:image" content="https://tikitaka.vip/og-image.png">
@@ -320,6 +321,26 @@
   .team-lb-row:last-child { border-bottom: none; }
   .team-lb-rank { font-size: 1.3rem; font-weight: 900; min-width: 36px; text-align: center; }
 
+  /* Language picker */
+  .lang-btn {
+    background: rgba(255,255,255,0.1); border: 1px solid var(--border);
+    border-radius: 8px; padding: 4px 10px; cursor: pointer; font-size: 0.82rem;
+    color: var(--text); font-family: 'Heebo', sans-serif;
+  }
+  .lang-dropdown {
+    display: none; position: absolute; top: 100%; left: 0; right: auto;
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 200; min-width: 140px; margin-top: 4px;
+  }
+  .lang-dropdown.open { display: block; }
+  .lang-opt {
+    padding: 8px 12px; cursor: pointer; font-size: 0.85rem;
+    border-bottom: 1px solid var(--border); transition: background 0.1s;
+  }
+  .lang-opt:last-child { border-bottom: none; }
+  .lang-opt:hover { background: var(--accent-glow); }
+  .lang-opt.active { color: var(--accent); font-weight: 700; }
+
   .install-banner {
     position: fixed; bottom: 0; left: 0; right: 0; z-index: 998;
     background: var(--card); border-top: 2px solid var(--accent);
@@ -446,6 +467,7 @@
   <h1>&#9917; ניחושי מונדיאל 2026</h1>
   <p>ארה״ב / קנדה / מקסיקו &middot; 11 ביוני &ndash; 19 ביולי</p>
   <div id="countdown" style="color:var(--accent);font-weight:800;font-size:1.1rem;margin-top:6px;position:relative"></div>
+  <div id="langPicker" style="position:absolute;top:10px;left:10px;z-index:10"></div>
 </div>
 
 <div class="auth-bar">
@@ -1627,18 +1649,70 @@ async function handlePendingJoin() {
   }
 }
 
+// Language picker
+function renderLangPicker() {
+  const el = document.getElementById('langPicker');
+  const current = LANGS[currentLang];
+  el.innerHTML = `
+    <button class="lang-btn" onclick="document.getElementById('langDrop').classList.toggle('open')">${current.flag} ${current.name}</button>
+    <div class="lang-dropdown" id="langDrop">
+      ${Object.entries(LANGS).map(([code, l]) =>
+        `<div class="lang-opt ${code === currentLang ? 'active' : ''}" onclick="switchLang('${code}')">${l.flag} ${l.name}</div>`
+      ).join('')}
+    </div>
+  `;
+}
+
+function switchLang(lang) {
+  setLang(lang);
+  document.getElementById('langDrop').classList.remove('open');
+  renderLangPicker();
+  updateStaticText();
+  updateCountdown();
+  renderPredictions();
+}
+
+function updateStaticText() {
+  // Update all static text elements that use translations
+  document.querySelector('.header h1').innerHTML = `&#9917; ${t('title')}`;
+  document.querySelector('.header p').textContent = t('subtitle');
+
+  document.querySelector('[data-tab="predict"]').textContent = t('tab_predict');
+  document.querySelector('[data-tab="groups"]').textContent = t('tab_groups');
+  document.querySelector('[data-tab="admin"]').textContent = t('tab_admin');
+  document.querySelector('[data-tab="scoring"]').textContent = t('tab_scoring');
+
+  const confEl = document.querySelector('.auth-bar ~ .container .panel.active [style*="blue-bg"]');
+}
+
+function renderAll() {
+  renderLangPicker();
+  updateStaticText();
+  updateCountdown();
+  renderPredictions();
+}
+
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('#langPicker')) {
+    const dd = document.getElementById('langDrop');
+    if (dd) dd.classList.remove('open');
+  }
+});
+
+renderLangPicker();
+
 // Countdown
 function updateCountdown() {
   const el = document.getElementById('countdown');
   const now = new Date();
   const kick = new Date('2026-06-11T19:00:00Z');
   const diff = kick - now;
-  if (diff <= 0) { el.textContent = 'המונדיאל התחיל! ⚽'; return; }
+  if (diff <= 0) { el.textContent = t('tournament_started'); return; }
   const d = Math.floor(diff / 86400000);
   const h = Math.floor((diff % 86400000) / 3600000);
   const m = Math.floor((diff % 3600000) / 60000);
   const s = Math.floor((diff % 60000) / 1000);
-  el.textContent = `${d} ימים ${h} שעות ${m} דקות ${s} שניות`;
+  el.textContent = `${d} ${t('days')} ${h} ${t('hours')} ${m} ${t('minutes')} ${s} ${t('seconds')}`;
 }
 updateCountdown();
 setInterval(updateCountdown, 1000);
