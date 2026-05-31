@@ -520,13 +520,12 @@
     </div>
 
     <!-- Invite nudge (shown after first prediction) -->
-    <div id="inviteNudge" class="card" style="display:none;background:linear-gradient(135deg,var(--card2),var(--card));border-color:var(--accent);text-align:center;padding:16px">
-      <p style="font-size:0.92rem;font-weight:700;margin-bottom:8px">&#127881; יופי! עכשיו תזמינו חברים לקבוצה</p>
-      <p style="color:var(--muted);font-size:0.82rem;margin-bottom:10px">ככל שיש יותר חברים, ככה יותר כיף להתחרות</p>
-      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
-        <button class="btn btn-primary btn-sm" onclick="document.querySelector('[data-tab=groups]').click()">&#128101; הקבוצות שלי</button>
-        <button class="btn btn-sm" style="background:transparent;color:var(--muted);border:1px solid var(--border)" onclick="document.getElementById('inviteNudge').style.display='none';localStorage.setItem('wc_nudge_dismissed','1')">אחר כך</button>
-      </div>
+    <div id="inviteNudge" class="card" style="display:none;background:linear-gradient(135deg,var(--card2),var(--card));border:2px solid var(--accent);text-align:center;padding:20px">
+      <div style="font-size:2rem;margin-bottom:6px">🎉🐒</div>
+      <p style="font-size:1rem;font-weight:800;margin-bottom:6px">ניחשתם! עכשיו שלחו לחברים</p>
+      <p style="color:var(--muted);font-size:0.85rem;margin-bottom:14px">שלחו לקבוצת הוואטסאפ — ככל שיש יותר חברים, ככה יותר כיף להתחרות עם הקוף</p>
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap" id="nudgeButtons"></div>
+      <p style="color:var(--dimmed);font-size:0.72rem;margin-top:10px;cursor:pointer" onclick="document.getElementById('inviteNudge').style.display='none';localStorage.setItem('wc_nudge_dismissed','1')">אחר כך ←</p>
     </div>
 
     <div class="missing-alert" id="missingAlert"></div>
@@ -1096,8 +1095,10 @@ function renderPredictions() {
   // Invite nudge — show after first prediction if not dismissed
   const nudge = document.getElementById('inviteNudge');
   const predCount = Object.keys(predictions).length;
-  if (currentPlayer && predCount > 0 && predCount <= 5 && !localStorage.getItem('wc_nudge_dismissed')) {
+  if (currentPlayer && predCount > 0 && predCount <= 10 && !localStorage.getItem('wc_nudge_dismissed')) {
     nudge.style.display = 'block';
+    // Populate share buttons with user's group
+    loadNudgeButtons();
   } else {
     nudge.style.display = 'none';
   }
@@ -1709,6 +1710,29 @@ async function handlePendingJoin() {
     document.querySelector('[data-tab="groups"]').classList.add('active');
     document.getElementById('groups').classList.add('active');
     loadMyGroups();
+  }
+}
+
+// Nudge share buttons
+async function loadNudgeButtons() {
+  const el = document.getElementById('nudgeButtons');
+  if (!el || !currentPlayer) return;
+  try {
+    const groups = await api(`/api/groups/my?player_id=${currentPlayer}`);
+    if (groups.length > 0) {
+      const g = groups[0];
+      const link = `${location.origin}/join/${g.invite_code}`;
+      const text = encodeURIComponent(`⚽ בואו לנחש איתי תוצאות מונדיאל 2026!\n\n${link}\n\n🤫 חסוי עד שריקת הפתיחה\n🐒 מי שמפסיד לקוף מביא בירות 🍺`);
+      el.innerHTML = `
+        <a class="btn btn-sm" style="background:#25D366;color:#fff;text-decoration:none;font-size:0.9rem;padding:10px 20px" href="https://wa.me/?text=${text}" target="_blank">💬 שלח בוואטסאפ</a>
+        <a class="btn btn-sm" style="background:#0088cc;color:#fff;text-decoration:none" href="https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent('⚽ ניחושי מונדיאל 2026 🐒')}" target="_blank">✈️ טלגרם</a>
+        <button class="btn btn-sm" style="background:var(--border);color:var(--text)" onclick="navigator.clipboard.writeText('${link}');toast('הלינק הועתק!')">📋 העתק</button>
+      `;
+    } else {
+      el.innerHTML = `<button class="btn btn-primary" onclick="document.querySelector('[data-tab=groups]').click()">&#128101; צרו קבוצה ושתפו</button>`;
+    }
+  } catch(e) {
+    el.innerHTML = `<button class="btn btn-primary" onclick="document.querySelector('[data-tab=groups]').click()">&#128101; צרו קבוצה ושתפו</button>`;
   }
 }
 
