@@ -62,6 +62,14 @@ app.use(express.static(path.join(__dirname, 'public'), {
 
 db.pragma('journal_mode = WAL');
 db.exec(`
+  CREATE TABLE IF NOT EXISTS analytics (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    event TEXT NOT NULL,
+    data TEXT DEFAULT '{}',
+    ip TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  );
+
   CREATE TABLE IF NOT EXISTS players (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
@@ -373,6 +381,14 @@ app.get('/api/players', (req, res) => {
   res.json(players);
 });
 
+// Analytics
+function track(req, event, data) {
+  try {
+    const ip = req.headers['cf-connecting-ip'] || req.headers['x-forwarded-for'] || req.ip;
+    db.prepare('INSERT INTO analytics (event, data, ip) VALUES (?, ?, ?)').run(event, JSON.stringify(data || {}), ip);
+  } catch(e) {}
+}
+
 function generateToken() {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let token = '';
@@ -423,6 +439,7 @@ app.post('/api/auth/google', async (req, res) => {
       player = { id: result.lastInsertRowid, name: name || email.split('@')[0] };
     }
 
+    track(req, 'login_google', { player_id: player.id, name: player.name || name });
     res.json({ id: player.id, name: player.name || name, email, avatar_url: picture, token });
   } catch (e) {
     console.error('Google auth error:', e.message);
@@ -452,6 +469,7 @@ app.post('/api/login', (req, res) => {
   if (player.pin !== pin) return res.status(401).json({ error: 'קוד שגוי' });
   const token = generateToken();
   db.prepare('UPDATE players SET session_token = ? WHERE id = ?').run(token, player.id);
+  track(req, "login_pin", { player_id: player.id });
   res.json({ id: player.id, name: player.name, token });
 });
 
@@ -828,6 +846,7 @@ app.post('/api/groups', (req, res) => {
   db.prepare('INSERT INTO group_members (group_id, player_id) VALUES (?, ?)').run(result.lastInsertRowid, manager_id);
 
   const monkey = ensureMonkeyExists(result.lastInsertRowid);
+  track(req, 'group_create', { group_id: result.lastInsertRowid, name: name.trim() });
   res.json({ id: result.lastInsertRowid, invite_code });
 });
 
@@ -838,6 +857,7 @@ app.post('/api/groups/join', (req, res) => {
   const existing = db.prepare('SELECT 1 FROM group_members WHERE group_id = ? AND player_id = ?').get(group.id, player_id);
   if (existing) return res.status(409).json({ error: 'כבר בקבוצה הזו' });
   db.prepare('INSERT INTO group_members (group_id, player_id) VALUES (?, ?)').run(group.id, player_id);
+  track(req, 'group_join', { group_id: group.id, player_id });
   res.json({ ok: true, group_id: group.id, name: group.name });
 });
 
@@ -1129,6 +1149,22 @@ app.post('/api/actual-results', (req, res) => {
 
 app.get('/api/auth/is-admin', (req, res) => {
   res.json({ admin: isAdmin(req) });
+});
+
+app.get('/api/analytics', (req, res) => {
+  if (!isAdmin(req)) return res.status(403).json({ error: 'אין הרשאה' });
+  const summary = {
+    total_events: db.prepare('SELECT COUNT(*) as c FROM analytics').get().c,
+    logins_google: db.prepare("SELECT COUNT(*) as c FROM analytics WHERE event='login_google'").get().c,
+    logins_pin: db.prepare("SELECT COUNT(*) as c FROM analytics WHERE event='login_pin'").get().c,
+    groups_created: db.prepare("SELECT COUNT(*) as c FROM analytics WHERE event='group_create'").get().c,
+    group_joins: db.prepare("SELECT COUNT(*) as c FROM analytics WHERE event='group_join'").get().c,
+    total_players: db.prepare('SELECT COUNT(*) as c FROM players').get().c,
+    total_predictions: db.prepare('SELECT COUNT(*) as c FROM predictions').get().c,
+    total_groups: db.prepare('SELECT COUNT(*) as c FROM groups').get().c,
+    recent: db.prepare('SELECT event, data, created_at FROM analytics ORDER BY id DESC LIMIT 20').all(),
+  };
+  res.json(summary);
 });
 
 app.get('/api/outright-odds', (req, res) => {
