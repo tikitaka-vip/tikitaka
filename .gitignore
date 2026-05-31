@@ -4,3 +4,5 @@ error.log
 backups/
 *.db-journal
 *.db-wal
+*.db-shm
+*.db-wal
