@@ -501,6 +501,34 @@
 
   <!-- PREDICT -->
   <div class="panel active" id="predict">
+    <!-- Onboarding for new/logged-out users -->
+    <div id="onboarding" style="display:none">
+      <div class="card" style="text-align:center;padding:24px">
+        <div style="font-size:3rem;margin-bottom:8px">🐒⚽</div>
+        <h2 style="font-size:1.2rem;margin-bottom:8px">ניחושי מונדיאל 2026</h2>
+        <p style="color:var(--muted);font-size:0.9rem;line-height:1.6;margin-bottom:14px">
+          נחשו תוצאות מדויקות ל-104 משחקי המונדיאל.<br>
+          ניחוש הפתעה שווה הרבה יותר נקודות.<br>
+          יש קוף שמנחש באקראי — מי שמפסיד לו מביא בירות 🍺
+        </p>
+        <div id="socialProof" style="color:var(--accent);font-weight:800;font-size:1rem;margin-bottom:14px"></div>
+        <div style="background:var(--red-bg);border:1px solid var(--red);color:var(--red);padding:10px;border-radius:8px;font-weight:700;font-size:0.88rem;margin-bottom:14px">
+          ⏰ הניחושים ננעלים ב-11 ביוני — אחרי זה אי אפשר לשנות!
+        </div>
+        <p style="color:var(--muted);font-size:0.82rem">&#9650; התחברו למעלה עם Google כדי להתחיל</p>
+      </div>
+    </div>
+
+    <!-- Invite nudge (shown after first prediction) -->
+    <div id="inviteNudge" class="card" style="display:none;background:linear-gradient(135deg,var(--card2),var(--card));border-color:var(--accent);text-align:center;padding:16px">
+      <p style="font-size:0.92rem;font-weight:700;margin-bottom:8px">&#127881; יופי! עכשיו תזמינו חברים לקבוצה</p>
+      <p style="color:var(--muted);font-size:0.82rem;margin-bottom:10px">ככל שיש יותר חברים, ככה יותר כיף להתחרות</p>
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+        <button class="btn btn-primary btn-sm" onclick="document.querySelector('[data-tab=groups]').click()">&#128101; הקבוצות שלי</button>
+        <button class="btn btn-sm" style="background:transparent;color:var(--muted);border:1px solid var(--border)" onclick="document.getElementById('inviteNudge').style.display='none';localStorage.setItem('wc_nudge_dismissed','1')">אחר כך</button>
+      </div>
+    </div>
+
     <div class="missing-alert" id="missingAlert"></div>
 
     <div class="card">
@@ -1056,6 +1084,24 @@ function renderPredictions() {
   container.innerHTML = '';
   let currentSection = '';
 
+  // Onboarding vs logged-in state
+  const onboarding = document.getElementById('onboarding');
+  if (!currentPlayer) {
+    onboarding.style.display = 'block';
+    loadSocialProof();
+  } else {
+    onboarding.style.display = 'none';
+  }
+
+  // Invite nudge — show after first prediction if not dismissed
+  const nudge = document.getElementById('inviteNudge');
+  const predCount = Object.keys(predictions).length;
+  if (currentPlayer && predCount > 0 && predCount <= 5 && !localStorage.getItem('wc_nudge_dismissed')) {
+    nudge.style.display = 'block';
+  } else {
+    nudge.style.display = 'none';
+  }
+
   // Progress
   const upcoming = matches.filter(m => !m.locked && !m.result);
   const predicted = upcoming.filter(m => predictions[m.id]);
@@ -1301,6 +1347,23 @@ async function openGroupDetail(groupId) {
       <td class="pts">${p.points}</td>
     </tr>`;
   }).join('');
+
+  // Leaderboard share teaser
+  const myRank = board.findIndex(p => p.id === currentPlayer);
+  if (myRank >= 0 && board.length > 1) {
+    const monkeyRank = board.findIndex(p => p.isMonkey);
+    const pos = myRank + 1;
+    const total = board.length;
+    let teaser = `את/ה במקום ${pos} מתוך ${total}`;
+    if (monkeyRank >= 0 && myRank > monkeyRank) teaser += ' — 🐒 הקוף מנצח אותך!';
+    teaser += ' — הזמינו עוד חברים!';
+    const teaserRow = document.createElement('tr');
+    teaserRow.innerHTML = `<td colspan="5" style="text-align:center;padding:12px;background:var(--accent-glow);border-radius:8px">
+      <span style="font-size:0.85rem;font-weight:700">${teaser}</span>
+      <button class="btn btn-primary btn-sm" style="margin-right:8px" onclick="shareGroup('copy','${group.invite_code}')">📋 שתף</button>
+    </td>`;
+    tbody.appendChild(teaserRow);
+  }
 
   // Compare
   await loadGroupCompare(groupId);
@@ -1647,6 +1710,18 @@ async function handlePendingJoin() {
     document.getElementById('groups').classList.add('active');
     loadMyGroups();
   }
+}
+
+// Social proof
+async function loadSocialProof() {
+  const el = document.getElementById('socialProof');
+  if (!el) return;
+  try {
+    const stats = await api('/api/stats');
+    if (stats.players > 0) {
+      el.textContent = `${stats.players} שחקנים כבר מנחשים · ${stats.groups} קבוצות · ${stats.predictions} ניחושים`;
+    }
+  } catch(e) {}
 }
 
 // Language picker

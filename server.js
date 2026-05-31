@@ -947,11 +947,12 @@ app.post('/api/groups/:id/leave', (req, res) => {
 });
 
 app.get('/api/stats', (req, res) => {
-  const players = db.prepare('SELECT COUNT(*) as c FROM players').get().c;
+  const humanPlayers = db.prepare("SELECT COUNT(*) as c FROM players WHERE name NOT LIKE '%קוף%'").get().c;
   const preds = db.prepare('SELECT COUNT(*) as c FROM predictions').get().c;
   const results = db.prepare('SELECT COUNT(*) as c FROM match_results').get().c;
   const totalMatches = db.prepare('SELECT COUNT(*) as c FROM matches').get().c;
-  res.json({ players, predictions: preds, results, totalMatches });
+  const groups = db.prepare('SELECT COUNT(*) as c FROM groups').get().c;
+  res.json({ players: humanPlayers, predictions: preds, results, totalMatches, groups });
 });
 
 // --- Shared fetch logic ---
