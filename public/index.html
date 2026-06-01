@@ -527,7 +527,7 @@
     <div class="missing-alert" id="missingAlert"></div>
 
     <div class="card">
-      <h2>${t('tournament_title')}</h2>
+      <h2 id="tpTitleText">Tournament Predictions</h2>
       <div class="tp-lock-msg" id="tpLockMsg">הניחושים ננעלו! הטורניר כבר התחיל &#128274;</div>
       <p style="color:var(--dimmed);font-size:0.78rem;margin-bottom:10px" id="tpDeadline">ניתן לשנות עד תחילת הטורניר (11 ביוני)</p>
 
@@ -1083,6 +1083,17 @@ function renderPredictions() {
   const onboarding = document.getElementById('onboarding');
   if (!currentPlayer) {
     onboarding.style.display = 'block';
+    // Populate onboarding text
+    const obTitle = document.getElementById('ob-title');
+    if (obTitle) obTitle.textContent = t('title');
+    const obDesc = document.getElementById('ob-desc');
+    if (obDesc) obDesc.innerHTML = (t('ob_desc') || '').replace(/\n/g, '<br>');
+    const obMonkey = document.getElementById('ob-monkey');
+    if (obMonkey) obMonkey.innerHTML = `${t('ob_monkey')}<br><span style="font-weight:400;font-size:0.82rem">${t('ob_monkey_sub')}</span>`;
+    const obDeadline = document.getElementById('ob-deadline');
+    if (obDeadline) obDeadline.textContent = t('ob_deadline');
+    const obCta = document.getElementById('ob-cta');
+    if (obCta) obCta.textContent = t('ob_cta');
     loadSocialProof();
   } else {
     onboarding.style.display = 'none';
@@ -1739,7 +1750,10 @@ async function loadSocialProof() {
   try {
     const stats = await api('/api/stats');
     if (stats.players > 0) {
-      el.textContent = `${stats.players} שחקנים כבר מנחשים · ${stats.groups} קבוצות · ${stats.predictions} ניחושים`;
+      const sp = currentLang === 'he'
+        ? `${stats.players} שחקנים כבר מנחשים · ${stats.groups} קבוצות · ${stats.predictions} ניחושים`
+        : `${stats.players} players · ${stats.groups} groups · ${stats.predictions} predictions`;
+      el.textContent = sp;
     }
   } catch(e) {}
 }
@@ -1787,7 +1801,7 @@ function updateStaticText() {
   document.querySelector('[data-tab="scoring"]').textContent = t('tab_scoring');
 
   // Tournament predictions
-  const tpTitle = document.querySelector('#predict .card h2');
+  const tpTitle = document.getElementById('tpTitleText');
   if (tpTitle) tpTitle.textContent = t('tournament_title');
   const tpDeadline = document.getElementById('tpDeadline');
   if (tpDeadline) tpDeadline.textContent = t('tournament_deadline');
