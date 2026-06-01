@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="מונדיאל 26">
 <link rel="apple-touch-icon" href="/icon-192.png">
-<script src="/i18n.js?v=2"></script>
+<script src="/i18n.js?v=3"></script>
 <meta property="og:title" content="TikiTaka — ניחושי מונדיאל 2026">
 <meta property="og:description" content="קוף אמיתי מנחש את המונדיאל. אתם יכולים לנצח אותו? ניחושי הפתעה שווים יותר נקודות!">
 <meta property="og:image" content="https://tikitaka.vip/og-image.png">
@@ -743,15 +743,15 @@
 <div class="saved-toast" id="toast">נשמר!</div>
 
 <div class="install-banner" id="installBanner">
-  <span>&#9917; התקינו כאפליקציה לגישה מהירה</span>
+  <span id="installText">&#9917;</span>
   <div style="display:flex;gap:8px">
-    <button class="btn btn-primary btn-sm" onclick="installApp()">התקן</button>
-    <button class="btn btn-sm" style="background:transparent;color:var(--muted);border:1px solid var(--border)" onclick="dismissInstall()">לא עכשיו</button>
+    <button class="btn btn-primary btn-sm" id="installBtn" onclick="installApp()"></button>
+    <button class="btn btn-sm" id="installDismiss" style="background:transparent;color:var(--muted);border:1px solid var(--border)" onclick="dismissInstall()"></button>
   </div>
 </div>
 
 <div class="install-banner" id="iosBanner">
-  <span>&#9917; להתקנה: לחצו על <span style="font-size:1.2rem">⎙</span> ואז ״הוסף למסך הבית״</span>
+  <span id="iosText">&#9917;</span>
   <button class="btn btn-sm" style="background:transparent;color:var(--muted);border:1px solid var(--border)" onclick="document.getElementById('iosBanner').classList.remove('show');localStorage.setItem('wc_ios_dismiss','1')">✕</button>
 </div>
 
@@ -1860,6 +1860,16 @@ function updateStaticText() {
   // Invite nudge
   const nudgeTitle = document.querySelector('#inviteNudge p:first-of-type');
   if (nudgeTitle) nudgeTitle.textContent = currentLang === 'he' ? 'ניחשתם! עכשיו שלחו לחברים' : 'Great! Now share with friends';
+
+  // Install banners
+  const installText = document.getElementById('installText');
+  if (installText) installText.textContent = '⚽ ' + t('install_android');
+  const installBtn = document.getElementById('installBtn');
+  if (installBtn) installBtn.textContent = t('install_btn');
+  const installDismiss = document.getElementById('installDismiss');
+  if (installDismiss) installDismiss.textContent = t('install_dismiss');
+  const iosText = document.getElementById('iosText');
+  if (iosText) iosText.innerHTML = '⚽ ' + t('install_ios');
 }
 
 function renderAll() {
