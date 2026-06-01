@@ -63,7 +63,7 @@
   .tabs {
     display: flex; background: var(--card);
     border-bottom: 2px solid var(--border); overflow-x: auto;
-    position: sticky; top: 0; z-index: 100;
+    position: sticky; top: 0; z-index: 50;
   }
   .tab {
     padding: 11px 18px; cursor: pointer; border: none; background: none;
@@ -506,20 +506,12 @@
     <div id="onboarding" style="display:none">
       <div class="card" style="text-align:center;padding:24px">
         <div style="font-size:3rem;margin-bottom:8px">🐒⚽</div>
-        <h2 style="font-size:1.2rem;margin-bottom:8px">ניחושי מונדיאל 2026</h2>
-        <p style="color:var(--muted);font-size:0.9rem;line-height:1.6;margin-bottom:8px">
-          נחשו תוצאות מדויקות ל-104 משחקי המונדיאל.<br>
-          ניחוש הפתעה שווה הרבה יותר נקודות.
-        </p>
-        <div style="background:var(--orange-bg);border:1px solid var(--orange);color:var(--orange);padding:10px 14px;border-radius:8px;font-size:0.9rem;font-weight:700;margin-bottom:14px">
-          🐒 קוף אמיתי מגן החיות מנחש את כל המשחקים — אתם יכולים לנצח אותו?<br>
-          <span style="font-weight:400;font-size:0.82rem">מי שמפסיד לקוף מביא בירות 🍺</span>
-        </div>
+        <h2 style="font-size:1.2rem;margin-bottom:8px" id="ob-title"></h2>
+        <p id="ob-desc" style="color:var(--muted);font-size:0.9rem;line-height:1.6;margin-bottom:8px"></p>
+        <div id="ob-monkey" style="background:var(--orange-bg);border:1px solid var(--orange);color:var(--orange);padding:10px 14px;border-radius:8px;font-size:0.9rem;font-weight:700;margin-bottom:14px"></div>
         <div id="socialProof" style="color:var(--accent);font-weight:800;font-size:1rem;margin-bottom:14px"></div>
-        <div style="background:var(--red-bg);border:1px solid var(--red);color:var(--red);padding:10px;border-radius:8px;font-weight:700;font-size:0.88rem;margin-bottom:14px">
-          ⏰ הניחושים ננעלים ב-11 ביוני — אחרי זה אי אפשר לשנות!
-        </div>
-        <p style="color:var(--muted);font-size:0.82rem">&#9650; התחברו למעלה עם Google כדי להתחיל</p>
+        <div id="ob-deadline" style="background:var(--red-bg);border:1px solid var(--red);color:var(--red);padding:10px;border-radius:8px;font-weight:700;font-size:0.88rem;margin-bottom:14px"></div>
+        <p id="ob-cta" style="color:var(--muted);font-size:0.82rem"></p>
       </div>
     </div>
 
@@ -1837,6 +1829,22 @@ function updateStaticText() {
   document.querySelectorAll('.custom-select-wrap input').forEach((el, i) => {
     el.placeholder = i < 2 ? t('search_team') : t('search_player');
   });
+
+  // Onboarding
+  const obTitle = document.getElementById('ob-title');
+  if (obTitle) obTitle.textContent = t('title');
+  const obDesc = document.getElementById('ob-desc');
+  if (obDesc) obDesc.innerHTML = t('ob_desc').replace(/\n/g, '<br>');
+  const obMonkey = document.getElementById('ob-monkey');
+  if (obMonkey) obMonkey.innerHTML = `${t('ob_monkey')}<br><span style="font-weight:400;font-size:0.82rem">${t('ob_monkey_sub')}</span>`;
+  const obDeadline = document.getElementById('ob-deadline');
+  if (obDeadline) obDeadline.textContent = t('ob_deadline');
+  const obCta = document.getElementById('ob-cta');
+  if (obCta) obCta.textContent = t('ob_cta');
+
+  // Invite nudge
+  const nudgeTitle = document.querySelector('#inviteNudge p:first-of-type');
+  if (nudgeTitle) nudgeTitle.textContent = currentLang === 'he' ? 'ניחשתם! עכשיו שלחו לחברים' : 'Great! Now share with friends';
 }
 
 function renderAll() {
