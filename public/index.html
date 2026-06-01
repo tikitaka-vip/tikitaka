@@ -527,7 +527,7 @@
     <div class="missing-alert" id="missingAlert"></div>
 
     <div class="card">
-      <h2>ניחושי טורניר</h2>
+      <h2>${t('tournament_title')}</h2>
       <div class="tp-lock-msg" id="tpLockMsg">הניחושים ננעלו! הטורניר כבר התחיל &#128274;</div>
       <p style="color:var(--dimmed);font-size:0.78rem;margin-bottom:10px" id="tpDeadline">ניתן לשנות עד תחילת הטורניר (11 ביוני)</p>
 
@@ -953,9 +953,9 @@ function buildFilters() {
   }
   for (const [containerId, filterVar] of [['stageFilter','activeFilter'],['compareFilter','compareFilter']]) {
     const bar = document.getElementById(containerId);
-    bar.innerHTML = `<button class="filter-btn active" onclick="setFilter('${containerId}','all')">הכל</button>`;
+    bar.innerHTML = `<button class="filter-btn active" onclick="setFilter('${containerId}','all')">${t('all')}</button>`;
     stages.forEach(s => {
-      bar.innerHTML += `<button class="filter-btn" onclick="setFilter('${containerId}','${s}')">${s}</button>`;
+      bar.innerHTML += `<button class="filter-btn" onclick="setFilter('${containerId}','${s}')">${tSection(s)}</button>`;
     });
   }
 }
@@ -1109,7 +1109,7 @@ function renderPredictions() {
     const pct = Math.round((predicted.length / upcoming.length) * 100);
     const cls = pct < 30 ? 'low' : pct < 70 ? 'mid' : '';
     pArea.innerHTML = `<div class="progress-bar">
-      <div class="progress-label"><span>ניחושים: ${predicted.length}/${upcoming.length}</span><span>${pct}%</span></div>
+      <div class="progress-label"><span>${t('predictions_label')} ${predicted.length}/${upcoming.length}</span><span>${pct}%</span></div>
       <div class="progress-track"><div class="progress-fill ${cls}" style="width:${pct}%"></div></div>
     </div>`;
   } else {
@@ -1120,7 +1120,7 @@ function renderPredictions() {
   if (currentPlayer && missing > 0) {
     const soonUnpredicted = upcoming.filter(m => !predictions[m.id]).slice(0, 3);
     const names = soonUnpredicted.map(m => `${m.team_a} - ${m.team_b}`).join(', ');
-    alert.textContent = `חסרים ${missing} ניחושים! הקרובים: ${names}`;
+    alert.textContent = t('missing_alert').replace('{n}', missing).replace('{matches}', names);
     alert.classList.add('show');
   } else {
     alert.classList.remove('show');
@@ -1134,7 +1134,7 @@ function renderPredictions() {
 
     if (section !== currentSection) {
       currentSection = section;
-      container.innerHTML += `<div class="group-header"><span class="badge">${section}</span></div>`;
+      container.innerHTML += `<div class="group-header"><span class="badge">${tSection(section)}</span></div>`;
     }
 
     const pred = predictions[m.id];
@@ -1155,16 +1155,16 @@ function renderPredictions() {
       oddsVal = Math.min(oddsVal, 8);
 
       if (pred.score_a === res.score_a && pred.score_b === res.score_b) {
-        statusClass = 'exact'; statusText = 'מדויק!';
+        statusClass = 'exact'; statusText = t('exact');
         earnedPts = Math.round(5 * mult * oddsVal);
       } else if (pOut === rOut && (pred.score_a - pred.score_b === res.score_a - res.score_b)) {
-        statusClass = 'close'; statusText = 'הפרש נכון';
+        statusClass = 'close'; statusText = t('correct_diff');
         earnedPts = Math.round(3 * mult * oddsVal);
       } else if (pOut === rOut) {
-        statusClass = 'close'; statusText = 'כיוון נכון';
+        statusClass = 'close'; statusText = t('correct_result');
         earnedPts = Math.round(2 * mult * oddsVal);
       } else {
-        statusClass = 'wrong'; statusText = 'פספוס';
+        statusClass = 'wrong'; statusText = t('wrong');
       }
     }
 
@@ -1180,7 +1180,7 @@ function renderPredictions() {
     container.innerHTML += `
       <div class="match-card ${res ? 'has-result' : ''} ${m.locked && !res ? 'locked' : ''}">
         <div class="match-top">
-          <span>${m.match_date || ''} ${m.match_time || ''} ${m.locked && !res ? '<span class="lock-icon">&#128274; נעול</span>' : ''}</span>
+          <span>${m.match_date || ''} ${m.match_time || ''} ${m.locked && !res ? `<span class="lock-icon">&#128274; ${t('locked')}</span>` : ''}</span>
           <span>${m.venue || ''}</span>
         </div>
         <div class="match-body">
@@ -1412,8 +1412,8 @@ async function loadGroupCompare(groupId) {
     if (!seen.has(s)) { seen.add(s); stages.push(s); }
   }
   const filterBar = document.getElementById('groupCompareFilter');
-  filterBar.innerHTML = `<button class="filter-btn active" onclick="setGroupCompareFilter('all')">הכל</button>` +
-    stages.map(s => `<button class="filter-btn" onclick="setGroupCompareFilter('${s}')">${s}</button>`).join('');
+  filterBar.innerHTML = `<button class="filter-btn active" onclick="setGroupCompareFilter('all')">${t('all')}</button>` +
+    stages.map(s => `<button class="filter-btn" onclick="setGroupCompareFilter('${s}')">${tSection(s)}</button>`).join('');
 
   renderGroupCompare(allPreds, matchList);
 }
@@ -1443,12 +1443,12 @@ function renderGroupCompare(allPreds, matchList) {
 
     if (section !== currentSection) {
       currentSection = section;
-      container.innerHTML += `<div class="group-header"><span class="badge">${section}</span></div>`;
+      container.innerHTML += `<div class="group-header"><span class="badge">${tSection(section)}</span></div>`;
     }
 
     let html = `<div class="match-card" style="margin-bottom:6px">
       <div style="font-weight:700;font-size:0.88rem;margin-bottom:5px">
-        ${m.team_a} נגד ${m.team_b}
+        ${m.team_a} ${t('vs')} ${m.team_b}
         ${m.result ? `<span style="color:var(--green);margin-right:8px">(${m.result.score_a}-${m.result.score_b})</span>` : ''}
       </div>
       <div class="compare-grid">`;
@@ -1468,7 +1468,7 @@ function renderGroupCompare(allPreds, matchList) {
     container.innerHTML = '<p style="color:var(--muted);text-align:center;padding:12px">אין עדיין משחקים שהתחילו</p>';
   }
 
-  container.innerHTML += `<div class="group-header"><span class="badge">ניחושי טורניר</span></div>`;
+  container.innerHTML += `<div class="group-header"><span class="badge">${t('tournament_title')}</span></div>`;
   for (const [type, label] of [['winner','אלופה'],['runner_up','סגנית'],['top_scorer','מלך שערים']]) {
     let html = `<div class="match-card" style="margin-bottom:6px">
       <div style="font-weight:700;font-size:0.88rem;margin-bottom:5px">${label}</div>
@@ -1521,7 +1521,7 @@ function renderAdmin() {
     const section = m.group_name ? `בית ${m.group_name}` : m.stage;
     if (section !== currentSection) {
       currentSection = section;
-      container.innerHTML += `<div class="group-header"><span class="badge">${section}</span></div>`;
+      container.innerHTML += `<div class="group-header"><span class="badge">${tSection(section)}</span></div>`;
     }
 
     const isKnockout = m.stage !== 'בתים';

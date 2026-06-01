@@ -383,6 +383,34 @@ let currentLang = detectLang();
 
 function t(key) { return T[currentLang]?.[key] || T.en[key] || key; }
 
+// Stage name translations (DB stores Hebrew)
+const STAGE_NAMES = {
+  he: { 'בתים': 'בית', 'שמינית גמר': 'שמינית גמר', 'שמונה אחרונות': 'שמונה אחרונות', 'רבע גמר': 'רבע גמר', 'חצי גמר': 'חצי גמר', 'משחק על מקום 3': 'מקום 3', 'גמר': 'גמר' },
+  en: { 'בתים': 'Group', 'שמינית גמר': 'Round of 32', 'שמונה אחרונות': 'Round of 16', 'רבע גמר': 'Quarter-final', 'חצי גמר': 'Semi-final', 'משחק על מקום 3': '3rd Place', 'גמר': 'Final' },
+  es: { 'בתים': 'Grupo', 'שמינית גמר': 'Dieciseisavos', 'שמונה אחרונות': 'Octavos', 'רבע גמר': 'Cuartos', 'חצי גמר': 'Semifinal', 'משחק על מקום 3': '3er Puesto', 'גמר': 'Final' },
+  fr: { 'בתים': 'Groupe', 'שמינית גמר': '32es', 'שמונה אחרונות': '8es', 'רבע גמר': 'Quarts', 'חצי גמר': 'Demies', 'משחק על מקום 3': '3e Place', 'גמר': 'Finale' },
+  pt: { 'בתים': 'Grupo', 'שמינית גמר': 'Oitavas', 'שמונה אחרונות': '16 avos', 'רבע גמר': 'Quartas', 'חצי גמר': 'Semi', 'משחק על מקום 3': '3º Lugar', 'גמר': 'Final' },
+  ar: { 'בתים': 'مجموعة', 'שמינית גמר': 'دور الـ32', 'שמונה אחרונות': 'دور الـ16', 'רבע גמר': 'ربع النهائي', 'חצי גמר': 'نصف النهائي', 'משחק על מקום 3': 'المركز الثالث', 'גמר': 'النهائي' },
+  ru: { 'בתים': 'Группа', 'שמינית גמר': '1/16', 'שמונה אחרונות': '1/8', 'רבע גמר': '1/4', 'חצי גמר': '1/2', 'משחק על מקום 3': '3-е место', 'גמר': 'Финал' },
+  de: { 'בתים': 'Gruppe', 'שמינית גמר': 'Achtelfinale', 'שמונה אחרונות': 'Achtelfinale', 'רבע גמר': 'Viertelfinale', 'חצי גמר': 'Halbfinale', 'משחק על מקום 3': '3. Platz', 'גמר': 'Finale' },
+  ja: { 'בתים': 'グループ', 'שמינית גמר': 'R32', 'שמונה אחרונות': 'R16', 'רבע גמר': '準々決勝', 'חצי גמר': '準決勝', 'משחק על מקום 3': '3位決定戦', 'גמר': '決勝' },
+};
+
+function tStage(hebrewStage) {
+  const map = STAGE_NAMES[currentLang] || STAGE_NAMES.en;
+  return map[hebrewStage] || hebrewStage;
+}
+
+function tSection(section) {
+  // "בית A" → "Group A" etc
+  if (section.startsWith('בית ')) {
+    const letter = section.replace('בית ', '');
+    const groupWord = (STAGE_NAMES[currentLang] || STAGE_NAMES.en)['בתים'] || 'Group';
+    return `${groupWord} ${letter}`;
+  }
+  return tStage(section);
+}
+
 function setLang(lang) {
   currentLang = lang;
   localStorage.setItem('wc_lang', lang);
