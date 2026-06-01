@@ -953,6 +953,7 @@ function buildFilters() {
   }
   for (const [containerId, filterVar] of [['stageFilter','activeFilter'],['compareFilter','compareFilter']]) {
     const bar = document.getElementById(containerId);
+    if (!bar) continue;
     bar.innerHTML = `<button class="filter-btn active" onclick="setFilter('${containerId}','all')">${t('all')}</button>`;
     stages.forEach(s => {
       bar.innerHTML += `<button class="filter-btn" onclick="setFilter('${containerId}','${s}')">${tSection(s)}</button>`;
