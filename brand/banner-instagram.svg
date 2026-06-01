@@ -5,32 +5,67 @@
       <stop offset="50%" stop-color="#16213e"/>
       <stop offset="100%" stop-color="#0f3460"/>
     </linearGradient>
+    <linearGradient id="furDark" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8B5E3C"/>
+      <stop offset="100%" stop-color="#6B4226"/>
+    </linearGradient>
+    <linearGradient id="furLight" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#D4A76A"/>
+      <stop offset="100%" stop-color="#C4935A"/>
+    </linearGradient>
     <pattern id="stars" width="60" height="60" patternUnits="userSpaceOnUse">
       <path d="M30 5L35 20 50 20 38 30 42 45 30 35 18 45 22 30 10 20 25 20Z" fill="rgba(201,162,39,0.06)"/>
     </pattern>
   </defs>
+
   <rect width="1080" height="1080" fill="url(#headerBg)"/>
   <rect width="1080" height="1080" fill="url(#stars)"/>
   <rect x="24" y="24" width="1032" height="1032" rx="16" fill="none" stroke="#c9a227" stroke-width="3"/>
-  <!-- Monkey emoji -->
-  <text x="540" y="340" font-size="180" text-anchor="middle">&#x1F412;</text>
-  <!-- VS text -->
-  <text x="540" y="440" font-family="'Heebo', 'Arial', sans-serif" font-weight="900" font-size="36" fill="#c9a227" text-anchor="middle">?אתם יכולים לנצח אותו</text>
-  <!-- Soccer ball -->
-  <text x="540" y="560" font-size="80" text-anchor="middle">&#x26BD;</text>
+
+  <!-- Monkey icon centered -->
+  <g transform="translate(280,60) scale(0.98)">
+    <circle cx="256" cy="256" r="250" fill="#c9a227"/>
+    <circle cx="256" cy="256" r="232" fill="url(#headerBg)"/>
+    <circle cx="128" cy="220" r="62" fill="url(#furDark)"/>
+    <circle cx="384" cy="220" r="62" fill="url(#furDark)"/>
+    <circle cx="128" cy="220" r="40" fill="url(#furLight)"/>
+    <circle cx="384" cy="220" r="40" fill="url(#furLight)"/>
+    <ellipse cx="256" cy="260" rx="150" ry="160" fill="url(#furDark)"/>
+    <ellipse cx="256" cy="290" rx="115" ry="120" fill="url(#furLight)"/>
+    <path d="M150 220 Q200 180 256 185 Q312 180 362 220 Q312 195 256 200 Q200 195 150 220Z" fill="#6B4226"/>
+    <ellipse cx="210" cy="245" rx="32" ry="35" fill="#FFFFFF"/>
+    <ellipse cx="302" cy="245" rx="32" ry="35" fill="#FFFFFF"/>
+    <circle cx="215" cy="248" r="18" fill="#2C1810"/>
+    <circle cx="307" cy="248" r="18" fill="#2C1810"/>
+    <circle cx="218" cy="245" r="9" fill="#000000"/>
+    <circle cx="310" cy="245" r="9" fill="#000000"/>
+    <circle cx="222" cy="240" r="5" fill="#FFFFFF" opacity="0.9"/>
+    <circle cx="314" cy="240" r="5" fill="#FFFFFF" opacity="0.9"/>
+    <ellipse cx="256" cy="330" rx="70" ry="55" fill="#C4935A"/>
+    <ellipse cx="237" cy="318" rx="10" ry="8" fill="#6B4226"/>
+    <ellipse cx="275" cy="318" rx="10" ry="8" fill="#6B4226"/>
+    <path d="M218 345 Q237 368 256 365 Q275 368 294 345" stroke="#6B4226" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <g transform="translate(256,130)">
+      <polygon points="0,-32 8,-12 28,-12 12,2 18,22 0,10 -18,22 -12,2 -28,-12 -8,-12" fill="#c9a227"/>
+    </g>
+  </g>
+
+  <!-- Question -->
+  <text x="540" y="630" font-family="'Heebo', 'Arial', sans-serif" font-weight="900" font-size="40" fill="#c9a227" text-anchor="middle" direction="rtl">?אתם יכולים לנצח אותו</text>
+
   <!-- Title -->
-  <text x="540" y="700" font-family="'Heebo', 'Arial', sans-serif" font-weight="900" font-size="80" fill="#e8e6e3" text-anchor="middle">
+  <text x="540" y="740" font-family="'Heebo', 'Arial', sans-serif" font-weight="900" font-size="80" fill="#e8e6e3" text-anchor="middle">
     Tiki<tspan fill="#c9a227">Taka</tspan>
   </text>
-  <!-- Subtitle -->
-  <text x="540" y="760" font-family="'Heebo', 'Arial', sans-serif" font-weight="700" font-size="32" fill="#7a8ba7" text-anchor="middle" direction="rtl">
+  <text x="540" y="800" font-family="'Heebo', 'Arial', sans-serif" font-weight="700" font-size="32" fill="#7a8ba7" text-anchor="middle" direction="rtl">
     ניחושי מונדיאל 2026
   </text>
-  <!-- CTA button -->
-  <rect x="340" y="820" width="400" height="60" rx="14" fill="#c9a227"/>
-  <text x="540" y="860" font-family="'Heebo', 'Arial', sans-serif" font-weight="800" font-size="28" fill="#0a0e17" text-anchor="middle">tikitaka.vip</text>
-  <!-- Tagline -->
-  <text x="540" y="950" font-family="'Heebo', 'Arial', sans-serif" font-weight="400" font-size="22" fill="#4a5568" text-anchor="middle" direction="rtl">
-    קוף אמיתי מגן החיות מנחש. אתם?
+
+  <!-- CTA -->
+  <rect x="340" y="850" width="400" height="60" rx="14" fill="#c9a227"/>
+  <text x="540" y="890" font-family="'Heebo', 'Arial', sans-serif" font-weight="800" font-size="28" fill="#0a0e17" text-anchor="middle">tikitaka.vip</text>
+
+  <text x="540" y="990" font-family="'Heebo', 'Arial', sans-serif" font-weight="400" font-size="22" fill="#4a5568" text-anchor="middle" direction="rtl">
+    קוף אמיתי מגן החיות מנחש את כל 104 המשחקים
   </text>
 </svg>

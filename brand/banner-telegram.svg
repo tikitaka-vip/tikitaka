@@ -5,34 +5,69 @@
       <stop offset="50%" stop-color="#16213e"/>
       <stop offset="100%" stop-color="#0f3460"/>
     </linearGradient>
+    <linearGradient id="furDark" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8B5E3C"/>
+      <stop offset="100%" stop-color="#6B4226"/>
+    </linearGradient>
+    <linearGradient id="furLight" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#D4A76A"/>
+      <stop offset="100%" stop-color="#C4935A"/>
+    </linearGradient>
     <pattern id="stars" width="60" height="60" patternUnits="userSpaceOnUse">
       <path d="M30 5L35 20 50 20 38 30 42 45 30 35 18 45 22 30 10 20 25 20Z" fill="rgba(201,162,39,0.06)"/>
     </pattern>
   </defs>
+
   <rect width="1280" height="640" fill="url(#headerBg)"/>
   <rect width="1280" height="640" fill="url(#stars)"/>
   <rect x="16" y="16" width="1248" height="608" rx="12" fill="none" stroke="#c9a227" stroke-width="2.5"/>
-  <!-- Left: emojis -->
-  <text x="280" y="300" font-size="140" text-anchor="middle">&#x1F412;</text>
-  <text x="280" y="350" font-size="40" text-anchor="middle">&#x1F525;</text>
-  <!-- Center: title -->
-  <text x="640" y="240" font-family="'Heebo', 'Arial', sans-serif" font-weight="900" font-size="80" fill="#e8e6e3" text-anchor="middle">
+
+  <!-- Monkey left -->
+  <g transform="translate(60,80) scale(0.45)">
+    <circle cx="256" cy="256" r="250" fill="#c9a227"/>
+    <circle cx="256" cy="256" r="232" fill="url(#headerBg)"/>
+    <circle cx="128" cy="220" r="62" fill="url(#furDark)"/>
+    <circle cx="384" cy="220" r="62" fill="url(#furDark)"/>
+    <circle cx="128" cy="220" r="40" fill="url(#furLight)"/>
+    <circle cx="384" cy="220" r="40" fill="url(#furLight)"/>
+    <ellipse cx="256" cy="260" rx="150" ry="160" fill="url(#furDark)"/>
+    <ellipse cx="256" cy="290" rx="115" ry="120" fill="url(#furLight)"/>
+    <path d="M150 220 Q200 180 256 185 Q312 180 362 220 Q312 195 256 200 Q200 195 150 220Z" fill="#6B4226"/>
+    <ellipse cx="210" cy="245" rx="32" ry="35" fill="#FFFFFF"/>
+    <ellipse cx="302" cy="245" rx="32" ry="35" fill="#FFFFFF"/>
+    <circle cx="215" cy="248" r="18" fill="#2C1810"/>
+    <circle cx="307" cy="248" r="18" fill="#2C1810"/>
+    <circle cx="218" cy="245" r="9" fill="#000000"/>
+    <circle cx="310" cy="245" r="9" fill="#000000"/>
+    <circle cx="222" cy="240" r="5" fill="#FFFFFF" opacity="0.9"/>
+    <circle cx="314" cy="240" r="5" fill="#FFFFFF" opacity="0.9"/>
+    <ellipse cx="256" cy="330" rx="70" ry="55" fill="#C4935A"/>
+    <ellipse cx="237" cy="318" rx="10" ry="8" fill="#6B4226"/>
+    <ellipse cx="275" cy="318" rx="10" ry="8" fill="#6B4226"/>
+    <path d="M218 345 Q237 368 256 365 Q275 368 294 345" stroke="#6B4226" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <g transform="translate(256,130)">
+      <polygon points="0,-32 8,-12 28,-12 12,2 18,22 0,10 -18,22 -12,2 -28,-12 -8,-12" fill="#c9a227"/>
+    </g>
+  </g>
+
+  <!-- Center text -->
+  <text x="640" y="200" font-family="'Heebo', 'Arial', sans-serif" font-weight="900" font-size="80" fill="#e8e6e3" text-anchor="middle">
     Tiki<tspan fill="#c9a227">Taka</tspan><tspan fill="#c9a227" font-size="36">.vip</tspan>
   </text>
-  <text x="640" y="310" font-family="'Heebo', 'Arial', sans-serif" font-weight="700" font-size="32" fill="#7a8ba7" text-anchor="middle" direction="rtl">
+  <text x="640" y="270" font-family="'Heebo', 'Arial', sans-serif" font-weight="700" font-size="32" fill="#7a8ba7" text-anchor="middle" direction="rtl">
     ניחושי מונדיאל 2026
   </text>
-  <text x="640" y="370" font-family="'Heebo', 'Arial', sans-serif" font-weight="400" font-size="24" fill="#4a5568" text-anchor="middle" direction="rtl">
+  <text x="640" y="330" font-family="'Heebo', 'Arial', sans-serif" font-weight="400" font-size="24" fill="#4a5568" text-anchor="middle" direction="rtl">
     קוף אמיתי מנחש את כל 104 המשחקים. ניחוש הפתעה שווה פי 8!
   </text>
+
   <!-- CTA -->
-  <rect x="480" y="420" width="320" height="56" rx="14" fill="#c9a227"/>
-  <text x="640" y="458" font-family="'Heebo', 'Arial', sans-serif" font-weight="800" font-size="26" fill="#0a0e17" text-anchor="middle">!הצטרפו עכשיו</text>
-  <!-- Right: soccer -->
-  <text x="1000" y="300" font-size="140" text-anchor="middle">&#x26BD;</text>
-  <!-- Bottom bar -->
-  <rect x="16" y="530" width="1248" height="3" fill="#c9a227" opacity="0.3"/>
-  <text x="640" y="580" font-family="'Heebo', 'Arial', sans-serif" font-weight="400" font-size="20" fill="#4a5568" text-anchor="middle">
+  <rect x="480" y="380" width="320" height="56" rx="14" fill="#c9a227"/>
+  <text x="640" y="418" font-family="'Heebo', 'Arial', sans-serif" font-weight="800" font-size="26" fill="#0a0e17" text-anchor="middle">!הצטרפו עכשיו</text>
+
+  <!-- Bottom -->
+  <rect x="16" y="500" width="1248" height="3" fill="#c9a227" opacity="0.3"/>
+  <text x="640" y="560" font-family="'Heebo', 'Arial', sans-serif" font-weight="400" font-size="20" fill="#4a5568" text-anchor="middle">
     USA / Canada / Mexico  ·  June 11 — July 19
   </text>
 </svg>

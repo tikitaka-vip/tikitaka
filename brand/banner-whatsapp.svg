@@ -5,33 +5,78 @@
       <stop offset="50%" stop-color="#16213e"/>
       <stop offset="100%" stop-color="#0f3460"/>
     </linearGradient>
-    <!-- Star pattern -->
+    <linearGradient id="furDark" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8B5E3C"/>
+      <stop offset="100%" stop-color="#6B4226"/>
+    </linearGradient>
+    <linearGradient id="furLight" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#D4A76A"/>
+      <stop offset="100%" stop-color="#C4935A"/>
+    </linearGradient>
     <pattern id="stars" width="60" height="60" patternUnits="userSpaceOnUse">
       <path d="M30 5L35 20 50 20 38 30 42 45 30 35 18 45 22 30 10 20 25 20Z" fill="rgba(201,162,39,0.06)"/>
     </pattern>
   </defs>
-  <!-- Background -->
+
   <rect width="1200" height="630" fill="url(#headerBg)"/>
   <rect width="1200" height="630" fill="url(#stars)"/>
-  <!-- Gold border -->
   <rect x="20" y="20" width="1160" height="590" rx="16" fill="none" stroke="#c9a227" stroke-width="3"/>
-  <!-- Monkey -->
-  <text x="400" y="300" font-size="120" text-anchor="middle">&#x1F412;</text>
-  <!-- VS -->
-  <text x="600" y="310" font-family="'Heebo', 'Arial', sans-serif" font-weight="900" font-size="48" fill="#c9a227" text-anchor="middle">VS</text>
-  <!-- Soccer ball -->
-  <text x="800" y="300" font-size="120" text-anchor="middle">&#x26BD;</text>
-  <!-- Title -->
-  <text x="600" y="440" font-family="'Heebo', 'Arial', sans-serif" font-weight="900" font-size="56" fill="#e8e6e3" text-anchor="middle">
-    Tiki<tspan fill="#c9a227">Taka</tspan>.vip
+
+  <!-- Monkey icon -->
+  <g transform="translate(150,80) scale(0.52)">
+    <circle cx="256" cy="256" r="250" fill="#c9a227"/>
+    <circle cx="256" cy="256" r="232" fill="url(#headerBg)"/>
+    <circle cx="128" cy="220" r="62" fill="url(#furDark)"/>
+    <circle cx="384" cy="220" r="62" fill="url(#furDark)"/>
+    <circle cx="128" cy="220" r="40" fill="url(#furLight)"/>
+    <circle cx="384" cy="220" r="40" fill="url(#furLight)"/>
+    <ellipse cx="256" cy="260" rx="150" ry="160" fill="url(#furDark)"/>
+    <ellipse cx="256" cy="290" rx="115" ry="120" fill="url(#furLight)"/>
+    <path d="M150 220 Q200 180 256 185 Q312 180 362 220 Q312 195 256 200 Q200 195 150 220Z" fill="#6B4226"/>
+    <ellipse cx="210" cy="245" rx="32" ry="35" fill="#FFFFFF"/>
+    <ellipse cx="302" cy="245" rx="32" ry="35" fill="#FFFFFF"/>
+    <circle cx="215" cy="248" r="18" fill="#2C1810"/>
+    <circle cx="307" cy="248" r="18" fill="#2C1810"/>
+    <circle cx="218" cy="245" r="9" fill="#000000"/>
+    <circle cx="310" cy="245" r="9" fill="#000000"/>
+    <circle cx="222" cy="240" r="5" fill="#FFFFFF" opacity="0.9"/>
+    <circle cx="314" cy="240" r="5" fill="#FFFFFF" opacity="0.9"/>
+    <ellipse cx="256" cy="330" rx="70" ry="55" fill="#C4935A"/>
+    <ellipse cx="237" cy="318" rx="10" ry="8" fill="#6B4226"/>
+    <ellipse cx="275" cy="318" rx="10" ry="8" fill="#6B4226"/>
+    <path d="M218 345 Q237 368 256 365 Q275 368 294 345" stroke="#6B4226" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <g transform="translate(256,130)">
+      <polygon points="0,-32 8,-12 28,-12 12,2 18,22 0,10 -18,22 -12,2 -28,-12 -8,-12" fill="#c9a227"/>
+    </g>
+  </g>
+
+  <!-- Text block -->
+  <text x="540" y="180" font-family="'Heebo', 'Arial', sans-serif" font-weight="900" font-size="72" fill="#e8e6e3">
+    Tiki<tspan fill="#c9a227">Taka</tspan><tspan fill="#c9a227" font-size="32">.vip</tspan>
   </text>
-  <!-- Subtitle Hebrew -->
-  <text x="600" y="490" font-family="'Heebo', 'Arial', sans-serif" font-weight="700" font-size="28" fill="#7a8ba7" text-anchor="middle" direction="rtl">
-    ניחושי מונדיאל 2026 — אתם נגד הקוף
+  <text x="540" y="240" font-family="'Heebo', 'Arial', sans-serif" font-weight="700" font-size="30" fill="#7a8ba7" direction="rtl">
+    ניחושי מונדיאל 2026
   </text>
+  <text x="540" y="290" font-family="'Heebo', 'Arial', sans-serif" font-weight="400" font-size="22" fill="#4a5568" direction="rtl">
+    ?קוף אמיתי מנחש. אתם יכולים לנצח אותו
+  </text>
+
+  <!-- Feature pills -->
+  <g transform="translate(540, 320)">
+    <rect x="0" y="0" width="140" height="34" rx="8" fill="rgba(201,162,39,0.15)" stroke="#c9a227" stroke-width="1"/>
+    <text x="70" y="23" font-family="'Heebo', 'Arial', sans-serif" font-weight="700" font-size="16" fill="#c9a227" text-anchor="middle">104 matches</text>
+    <rect x="155" y="0" width="160" height="34" rx="8" fill="rgba(201,162,39,0.15)" stroke="#c9a227" stroke-width="1"/>
+    <text x="235" y="23" font-family="'Heebo', 'Arial', sans-serif" font-weight="700" font-size="16" fill="#c9a227" text-anchor="middle">surprise = 8x pts</text>
+    <rect x="330" y="0" width="120" height="34" rx="8" fill="rgba(201,162,39,0.15)" stroke="#c9a227" stroke-width="1"/>
+    <text x="390" y="23" font-family="'Heebo', 'Arial', sans-serif" font-weight="700" font-size="16" fill="#c9a227" text-anchor="middle">free to play</text>
+  </g>
+
   <!-- CTA -->
-  <rect x="440" y="520" width="320" height="50" rx="12" fill="#c9a227"/>
-  <text x="600" y="553" font-family="'Heebo', 'Arial', sans-serif" font-weight="800" font-size="24" fill="#0a0e17" text-anchor="middle">tikitaka.vip — !הצטרפו</text>
-  <!-- Year badge -->
-  <text x="600" y="160" font-family="'Heebo', 'Arial', sans-serif" font-weight="900" font-size="72" fill="#c9a227" text-anchor="middle" opacity="0.15">2026</text>
+  <rect x="540" y="400" width="300" height="54" rx="12" fill="#c9a227"/>
+  <text x="690" y="435" font-family="'Heebo', 'Arial', sans-serif" font-weight="800" font-size="24" fill="#0a0e17" text-anchor="middle">tikitaka.vip — !הצטרפו</text>
+
+  <!-- Bottom text -->
+  <text x="600" y="560" font-family="'Heebo', 'Arial', sans-serif" font-weight="400" font-size="18" fill="#4a5568" text-anchor="middle">
+    USA / Canada / Mexico  ·  June 11 — July 19, 2026
+  </text>
 </svg>
