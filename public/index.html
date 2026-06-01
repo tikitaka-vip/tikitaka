@@ -1769,7 +1769,9 @@ function renderLangPicker() {
   el.innerHTML = `
     <button class="lang-btn" onclick="toggleLangDrop(this)">${current.flag} ${current.name}</button>
     <div class="lang-dropdown" id="langDrop">
-      ${Object.entries(LANGS).map(([code, l]) =>
+      ${Object.entries(LANGS)
+        .sort(([a], [b]) => a === 'en' ? -1 : b === 'en' ? 1 : LANGS[a].name.localeCompare(LANGS[b].name))
+        .map(([code, l]) =>
         `<div class="lang-opt ${code === currentLang ? 'active' : ''}" onclick="switchLang('${code}')">${l.flag} ${l.name}</div>`
       ).join('')}
     </div>
