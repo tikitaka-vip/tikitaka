@@ -1010,15 +1010,15 @@ function buildDropdownItems(type) {
   if (type === 'top_scorer') {
     const items = [];
     for (const g of SCORERS) {
-      items.push({ group: g.team });
-      for (const p of g.players) items.push({ value: p });
+      items.push({ group: tTeam(g.team) });
+      for (const p of g.players) items.push({ value: p, display: p });
     }
     return items;
   }
   const items = [];
   for (const g of TEAMS) {
-    items.push({ group: `בית ${g.group}` });
-    for (const t of g.teams) items.push({ value: t, odds: outrightOddsCache[t] });
+    items.push({ group: tSection(`בית ${g.group}`) });
+    for (const tm of g.teams) items.push({ value: tm, display: tTeam(tm), odds: outrightOddsCache[tm] });
   }
   return items;
 }
@@ -1050,14 +1050,15 @@ function filterDropdown(type) {
       lastGroup = item.group;
       continue;
     }
-    if (query && !item.value.toLowerCase().includes(query)) continue;
+    const displayText = item.display || item.value;
+    if (query && !displayText.toLowerCase().includes(query) && !item.value.toLowerCase().includes(query)) continue;
     if (!hasResults || (lastGroup && html.slice(-50).indexOf(lastGroup) === -1)) {
       html += `<div class="group-label">${lastGroup}</div>`;
     }
     hasResults = true;
     const sel = item.value === selected ? ' selected' : '';
     const oddsTag = item.odds ? `<span style="float:left;direction:ltr;color:${item.odds >= 20 ? 'var(--orange)' : 'var(--dimmed)'};font-size:0.72rem">×${(item.odds/5).toFixed(1)}</span>` : '';
-    html += `<div class="opt${sel}" onclick="selectTournamentPred('${type}','${item.value.replace(/'/g,"\\\'")}')">${item.value}${oddsTag}</div>`;
+    html += `<div class="opt${sel}" onclick="selectTournamentPred('${type}','${item.value.replace(/'/g,"\\\'")}')">${displayText}${oddsTag}</div>`;
   }
 
   if (!hasResults) html = '<div class="empty">לא נמצאו תוצאות</div>';
@@ -1130,7 +1131,7 @@ function renderPredictions() {
   const alert = document.getElementById('missingAlert');
   if (currentPlayer && missing > 0) {
     const soonUnpredicted = upcoming.filter(m => !predictions[m.id]).slice(0, 3);
-    const names = soonUnpredicted.map(m => `${m.team_a} - ${m.team_b}`).join(', ');
+    const names = soonUnpredicted.map(m => `${tTeam(m.team_a)} - ${tTeam(m.team_b)}`).join(', ');
     alert.textContent = t('missing_alert').replace('{n}', missing).replace('{matches}', names);
     alert.classList.add('show');
   } else {
@@ -1195,7 +1196,7 @@ function renderPredictions() {
           <span>${m.venue || ''}</span>
         </div>
         <div class="match-body">
-          <div class="match-team right">${m.team_a}</div>
+          <div class="match-team right">${tTeam(m.team_a)}</div>
           <div class="score-input-group ${inputClass}">
             <input type="number" min="0" max="20" id="sa-${m.id}" value="${pred ? pred.score_a : ''}"
               onchange="savePred(${m.id})" placeholder="-" ${m.locked ? 'disabled' : ''}>
@@ -1203,7 +1204,7 @@ function renderPredictions() {
             <input type="number" min="0" max="20" id="sb-${m.id}" value="${pred ? pred.score_b : ''}"
               onchange="savePred(${m.id})" placeholder="-" ${m.locked ? 'disabled' : ''}>
           </div>
-          <div class="match-team left">${m.team_b}</div>
+          <div class="match-team left">${tTeam(m.team_b)}</div>
           ${res ? `<div class="actual-score">${res.score_a} : ${res.score_b}</div>` : ''}
         </div>
         <div class="match-bottom">
@@ -1459,7 +1460,7 @@ function renderGroupCompare(allPreds, matchList) {
 
     let html = `<div class="match-card" style="margin-bottom:6px">
       <div style="font-weight:700;font-size:0.88rem;margin-bottom:5px">
-        ${m.team_a} ${t('vs')} ${m.team_b}
+        ${tTeam(m.team_a)} ${t('vs')} ${tTeam(m.team_b)}
         ${m.result ? `<span style="color:var(--green);margin-right:8px">(${m.result.score_a}-${m.result.score_b})</span>` : ''}
       </div>
       <div class="compare-grid">`;
@@ -1547,7 +1548,7 @@ function renderAdmin() {
             <input type="text" value="${m.team_b}" style="width:100px" id="adm-tb-${m.id}">
             <button class="btn btn-sm" onclick="updateTeams(${m.id})">עדכן</button>
           ` : `
-            <span style="font-weight:700;font-size:0.88rem">${m.team_a} <span style="color:var(--muted)">נגד</span> ${m.team_b}</span>
+            <span style="font-weight:700;font-size:0.88rem">${tTeam(m.team_a)} <span style="color:var(--muted)">${t('vs')}</span> ${tTeam(m.team_b)}</span>
           `}
           <div class="admin-score-group" style="margin-right:auto">
             <input type="number" min="0" max="20" id="adm-sa-${m.id}" value="${res ? res.score_a : ''}" placeholder="-">

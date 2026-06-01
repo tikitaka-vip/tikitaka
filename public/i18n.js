@@ -405,6 +405,43 @@ function tStage(hebrewStage) {
   return map[hebrewStage] || hebrewStage;
 }
 
+// Team name translations (DB stores Hebrew)
+const TEAM_EN = {
+  'מקסיקו':'Mexico','דרום אפריקה':'South Africa','דרום קוריאה':'South Korea',
+  'צ\'כיה':'Czechia','קנדה':'Canada','בוסניה והרצגובינה':'Bosnia & Herzegovina',
+  'קטאר':'Qatar','שוויץ':'Switzerland','ברזיל':'Brazil','מרוקו':'Morocco',
+  'האיטי':'Haiti','סקוטלנד':'Scotland','ארצות הברית':'USA',
+  'פרגוואי':'Paraguay','אוסטרליה':'Australia','טורקיה':'Türkiye',
+  'גרמניה':'Germany','קוראסאו':'Curaçao','חוף השנהב':'Ivory Coast',
+  'אקוודור':'Ecuador','הולנד':'Netherlands','יפן':'Japan','שוודיה':'Sweden',
+  'תוניסיה':'Tunisia','בלגיה':'Belgium','מצרים':'Egypt','איראן':'Iran',
+  'ניו זילנד':'New Zealand','ספרד':'Spain','כף ורדה':'Cape Verde',
+  'ערב הסעודית':'Saudi Arabia','אורוגוואי':'Uruguay','צרפת':'France',
+  'סנגל':'Senegal','עיראק':'Iraq','נורבגיה':'Norway','ארגנטינה':'Argentina',
+  'אלג\'יריה':'Algeria','אוסטריה':'Austria','ירדן':'Jordan',
+  'פורטוגל':'Portugal','קונגו':'DR Congo','אוזבקיסטן':'Uzbekistan',
+  'קולומביה':'Colombia','אנגליה':'England','קרואטיה':'Croatia',
+  'גאנה':'Ghana','פנמה':'Panama','TBD':'TBD',
+};
+
+const TEAM_NAMES = {
+  he: null, // null = use original Hebrew from DB
+  en: TEAM_EN,
+  es: { ...TEAM_EN, 'ארצות הברית':'EE.UU.','ספרד':'España','גרמניה':'Alemania','הולנד':'Países Bajos','אנגליה':'Inglaterra','צרפת':'Francia','שוויץ':'Suiza','בלגיה':'Bélgica','מצרים':'Egipto','דרום אפריקה':'Sudáfrica','דרום קוריאה':'Corea del Sur','ערב הסעודית':'Arabia Saudita','חוף השנהב':'Costa de Marfil','ניו זילנד':'Nueva Zelanda','כף ורדה':'Cabo Verde','טורקיה':'Turquía','נורבגיה':'Noruega','שוודיה':'Suecia','יפן':'Japón' },
+  fr: { ...TEAM_EN, 'ארצות הברית':'États-Unis','ספרד':'Espagne','גרמניה':'Allemagne','הולנד':'Pays-Bas','אנגליה':'Angleterre','בלגיה':'Belgique','מצרים':'Égypte','דרום אפריקה':'Afrique du Sud','דרום קוריאה':'Corée du Sud','ערב הסעודית':'Arabie Saoudite','חוף השנהב':"Côte d'Ivoire",'ניו זילנד':'Nouvelle-Zélande','כף ורדה':'Cap-Vert','טורקיה':'Turquie','נורבגיה':'Norvège','שוודיה':'Suède','יפן':'Japon','שוויץ':'Suisse' },
+  pt: { ...TEAM_EN, 'ארצות הברית':'EUA','ספרד':'Espanha','גרמניה':'Alemanha','הולנד':'Holanda','אנגליה':'Inglaterra','צרפת':'França','בלגיה':'Bélgica','מצרים':'Egito','דרום אפריקה':'África do Sul','דרום קוריאה':'Coreia do Sul','ערב הסעודית':'Arábia Saudita','חוף השנהב':'Costa do Marfim','ניו זילנד':'Nova Zelândia','כף ורדה':'Cabo Verde','טורקיה':'Turquia','נורבגיה':'Noruega','שוודיה':'Suécia','יפן':'Japão','שוויץ':'Suíça' },
+  ar: { ...TEAM_EN, 'ארצות הברית':'الولايات المتحدة','ספרד':'إسبانيا','גרמניה':'ألمانيا','הולנד':'هولندا','אנגליה':'إنجلترا','צרפת':'فرنسا','ברזיל':'البرازيل','ארגנטינה':'الأرجنتين','מקסיקו':'المكسيك','יפן':'اليابان','דרום קוריאה':'كوريا الجنوبية','מצרים':'مصر','ערב הסעודית':'السعودية','עיראק':'العراق','ירדן':'الأردن','איראן':'إيران','תוניסיה':'تونس','מרוקו':'المغرب','אלג\'יריה':'الجزائر','קטאר':'قطر' },
+  ru: { ...TEAM_EN, 'ארצות הברית':'США','ספרד':'Испания','גרמניה':'Германия','הולנד':'Нидерланды','אנגליה':'Англия','צרפת':'Франция','ברזיל':'Бразилия','ארגנטינה':'Аргентина','יפן':'Япония','דרום קוריאה':'Южная Корея','מצרים':'Египет','טורקיה':'Турция' },
+  de: { ...TEAM_EN, 'ארצות הברית':'USA','ספרד':'Spanien','גרמניה':'Deutschland','הולנד':'Niederlande','אנגליה':'England','צרפת':'Frankreich','ברזיל':'Brasilien','שוויץ':'Schweiz','בלגיה':'Belgien','מצרים':'Ägypten','דרום אפריקה':'Südafrika','דרום קוריאה':'Südkorea','ערב הסעודית':'Saudi-Arabien','טורקיה':'Türkei','נורבגיה':'Norwegen','שוודיה':'Schweden','יפן':'Japan' },
+  ja: { ...TEAM_EN, 'יפן':'日本','דרום קוריאה':'韓国','ברזיל':'ブラジル','ארגנטינה':'アルゼンチン','צרפת':'フランス','ספרד':'スペイン','גרמניה':'ドイツ','אנגליה':'イングランド','הולנד':'オランダ','ארצות הברית':'アメリカ','מקסיקו':'メキシコ','אוסטרליה':'オーストラリア' },
+};
+
+function tTeam(hebrewName) {
+  if (currentLang === 'he') return hebrewName;
+  const map = TEAM_NAMES[currentLang] || TEAM_EN;
+  return map[hebrewName] || TEAM_EN[hebrewName] || hebrewName;
+}
+
 function tSection(section) {
   // "בית A" → "Group A" etc
   if (section.startsWith('בית ')) {
