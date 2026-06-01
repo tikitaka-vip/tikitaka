@@ -85,7 +85,7 @@
   input, select, button { font-family: 'Heebo', sans-serif; font-size: 0.9rem; }
   input[type="text"], input[type="password"], input[type="number"], select {
     background: var(--bg); border: 1px solid var(--border); color: var(--text);
-    padding: 7px 12px; border-radius: 8px; direction: rtl;
+    padding: 7px 12px; border-radius: 8px;
   }
   input[type="number"] { width: 40px; text-align: center; direction: ltr; -moz-appearance: textfield; }
   input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
@@ -188,7 +188,7 @@
   .custom-select-wrap input {
     width: 100%; background: var(--bg); border: 1px solid var(--border);
     color: var(--text); padding: 8px 12px; border-radius: 8px; font-family: 'Heebo', sans-serif;
-    font-size: 0.9rem; direction: rtl;
+    font-size: 0.9rem;
   }
   .custom-select-wrap input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-glow); }
   .custom-select-wrap .dropdown {
@@ -1782,7 +1782,13 @@ function toggleLangDrop(btn) {
   if (dd.classList.contains('open')) {
     const rect = btn.getBoundingClientRect();
     dd.style.top = (rect.bottom + 4) + 'px';
-    dd.style.left = rect.left + 'px';
+    dd.style.left = '';
+    dd.style.right = '';
+    if (document.documentElement.dir === 'rtl') {
+      dd.style.right = (window.innerWidth - rect.right) + 'px';
+    } else {
+      dd.style.left = rect.left + 'px';
+    }
   }
 }
 

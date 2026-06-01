@@ -1,4 +1,4 @@
-const CACHE = 'mundial26-v4';
+const CACHE = 'mundial26-v5';
 const PRECACHE = ['/', '/manifest.json'];
 
 self.addEventListener('install', e => {
