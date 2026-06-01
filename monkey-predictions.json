@@ -1,0 +1,5242 @@
+{
+  "generated_at": "2026-06-01T10:09:21.161Z",
+  "webcams_used": [
+    {
+      "name": "San Diego Baboons",
+      "url": "https://zoo.sandiegozoo.org/cams/baboon-cam",
+      "species": "Hamadryas Baboons",
+      "frame_ok": true
+    },
+    {
+      "name": "San Diego Apes",
+      "url": "https://zoo.sandiegozoo.org/cams/ape-cam",
+      "species": "Orangutans",
+      "frame_ok": true
+    },
+    {
+      "name": "Zoo Atlanta Gorillas",
+      "url": "https://zooatlanta.org/gorillacam/",
+      "species": "Western Lowland Gorillas",
+      "frame_ok": true
+    },
+    {
+      "name": "Jigokudani Snow Monkeys",
+      "url": "https://www.jigokudani-yaenkoen.co.jp/livecam/monkey/",
+      "species": "Japanese Macaques",
+      "frame_ok": true
+    },
+    {
+      "name": "Explore.org Bonobos",
+      "url": "https://explore.org/livecams/bonobos/bonobo-sanctuary",
+      "species": "Bonobos",
+      "frame_ok": true
+    }
+  ],
+  "predictions": {
+    "1": {
+      "match_id": 1,
+      "team_a": "מקסיקו",
+      "team_b": "דרום אפריקה",
+      "score_a": 1,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 4,
+          "away": 2,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 1,
+          "away": 1,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 2,
+          "away": 1,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 0,
+          "away": 2,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "2": {
+      "match_id": 2,
+      "team_a": "דרום קוריאה",
+      "team_b": "צ'כיה",
+      "score_a": 1,
+      "score_b": 2,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 1,
+          "away": 2,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 1,
+          "away": 3,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 2,
+          "away": 3,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 1,
+          "away": 0,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "3": {
+      "match_id": 3,
+      "team_a": "קנדה",
+      "team_b": "בוסניה והרצגובינה",
+      "score_a": 2,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 2,
+          "away": 1,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 0,
+          "away": 1,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 3,
+          "away": 1,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 3,
+          "away": 3,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "4": {
+      "match_id": 4,
+      "team_a": "ארצות הברית",
+      "team_b": "פרגוואי",
+      "score_a": 1,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 0,
+          "away": 3,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 1,
+          "away": 1,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 1,
+          "away": 0,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 2,
+          "away": 2,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 3,
+          "away": 1,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "5": {
+      "match_id": 5,
+      "team_a": "אוסטרליה",
+      "team_b": "טורקיה",
+      "score_a": 2,
+      "score_b": 2,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 4,
+          "away": 3,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 2,
+          "away": 2,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 0,
+          "away": 0,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 2,
+          "away": 3,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 2,
+          "away": 1,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "6": {
+      "match_id": 6,
+      "team_a": "קטאר",
+      "team_b": "שוויץ",
+      "score_a": 1,
+      "score_b": 2,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 2,
+          "away": 2,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 0,
+          "away": 2,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 1,
+          "away": 0,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 2,
+          "away": 3,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "7": {
+      "match_id": 7,
+      "team_a": "ברזיל",
+      "team_b": "מרוקו",
+      "score_a": 1,
+      "score_b": 3,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 1,
+          "away": 0,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 1,
+          "away": 3,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 1,
+          "away": 2,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 1,
+          "away": 3,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 2,
+          "away": 4,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "8": {
+      "match_id": 8,
+      "team_a": "האיטי",
+      "team_b": "סקוטלנד",
+      "score_a": 0,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 1,
+          "away": 2,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 0,
+          "away": 0,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 0,
+          "away": 1,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 0,
+          "away": 0,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 2,
+          "away": 1,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "9": {
+      "match_id": 9,
+      "team_a": "גרמניה",
+      "team_b": "קוראסאו",
+      "score_a": 0,
+      "score_b": 0,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 2,
+          "away": 0,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 0,
+          "away": 0,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 0,
+          "away": 1,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 2,
+          "away": 0,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 0,
+          "away": 1,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "10": {
+      "match_id": 10,
+      "team_a": "הולנד",
+      "team_b": "יפן",
+      "score_a": 1,
+      "score_b": 0,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 1,
+          "away": 0,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 4,
+          "away": 1,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 1,
+          "away": 0,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 0,
+          "away": 1,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 2,
+          "away": 0,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "11": {
+      "match_id": 11,
+      "team_a": "חוף השנהב",
+      "team_b": "אקוודור",
+      "score_a": 1,
+      "score_b": 2,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 1,
+          "away": 3,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 0,
+          "away": 3,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 2,
+          "away": 2,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 1,
+          "away": 2,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 4,
+          "away": 1,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "12": {
+      "match_id": 12,
+      "team_a": "שוודיה",
+      "team_b": "תוניסיה",
+      "score_a": 1,
+      "score_b": 2,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 3,
+          "away": 3,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 1,
+          "away": 4,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 1,
+          "away": 2,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 2,
+          "away": 1,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 0,
+          "away": 0,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "13": {
+      "match_id": 13,
+      "team_a": "ספרד",
+      "team_b": "כף ורדה",
+      "score_a": 3,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 3,
+          "away": 4,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 4,
+          "away": 1,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 2,
+          "away": 3,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 3,
+          "away": 1,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 2,
+          "away": 1,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "14": {
+      "match_id": 14,
+      "team_a": "בלגיה",
+      "team_b": "מצרים",
+      "score_a": 2,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 2,
+          "away": 2,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 3,
+          "away": 3,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 2,
+          "away": 1,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 3,
+          "away": 1,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 0,
+          "away": 1,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "15": {
+      "match_id": 15,
+      "team_a": "ערב הסעודית",
+      "team_b": "אורוגוואי",
+      "score_a": 1,
+      "score_b": 3,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 3,
+          "away": 3,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 0,
+          "away": 0,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 2,
+          "away": 2,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 1,
+          "away": 3,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 0,
+          "away": 3,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "16": {
+      "match_id": 16,
+      "team_a": "איראן",
+      "team_b": "ניו זילנד",
+      "score_a": 2,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 2,
+          "away": 0,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 2,
+          "away": 2,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 3,
+          "away": 1,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 2,
+          "away": 2,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 0,
+          "away": 0,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "17": {
+      "match_id": 17,
+      "team_a": "אוסטריה",
+      "team_b": "ירדן",
+      "score_a": 1,
+      "score_b": 2,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 1,
+          "away": 2,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 1,
+          "away": 0,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 0,
+          "away": 2,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 3,
+          "away": 3,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 2,
+          "away": 3,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "18": {
+      "match_id": 18,
+      "team_a": "צרפת",
+      "team_b": "סנגל",
+      "score_a": 1,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 2,
+          "away": 0,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 2,
+          "away": 1,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 1,
+          "away": 2,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 1,
+          "away": 4,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 0,
+          "away": 1,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "19": {
+      "match_id": 19,
+      "team_a": "עיראק",
+      "team_b": "נורבגיה",
+      "score_a": 1,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 3,
+          "away": 2,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 1,
+          "away": 2,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 3,
+          "away": 1,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 0,
+          "away": 1,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "20": {
+      "match_id": 20,
+      "team_a": "ארגנטינה",
+      "team_b": "אלג'יריה",
+      "score_a": 1,
+      "score_b": 0,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 0,
+          "away": 3,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 1,
+          "away": 0,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 3,
+          "away": 0,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 1,
+          "away": 0,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 3,
+          "away": 2,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "21": {
+      "match_id": 21,
+      "team_a": "פורטוגל",
+      "team_b": "קונגו",
+      "score_a": 1,
+      "score_b": 2,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 1,
+          "away": 0,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 2,
+          "away": 1,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 0,
+          "away": 2,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 1,
+          "away": 2,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 0,
+          "away": 2,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "22": {
+      "match_id": 22,
+      "team_a": "אנגליה",
+      "team_b": "קרואטיה",
+      "score_a": 1,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 1,
+          "away": 2,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 1,
+          "away": 1,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 0,
+          "away": 2,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "23": {
+      "match_id": 23,
+      "team_a": "גאנה",
+      "team_b": "פנמה",
+      "score_a": 1,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 1,
+          "away": 1,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 2,
+          "away": 1,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 4,
+          "away": 0,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "24": {
+      "match_id": 24,
+      "team_a": "אוזבקיסטן",
+      "team_b": "קולומביה",
+      "score_a": 2,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 2,
+          "away": 1,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 3,
+          "away": 3,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 2,
+          "away": 2,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "25": {
+      "match_id": 25,
+      "team_a": "צ'כיה",
+      "team_b": "דרום אפריקה",
+      "score_a": 2,
+      "score_b": 2,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 3,
+          "away": 2,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 2,
+          "away": 2,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 1,
+          "away": 2,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 3,
+          "away": 1,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "26": {
+      "match_id": 26,
+      "team_a": "שוויץ",
+      "team_b": "בוסניה והרצגובינה",
+      "score_a": 2,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 2,
+          "away": 1,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 2,
+          "away": 2,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 1,
+          "away": 0,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 3,
+          "away": 2,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "27": {
+      "match_id": 27,
+      "team_a": "קנדה",
+      "team_b": "קטאר",
+      "score_a": 0,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 0,
+          "away": 1,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 1,
+          "away": 3,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 0,
+          "away": 1,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 0,
+          "away": 1,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "28": {
+      "match_id": 28,
+      "team_a": "מקסיקו",
+      "team_b": "דרום קוריאה",
+      "score_a": 1,
+      "score_b": 3,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 1,
+          "away": 3,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 3,
+          "away": 3,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 3,
+          "away": 1,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 1,
+          "away": 3,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "29": {
+      "match_id": 29,
+      "team_a": "ארצות הברית",
+      "team_b": "אוסטרליה",
+      "score_a": 2,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 2,
+          "away": 3,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 1,
+          "away": 2,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 2,
+          "away": 0,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 0,
+          "away": 0,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 4,
+          "away": 1,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "30": {
+      "match_id": 30,
+      "team_a": "סקוטלנד",
+      "team_b": "מרוקו",
+      "score_a": 2,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 0,
+          "away": 0,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 2,
+          "away": 3,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 2,
+          "away": 1,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 3,
+          "away": 4,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 1,
+          "away": 0,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "31": {
+      "match_id": 31,
+      "team_a": "ברזיל",
+      "team_b": "האיטי",
+      "score_a": 2,
+      "score_b": 2,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 3,
+          "away": 3,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 2,
+          "away": 1,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 2,
+          "away": 3,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 0,
+          "away": 2,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 2,
+          "away": 1,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "32": {
+      "match_id": 32,
+      "team_a": "טורקיה",
+      "team_b": "פרגוואי",
+      "score_a": 1,
+      "score_b": 3,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 2,
+          "away": 4,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 2,
+          "away": 3,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 1,
+          "away": 2,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 1,
+          "away": 4,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "33": {
+      "match_id": 33,
+      "team_a": "תוניסיה",
+      "team_b": "יפן",
+      "score_a": 1,
+      "score_b": 2,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 1,
+          "away": 3,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 2,
+          "away": 3,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 0,
+          "away": 2,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 3,
+          "away": 1,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "34": {
+      "match_id": 34,
+      "team_a": "הולנד",
+      "team_b": "שוודיה",
+      "score_a": 1,
+      "score_b": 2,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 2,
+          "away": 2,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 0,
+          "away": 2,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 0,
+          "away": 0,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 1,
+          "away": 3,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "35": {
+      "match_id": 35,
+      "team_a": "גרמניה",
+      "team_b": "חוף השנהב",
+      "score_a": 1,
+      "score_b": 2,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 1,
+          "away": 3,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 3,
+          "away": 2,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 1,
+          "away": 0,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 1,
+          "away": 2,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 3,
+          "away": 3,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "36": {
+      "match_id": 36,
+      "team_a": "אקוודור",
+      "team_b": "קוראסאו",
+      "score_a": 1,
+      "score_b": 2,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 3,
+          "away": 3,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 1,
+          "away": 0,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 1,
+          "away": 3,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 1,
+          "away": 2,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 0,
+          "away": 1,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "37": {
+      "match_id": 37,
+      "team_a": "ספרד",
+      "team_b": "ערב הסעודית",
+      "score_a": 1,
+      "score_b": 2,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 1,
+          "away": 0,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 0,
+          "away": 4,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 1,
+          "away": 2,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 1,
+          "away": 2,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "38": {
+      "match_id": 38,
+      "team_a": "בלגיה",
+      "team_b": "איראן",
+      "score_a": 0,
+      "score_b": 2,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 0,
+          "away": 0,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 1,
+          "away": 2,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 3,
+          "away": 2,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 0,
+          "away": 2,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 0,
+          "away": 2,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "39": {
+      "match_id": 39,
+      "team_a": "אורוגוואי",
+      "team_b": "כף ורדה",
+      "score_a": 2,
+      "score_b": 2,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 1,
+          "away": 0,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 2,
+          "away": 1,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 3,
+          "away": 2,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 0,
+          "away": 2,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 2,
+          "away": 3,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "40": {
+      "match_id": 40,
+      "team_a": "ניו זילנד",
+      "team_b": "מצרים",
+      "score_a": 1,
+      "score_b": 2,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 3,
+          "away": 2,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 1,
+          "away": 2,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 1,
+          "away": 2,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 2,
+          "away": 1,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "41": {
+      "match_id": 41,
+      "team_a": "ארגנטינה",
+      "team_b": "אוסטריה",
+      "score_a": 3,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 4,
+          "away": 1,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 3,
+          "away": 3,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 2,
+          "away": 1,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 3,
+          "away": 0,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 1,
+          "away": 2,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "42": {
+      "match_id": 42,
+      "team_a": "צרפת",
+      "team_b": "עיראק",
+      "score_a": 2,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 3,
+          "away": 1,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 1,
+          "away": 1,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 2,
+          "away": 0,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 4,
+          "away": 0,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "43": {
+      "match_id": 43,
+      "team_a": "נורבגיה",
+      "team_b": "סנגל",
+      "score_a": 3,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 2,
+          "away": 1,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 4,
+          "away": 1,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 3,
+          "away": 0,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 3,
+          "away": 2,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 4,
+          "away": 3,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "44": {
+      "match_id": 44,
+      "team_a": "ירדן",
+      "team_b": "אלג'יריה",
+      "score_a": 2,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 3,
+          "away": 0,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 1,
+          "away": 3,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 3,
+          "away": 1,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 0,
+          "away": 4,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 2,
+          "away": 0,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "45": {
+      "match_id": 45,
+      "team_a": "פורטוגל",
+      "team_b": "אוזבקיסטן",
+      "score_a": 1,
+      "score_b": 2,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 1,
+          "away": 2,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 0,
+          "away": 0,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 1,
+          "away": 2,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 3,
+          "away": 2,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 1,
+          "away": 3,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "46": {
+      "match_id": 46,
+      "team_a": "אנגליה",
+      "team_b": "גאנה",
+      "score_a": 1,
+      "score_b": 3,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 2,
+          "away": 4,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 0,
+          "away": 0,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 1,
+          "away": 3,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 1,
+          "away": 2,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 4,
+          "away": 3,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "47": {
+      "match_id": 47,
+      "team_a": "פנמה",
+      "team_b": "קרואטיה",
+      "score_a": 1,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 2,
+          "away": 1,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 1,
+          "away": 0,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 1,
+          "away": 2,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 3,
+          "away": 0,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "48": {
+      "match_id": 48,
+      "team_a": "קולומביה",
+      "team_b": "קונגו",
+      "score_a": 1,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 4,
+          "away": 1,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 3,
+          "away": 1,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 0,
+          "away": 1,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 1,
+          "away": 2,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "49": {
+      "match_id": 49,
+      "team_a": "שוויץ",
+      "team_b": "קנדה",
+      "score_a": 2,
+      "score_b": 0,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 0,
+          "away": 0,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 2,
+          "away": 3,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 2,
+          "away": 0,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 2,
+          "away": 2,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 3,
+          "away": 0,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "50": {
+      "match_id": 50,
+      "team_a": "בוסניה והרצגובינה",
+      "team_b": "קטאר",
+      "score_a": 2,
+      "score_b": 2,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 2,
+          "away": 2,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 1,
+          "away": 1,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 2,
+          "away": 4,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 3,
+          "away": 1,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 3,
+          "away": 3,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "51": {
+      "match_id": 51,
+      "team_a": "סקוטלנד",
+      "team_b": "ברזיל",
+      "score_a": 2,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 3,
+          "away": 3,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 2,
+          "away": 0,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 4,
+          "away": 2,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 2,
+          "away": 1,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "52": {
+      "match_id": 52,
+      "team_a": "מרוקו",
+      "team_b": "האיטי",
+      "score_a": 1,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 0,
+          "away": 3,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 1,
+          "away": 2,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 1,
+          "away": 0,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 4,
+          "away": 0,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "53": {
+      "match_id": 53,
+      "team_a": "צ'כיה",
+      "team_b": "מקסיקו",
+      "score_a": 1,
+      "score_b": 2,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 3,
+          "away": 3,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 1,
+          "away": 3,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 0,
+          "away": 2,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 1,
+          "away": 2,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "54": {
+      "match_id": 54,
+      "team_a": "דרום אפריקה",
+      "team_b": "דרום קוריאה",
+      "score_a": 1,
+      "score_b": 2,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 3,
+          "away": 1,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 0,
+          "away": 3,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 3,
+          "away": 2,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 1,
+          "away": 3,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "55": {
+      "match_id": 55,
+      "team_a": "קוראסאו",
+      "team_b": "חוף השנהב",
+      "score_a": 2,
+      "score_b": 2,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 3,
+          "away": 1,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 0,
+          "away": 2,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 3,
+          "away": 1,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 1,
+          "away": 2,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 2,
+          "away": 2,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "56": {
+      "match_id": 56,
+      "team_a": "אקוודור",
+      "team_b": "גרמניה",
+      "score_a": 1,
+      "score_b": 2,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 1,
+          "away": 2,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 3,
+          "away": 3,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 0,
+          "away": 1,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 1,
+          "away": 2,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 4,
+          "away": 1,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "57": {
+      "match_id": 57,
+      "team_a": "יפן",
+      "team_b": "שוודיה",
+      "score_a": 2,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 2,
+          "away": 3,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 0,
+          "away": 0,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 3,
+          "away": 0,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 2,
+          "away": 2,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "58": {
+      "match_id": 58,
+      "team_a": "תוניסיה",
+      "team_b": "הולנד",
+      "score_a": 1,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 1,
+          "away": 2,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 0,
+          "away": 0,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 2,
+          "away": 2,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "59": {
+      "match_id": 59,
+      "team_a": "טורקיה",
+      "team_b": "ארצות הברית",
+      "score_a": 2,
+      "score_b": 3,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 0,
+          "away": 3,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 4,
+          "away": 3,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 3,
+          "away": 3,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 0,
+          "away": 1,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 2,
+          "away": 2,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "60": {
+      "match_id": 60,
+      "team_a": "פרגוואי",
+      "team_b": "אוסטרליה",
+      "score_a": 1,
+      "score_b": 2,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 0,
+          "away": 2,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 2,
+          "away": 0,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 0,
+          "away": 1,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 3,
+          "away": 4,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 1,
+          "away": 2,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "61": {
+      "match_id": 61,
+      "team_a": "נורבגיה",
+      "team_b": "צרפת",
+      "score_a": 1,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 3,
+          "away": 2,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 1,
+          "away": 1,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 1,
+          "away": 2,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 0,
+          "away": 1,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 2,
+          "away": 1,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "62": {
+      "match_id": 62,
+      "team_a": "סנגל",
+      "team_b": "עיראק",
+      "score_a": 2,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 3,
+          "away": 1,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 2,
+          "away": 1,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 2,
+          "away": 1,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 3,
+          "away": 3,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "63": {
+      "match_id": 63,
+      "team_a": "כף ורדה",
+      "team_b": "ערב הסעודית",
+      "score_a": 1,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 3,
+          "away": 3,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 0,
+          "away": 1,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 3,
+          "away": 3,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "64": {
+      "match_id": 64,
+      "team_a": "אורוגוואי",
+      "team_b": "ספרד",
+      "score_a": 2,
+      "score_b": 2,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 2,
+          "away": 3,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 2,
+          "away": 1,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 0,
+          "away": 3,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 2,
+          "away": 2,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "65": {
+      "match_id": 65,
+      "team_a": "מצרים",
+      "team_b": "איראן",
+      "score_a": 1,
+      "score_b": 2,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 0,
+          "away": 3,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 1,
+          "away": 2,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 4,
+          "away": 2,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 4,
+          "away": 3,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "66": {
+      "match_id": 66,
+      "team_a": "ניו זילנד",
+      "team_b": "בלגיה",
+      "score_a": 1,
+      "score_b": 3,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 2,
+          "away": 3,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 4,
+          "away": 1,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 1,
+          "away": 3,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 0,
+          "away": 3,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 1,
+          "away": 2,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "67": {
+      "match_id": 67,
+      "team_a": "פנמה",
+      "team_b": "אנגליה",
+      "score_a": 1,
+      "score_b": 2,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 1,
+          "away": 4,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 1,
+          "away": 0,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 2,
+          "away": 2,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 3,
+          "away": 2,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "68": {
+      "match_id": 68,
+      "team_a": "קרואטיה",
+      "team_b": "גאנה",
+      "score_a": 2,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 3,
+          "away": 1,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 2,
+          "away": 3,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 2,
+          "away": 1,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 0,
+          "away": 1,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 0,
+          "away": 1,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "69": {
+      "match_id": 69,
+      "team_a": "קולומביה",
+      "team_b": "פורטוגל",
+      "score_a": 1,
+      "score_b": 3,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 1,
+          "away": 2,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 0,
+          "away": 3,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 0,
+          "away": 4,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 1,
+          "away": 3,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "70": {
+      "match_id": 70,
+      "team_a": "קונגו",
+      "team_b": "אוזבקיסטן",
+      "score_a": 0,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 0,
+          "away": 1,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 0,
+          "away": 3,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 0,
+          "away": 0,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 3,
+          "away": 2,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "71": {
+      "match_id": 71,
+      "team_a": "ירדן",
+      "team_b": "ארגנטינה",
+      "score_a": 2,
+      "score_b": 2,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 0,
+          "away": 1,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 2,
+          "away": 3,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 0,
+          "away": 2,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 2,
+          "away": 0,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 3,
+          "away": 3,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "72": {
+      "match_id": 72,
+      "team_a": "אלג'יריה",
+      "team_b": "אוסטריה",
+      "score_a": 2,
+      "score_b": 2,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 2,
+          "away": 2,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 0,
+          "away": 2,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 3,
+          "away": 3,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 0,
+          "away": 2,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 2,
+          "away": 2,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "73": {
+      "match_id": 73,
+      "team_a": "TBD",
+      "team_b": "TBD",
+      "score_a": 1,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 2,
+          "away": 2,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 1,
+          "away": 2,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "74": {
+      "match_id": 74,
+      "team_a": "TBD",
+      "team_b": "TBD",
+      "score_a": 1,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 1,
+          "away": 1,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 2,
+          "away": 0,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 2,
+          "away": 2,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "75": {
+      "match_id": 75,
+      "team_a": "TBD",
+      "team_b": "TBD",
+      "score_a": 2,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 2,
+          "away": 0,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 1,
+          "away": 1,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 2,
+          "away": 1,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 3,
+          "away": 4,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 0,
+          "away": 2,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "76": {
+      "match_id": 76,
+      "team_a": "TBD",
+      "team_b": "TBD",
+      "score_a": 3,
+      "score_b": 3,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 2,
+          "away": 3,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 3,
+          "away": 2,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 3,
+          "away": 3,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 2,
+          "away": 3,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 4,
+          "away": 1,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "77": {
+      "match_id": 77,
+      "team_a": "TBD",
+      "team_b": "TBD",
+      "score_a": 2,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 2,
+          "away": 2,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 0,
+          "away": 1,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 3,
+          "away": 1,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 3,
+          "away": 2,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "78": {
+      "match_id": 78,
+      "team_a": "TBD",
+      "team_b": "TBD",
+      "score_a": 2,
+      "score_b": 0,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 2,
+          "away": 0,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 3,
+          "away": 0,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 1,
+          "away": 0,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 2,
+          "away": 1,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "79": {
+      "match_id": 79,
+      "team_a": "TBD",
+      "team_b": "TBD",
+      "score_a": 3,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 3,
+          "away": 2,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 3,
+          "away": 1,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 4,
+          "away": 1,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 2,
+          "away": 1,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "80": {
+      "match_id": 80,
+      "team_a": "TBD",
+      "team_b": "TBD",
+      "score_a": 1,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 1,
+          "away": 4,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 0,
+          "away": 0,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 0,
+          "away": 2,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 2,
+          "away": 1,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 3,
+          "away": 1,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "81": {
+      "match_id": 81,
+      "team_a": "TBD",
+      "team_b": "TBD",
+      "score_a": 2,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 2,
+          "away": 0,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 2,
+          "away": 1,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 1,
+          "away": 3,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 2,
+          "away": 1,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 1,
+          "away": 3,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "82": {
+      "match_id": 82,
+      "team_a": "TBD",
+      "team_b": "TBD",
+      "score_a": 1,
+      "score_b": 3,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 2,
+          "away": 0,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 3,
+          "away": 4,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 1,
+          "away": 3,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 1,
+          "away": 3,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 1,
+          "away": 3,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "83": {
+      "match_id": 83,
+      "team_a": "TBD",
+      "team_b": "TBD",
+      "score_a": 1,
+      "score_b": 3,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 0,
+          "away": 3,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 1,
+          "away": 1,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 0,
+          "away": 0,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 1,
+          "away": 3,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 2,
+          "away": 3,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "84": {
+      "match_id": 84,
+      "team_a": "TBD",
+      "team_b": "TBD",
+      "score_a": 1,
+      "score_b": 2,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 2,
+          "away": 3,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 1,
+          "away": 3,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 0,
+          "away": 2,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 2,
+          "away": 0,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 0,
+          "away": 1,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "85": {
+      "match_id": 85,
+      "team_a": "TBD",
+      "team_b": "TBD",
+      "score_a": 2,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 2,
+          "away": 4,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 2,
+          "away": 0,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 1,
+          "away": 3,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 2,
+          "away": 0,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 2,
+          "away": 1,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "86": {
+      "match_id": 86,
+      "team_a": "TBD",
+      "team_b": "TBD",
+      "score_a": 1,
+      "score_b": 2,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 1,
+          "away": 2,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 1,
+          "away": 1,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 1,
+          "away": 2,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 2,
+          "away": 2,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 2,
+          "away": 0,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "87": {
+      "match_id": 87,
+      "team_a": "TBD",
+      "team_b": "TBD",
+      "score_a": 2,
+      "score_b": 2,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 1,
+          "away": 2,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 3,
+          "away": 2,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 2,
+          "away": 2,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 3,
+          "away": 0,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "88": {
+      "match_id": 88,
+      "team_a": "TBD",
+      "team_b": "TBD",
+      "score_a": 1,
+      "score_b": 2,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 2,
+          "away": 1,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 1,
+          "away": 3,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 1,
+          "away": 2,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 3,
+          "away": 2,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 1,
+          "away": 3,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "89": {
+      "match_id": 89,
+      "team_a": "TBD",
+      "team_b": "TBD",
+      "score_a": 2,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 2,
+          "away": 0,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 2,
+          "away": 2,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 0,
+          "away": 0,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 3,
+          "away": 1,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 2,
+          "away": 1,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "90": {
+      "match_id": 90,
+      "team_a": "TBD",
+      "team_b": "TBD",
+      "score_a": 2,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 4,
+          "away": 1,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 2,
+          "away": 1,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 2,
+          "away": 1,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "91": {
+      "match_id": 91,
+      "team_a": "TBD",
+      "team_b": "TBD",
+      "score_a": 2,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 0,
+          "away": 0,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 3,
+          "away": 1,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 0,
+          "away": 0,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 3,
+          "away": 1,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 2,
+          "away": 2,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "92": {
+      "match_id": 92,
+      "team_a": "TBD",
+      "team_b": "TBD",
+      "score_a": 2,
+      "score_b": 2,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 0,
+          "away": 2,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 2,
+          "away": 2,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 4,
+          "away": 2,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 3,
+          "away": 1,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 1,
+          "away": 0,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "93": {
+      "match_id": 93,
+      "team_a": "TBD",
+      "team_b": "TBD",
+      "score_a": 2,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 2,
+          "away": 1,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 2,
+          "away": 1,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 3,
+          "away": 3,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 3,
+          "away": 1,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 0,
+          "away": 3,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "94": {
+      "match_id": 94,
+      "team_a": "TBD",
+      "team_b": "TBD",
+      "score_a": 2,
+      "score_b": 2,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 3,
+          "away": 2,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 2,
+          "away": 2,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 1,
+          "away": 2,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 1,
+          "away": 3,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 2,
+          "away": 1,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "95": {
+      "match_id": 95,
+      "team_a": "TBD",
+      "team_b": "TBD",
+      "score_a": 1,
+      "score_b": 3,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 3,
+          "away": 4,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 1,
+          "away": 2,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 1,
+          "away": 3,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 1,
+          "away": 0,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 2,
+          "away": 4,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "96": {
+      "match_id": 96,
+      "team_a": "TBD",
+      "team_b": "TBD",
+      "score_a": 1,
+      "score_b": 2,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 3,
+          "away": 2,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 4,
+          "away": 3,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 1,
+          "away": 2,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 0,
+          "away": 0,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "97": {
+      "match_id": 97,
+      "team_a": "TBD",
+      "team_b": "TBD",
+      "score_a": 1,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 0,
+          "away": 1,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 2,
+          "away": 3,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 4,
+          "away": 3,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 0,
+          "away": 0,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "98": {
+      "match_id": 98,
+      "team_a": "TBD",
+      "team_b": "TBD",
+      "score_a": 2,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 0,
+          "away": 1,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 1,
+          "away": 1,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 3,
+          "away": 1,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 2,
+          "away": 1,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 3,
+          "away": 2,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "99": {
+      "match_id": 99,
+      "team_a": "TBD",
+      "team_b": "TBD",
+      "score_a": 1,
+      "score_b": 2,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 1,
+          "away": 0,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 1,
+          "away": 2,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 1,
+          "away": 3,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 1,
+          "away": 2,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 1,
+          "away": 3,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "100": {
+      "match_id": 100,
+      "team_a": "TBD",
+      "team_b": "TBD",
+      "score_a": 3,
+      "score_b": 3,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 3,
+          "away": 0,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 3,
+          "away": 4,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 3,
+          "away": 4,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 1,
+          "away": 3,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 0,
+          "away": 0,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "101": {
+      "match_id": 101,
+      "team_a": "TBD",
+      "team_b": "TBD",
+      "score_a": 2,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 2,
+          "away": 1,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 2,
+          "away": 4,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 2,
+          "away": 1,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 0,
+          "away": 1,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "102": {
+      "match_id": 102,
+      "team_a": "TBD",
+      "team_b": "TBD",
+      "score_a": 3,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 3,
+          "away": 4,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 3,
+          "away": 3,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 4,
+          "away": 1,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 2,
+          "away": 1,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "103": {
+      "match_id": 103,
+      "team_a": "TBD",
+      "team_b": "TBD",
+      "score_a": 1,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 2,
+          "away": 0,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 1,
+          "away": 0,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 4,
+          "away": 1,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 1,
+          "away": 1,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    },
+    "104": {
+      "match_id": 104,
+      "team_a": "TBD",
+      "team_b": "TBD",
+      "score_a": 2,
+      "score_b": 1,
+      "method": "monkey-oracle",
+      "predictions_detail": [
+        {
+          "method": "count",
+          "cam": "San Diego Baboons",
+          "species": "Hamadryas Baboons",
+          "home": 2,
+          "away": 0,
+          "reasoning": "Dark signal: 254"
+        },
+        {
+          "method": "left_right",
+          "cam": "San Diego Apes",
+          "species": "Orangutans",
+          "home": 2,
+          "away": 3,
+          "reasoning": "L/R delta: 2427237310"
+        },
+        {
+          "method": "banana",
+          "cam": "Zoo Atlanta Gorillas",
+          "species": "Western Lowland Gorillas",
+          "home": 1,
+          "away": 4,
+          "reasoning": "Brightness: 192"
+        },
+        {
+          "method": "hot_spring",
+          "cam": "Jigokudani Snow Monkeys",
+          "species": "Japanese Macaques",
+          "home": 3,
+          "away": 1,
+          "reasoning": "Green: 60"
+        },
+        {
+          "method": "activity",
+          "cam": "Explore.org Bonobos",
+          "species": "Bonobos",
+          "home": 3,
+          "away": 1,
+          "reasoning": "Activity: 5909"
+        }
+      ]
+    }
+  },
+  "tournament": {
+    "winner": "דרום אפריקה",
+    "runner_up": "אוסטרליה",
+    "top_scorer": "לוקאקו"
+  }
+}

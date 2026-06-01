@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="/icon-192.png">
 <script src="/i18n.js"></script>
 <meta property="og:title" content="TikiTaka — ניחושי מונדיאל 2026">
-<meta property="og:description" content="נחשו תוצאות, תחרו בחברים, נצחו את הקוף. ניחוש הפתעה שווה יותר נקודות!">
+<meta property="og:description" content="קוף אמיתי מנחש את המונדיאל. אתם יכולים לנצח אותו? ניחושי הפתעה שווים יותר נקודות!">
 <meta property="og:image" content="https://tikitaka.vip/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -20,7 +20,7 @@
 <meta property="og:type" content="website">
 <meta property="og:locale" content="he_IL">
 <meta name="twitter:card" content="summary">
-<meta name="description" content="ניחושי מונדיאל 2026 — נחשו תוצאות, תחרו בחברים, נצחו את הקוף">
+<meta name="description" content="ניחושי מונדיאל 2026 — קוף אמיתי מגן החיות מנחש את כל המשחקים. אתם יכולים לנצח אותו?">
 <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
@@ -506,11 +506,14 @@
       <div class="card" style="text-align:center;padding:24px">
         <div style="font-size:3rem;margin-bottom:8px">🐒⚽</div>
         <h2 style="font-size:1.2rem;margin-bottom:8px">ניחושי מונדיאל 2026</h2>
-        <p style="color:var(--muted);font-size:0.9rem;line-height:1.6;margin-bottom:14px">
+        <p style="color:var(--muted);font-size:0.9rem;line-height:1.6;margin-bottom:8px">
           נחשו תוצאות מדויקות ל-104 משחקי המונדיאל.<br>
-          ניחוש הפתעה שווה הרבה יותר נקודות.<br>
-          יש קוף שמנחש באקראי — מי שמפסיד לו מביא בירות 🍺
+          ניחוש הפתעה שווה הרבה יותר נקודות.
         </p>
+        <div style="background:var(--orange-bg);border:1px solid var(--orange);color:var(--orange);padding:10px 14px;border-radius:8px;font-size:0.9rem;font-weight:700;margin-bottom:14px">
+          🐒 קוף אמיתי מגן החיות מנחש את כל המשחקים — אתם יכולים לנצח אותו?<br>
+          <span style="font-weight:400;font-size:0.82rem">מי שמפסיד לקוף מביא בירות 🍺</span>
+        </div>
         <div id="socialProof" style="color:var(--accent);font-weight:800;font-size:1rem;margin-bottom:14px"></div>
         <div style="background:var(--red-bg);border:1px solid var(--red);color:var(--red);padding:10px;border-radius:8px;font-weight:700;font-size:0.88rem;margin-bottom:14px">
           ⏰ הניחושים ננעלים ב-11 ביוני — אחרי זה אי אפשר לשנות!
@@ -523,7 +526,7 @@
     <div id="inviteNudge" class="card" style="display:none;background:linear-gradient(135deg,var(--card2),var(--card));border:2px solid var(--accent);text-align:center;padding:20px">
       <div style="font-size:2rem;margin-bottom:6px">🎉🐒</div>
       <p style="font-size:1rem;font-weight:800;margin-bottom:6px">ניחשתם! עכשיו שלחו לחברים</p>
-      <p style="color:var(--muted);font-size:0.85rem;margin-bottom:14px">שלחו לקבוצת הוואטסאפ — ככל שיש יותר חברים, ככה יותר כיף להתחרות עם הקוף</p>
+      <p style="color:var(--muted);font-size:0.85rem;margin-bottom:14px">שלחו לקבוצת הוואטסאפ — קוף אמיתי מגן החיות כבר ניחש את כל המשחקים. אתם יכולים לנצח אותו?</p>
       <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap" id="nudgeButtons"></div>
       <p style="color:var(--dimmed);font-size:0.72rem;margin-top:10px;cursor:pointer" onclick="document.getElementById('inviteNudge').style.display='none';localStorage.setItem('wc_nudge_dismissed','1')">אחר כך ←</p>
     </div>
@@ -1309,7 +1312,7 @@ async function openGroupDetail(groupId) {
   document.getElementById('groupDetailName').textContent = group.name;
 
   const inviteLink = `${location.origin}/join/${group.invite_code}`;
-  const shareText = `⚽ בואו לנחש איתי תוצאות מונדיאל 2026!\n\nלחצו על הלינק, נרשמים עם גוגל, ומתחילים לנחש:\n${inviteLink}\n\n🤫 הניחושים חסויים — אף אחד לא רואה מה ניחשתם עד שריקת הפתיחה\n🐒 יש קוף שמנחש באקראי — מי שמפסיד לו מביא בירות 🍺`;
+  const shareText = `⚽ בואו לנחש איתי תוצאות מונדיאל 2026!\n\nלחצו על הלינק, נרשמים עם גוגל, ומתחילים לנחש:\n${inviteLink}\n\n🐒 קוף אמיתי מגן החיות מנחש את כל המשחקים — אתם יכולים לנצח אותו?\n🤫 הניחושים חסויים עד שריקת הפתיחה\n🍺 מי שמפסיד לקוף מביא בירות`;
   const shareTextEncoded = encodeURIComponent(shareText);
 
   document.getElementById('groupInviteCode').innerHTML = `
@@ -1490,7 +1493,7 @@ function renderGroupCompare(allPreds, matchList) {
 
 function shareGroup(method, code) {
   const inviteLink = `${location.origin}/join/${code}`;
-  const text = `⚽ בואו לנחש איתי תוצאות מונדיאל 2026!\n\nלחצו על הלינק, נרשמים עם גוגל, ומתחילים לנחש:\n${inviteLink}\n\n🤫 הניחושים חסויים — אף אחד לא רואה מה ניחשתם עד שריקת הפתיחה\n🐒 יש קוף שמנחש באקראי — מי שמפסיד לו מביא בירות 🍺`;
+  const text = `⚽ בואו לנחש איתי תוצאות מונדיאל 2026!\n\nלחצו על הלינק, נרשמים עם גוגל, ומתחילים לנחש:\n${inviteLink}\n\n🐒 קוף אמיתי מגן החיות מנחש את כל המשחקים — אתם יכולים לנצח אותו?\n🤫 הניחושים חסויים עד שריקת הפתיחה\n🍺 מי שמפסיד לקוף מביא בירות`;
 
   if (method === 'copy') {
     navigator.clipboard.writeText(text).then(() => toast('הודעה הועתקה!'));
@@ -1722,7 +1725,7 @@ async function loadNudgeButtons() {
     if (groups.length > 0) {
       const g = groups[0];
       const link = `${location.origin}/join/${g.invite_code}`;
-      const text = encodeURIComponent(`⚽ בואו לנחש איתי תוצאות מונדיאל 2026!\n\n${link}\n\n🤫 חסוי עד שריקת הפתיחה\n🐒 מי שמפסיד לקוף מביא בירות 🍺`);
+      const text = encodeURIComponent(`⚽ בואו לנחש איתי תוצאות מונדיאל 2026!\n\n${link}\n\n🐒 קוף אמיתי מגן החיות מנחש את המונדיאל\n🤫 חסוי עד שריקת הפתיחה\n🍺 מפסיד לקוף = מביא בירות`);
       el.innerHTML = `
         <a class="btn btn-sm" style="background:#25D366;color:#fff;text-decoration:none;font-size:0.9rem;padding:10px 20px" href="https://wa.me/?text=${text}" target="_blank">💬 שלח בוואטסאפ</a>
         <a class="btn btn-sm" style="background:#0088cc;color:#fff;text-decoration:none" href="https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent('⚽ ניחושי מונדיאל 2026 🐒')}" target="_blank">✈️ טלגרם</a>
