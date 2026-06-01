@@ -328,9 +328,10 @@
     color: var(--text); font-family: 'Heebo', sans-serif;
   }
   .lang-dropdown {
-    display: none; position: absolute; top: 100%; left: 0; right: auto;
+    display: none; position: fixed; top: auto; left: auto;
     background: var(--card); border: 1px solid var(--border); border-radius: 8px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 200; min-width: 140px; margin-top: 4px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 9999; min-width: 140px;
+    max-height: 70vh; overflow-y: auto;
   }
   .lang-dropdown.open { display: block; }
   .lang-opt {
@@ -1756,13 +1757,23 @@ function renderLangPicker() {
   const el = document.getElementById('langPicker');
   const current = LANGS[currentLang];
   el.innerHTML = `
-    <button class="lang-btn" onclick="document.getElementById('langDrop').classList.toggle('open')">${current.flag} ${current.name}</button>
+    <button class="lang-btn" onclick="toggleLangDrop(this)">${current.flag} ${current.name}</button>
     <div class="lang-dropdown" id="langDrop">
       ${Object.entries(LANGS).map(([code, l]) =>
         `<div class="lang-opt ${code === currentLang ? 'active' : ''}" onclick="switchLang('${code}')">${l.flag} ${l.name}</div>`
       ).join('')}
     </div>
   `;
+}
+
+function toggleLangDrop(btn) {
+  const dd = document.getElementById('langDrop');
+  dd.classList.toggle('open');
+  if (dd.classList.contains('open')) {
+    const rect = btn.getBoundingClientRect();
+    dd.style.top = (rect.bottom + 4) + 'px';
+    dd.style.left = rect.left + 'px';
+  }
 }
 
 function switchLang(lang) {
@@ -1775,7 +1786,6 @@ function switchLang(lang) {
 }
 
 function updateStaticText() {
-  // Update all static text elements that use translations
   document.querySelector('.header h1').innerHTML = `&#9917; ${t('title')}`;
   document.querySelector('.header p').textContent = t('subtitle');
 
@@ -1784,7 +1794,49 @@ function updateStaticText() {
   document.querySelector('[data-tab="admin"]').textContent = t('tab_admin');
   document.querySelector('[data-tab="scoring"]').textContent = t('tab_scoring');
 
-  const confEl = document.querySelector('.auth-bar ~ .container .panel.active [style*="blue-bg"]');
+  // Tournament predictions
+  const tpTitle = document.querySelector('#predict .card h2');
+  if (tpTitle) tpTitle.textContent = t('tournament_title');
+  const tpDeadline = document.getElementById('tpDeadline');
+  if (tpDeadline) tpDeadline.textContent = t('tournament_deadline');
+  const tpLockMsg = document.getElementById('tpLockMsg');
+  if (tpLockMsg) tpLockMsg.innerHTML = t('tournament_locked') + ' &#128274;';
+
+  // Labels
+  document.querySelectorAll('.tp-label').forEach((el, i) => {
+    el.textContent = [t('winner'), t('runner_up'), t('top_scorer')][i] || el.textContent;
+  });
+
+  // Confidential banner
+  const confBanner = document.querySelector('[style*="blue-bg"]');
+  if (confBanner) confBanner.innerHTML = `&#128274; ${t('confidential')}`;
+
+  // Groups tab
+  const groupsTitle = document.querySelector('#groups .card h2');
+  if (groupsTitle) groupsTitle.textContent = t('groups_title');
+  const joinCodeInput = document.getElementById('joinCode');
+  if (joinCodeInput) joinCodeInput.placeholder = t('groups_join_code');
+  const newGroupInput = document.getElementById('newGroupName');
+  if (newGroupInput) newGroupInput.placeholder = t('groups_new_name');
+  document.querySelectorAll('button').forEach(btn => {
+    if (btn.textContent.trim() === 'הצטרף לקבוצה' || btn.textContent.trim() === t('groups_join')) btn.textContent = t('groups_join');
+    if (btn.textContent.trim() === 'צור קבוצה' || btn.textContent.trim() === t('groups_create')) btn.textContent = t('groups_create');
+  });
+
+  // Scoring page
+  const scoringTitle = document.querySelector('#scoring .card h2');
+  if (scoringTitle) scoringTitle.textContent = t('scoring_title');
+
+  // Auth
+  const loginCodeLink = document.getElementById('pinAuthToggle');
+  if (loginCodeLink) loginCodeLink.innerHTML = `<a href="#" onclick="document.getElementById('pinAuth').style.display='flex';this.style.display='none';return false" style="color:var(--muted)">${t('login_code')}</a>`;
+  const logoutBtn = document.querySelector('#loggedInSection .btn-danger');
+  if (logoutBtn) logoutBtn.textContent = t('logout');
+
+  // Search placeholders
+  document.querySelectorAll('.custom-select-wrap input').forEach((el, i) => {
+    el.placeholder = i < 2 ? t('search_team') : t('search_player');
+  });
 }
 
 function renderAll() {

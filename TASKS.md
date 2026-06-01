@@ -36,8 +36,8 @@ Status: `[ ]` todo · `[~]` in progress · `[x]` done · `[!]` blocked · `[-]` 
 - [x] **3.5** Tournament predictions (winner, runner-up, top scorer) with dropdowns
 - [x] **3.6** Tournament predictions lock before June 11
 - [x] **3.7** Auto-fill missing predictions (0-0 or player average)
-- [x] **3.8** Monkey random guesser per group
-- [x] **3.9** Monkey tournament predictions (random winner/scorer picks)
+- [x] **3.8** Monkey webcam oracle per group (was random, now uses 5 live zoo cams)
+- [x] **3.9** Monkey tournament predictions (webcam-derived winner/scorer picks)
 - [ ] **3.10** Edit knockout team names as bracket fills in (admin)
 
 ## Phase 4 — Scoring System
