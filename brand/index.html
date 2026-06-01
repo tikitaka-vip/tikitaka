@@ -265,6 +265,88 @@
     </div>
   </div>
 
+  <!-- SCREENSHOTS -->
+  <div class="section">
+    <h2>App Screenshots</h2>
+    <p style="color:var(--muted);font-size:0.85rem;margin-bottom:16px">For directory submissions, app stores, and press kits. Desktop (1280x800) and mobile (390x844).</p>
+    <div class="asset-grid" style="grid-template-columns:1fr 1fr">
+      <div class="asset-card">
+        <div class="banner-preview"><img src="screenshots/01-homepage-desktop.png" alt="Homepage desktop"></div>
+        <div class="asset-info">
+          <div class="asset-name">Homepage (Desktop)</div>
+          <div class="asset-desc">Onboarding, monkey hook, countdown, social proof</div>
+          <div class="asset-links"><a href="screenshots/01-homepage-desktop.png" download class="dl-png">PNG</a></div>
+        </div>
+      </div>
+      <div class="asset-card">
+        <div class="banner-preview"><img src="screenshots/03-scoring.png" alt="Scoring system"></div>
+        <div class="asset-info">
+          <div class="asset-name">Scoring System</div>
+          <div class="asset-desc">Points, stage multipliers, surprise multiplier up to 8x</div>
+          <div class="asset-links"><a href="screenshots/03-scoring.png" download class="dl-png">PNG</a></div>
+        </div>
+      </div>
+      <div class="asset-card">
+        <div class="banner-preview"><img src="screenshots/04-matches.png" alt="Match predictions"></div>
+        <div class="asset-info">
+          <div class="asset-name">Match Predictions</div>
+          <div class="asset-desc">Score inputs, live odds, group headers</div>
+          <div class="asset-links"><a href="screenshots/04-matches.png" download class="dl-png">PNG</a></div>
+        </div>
+      </div>
+      <div class="asset-card">
+        <div class="banner-preview"><img src="screenshots/05-mobile-home.png" alt="Mobile home" style="max-height:400px"></div>
+        <div class="asset-info">
+          <div class="asset-name">Mobile Home</div>
+          <div class="asset-desc">Full mobile experience (390x844)</div>
+          <div class="asset-links"><a href="screenshots/05-mobile-home.png" download class="dl-png">PNG</a></div>
+        </div>
+      </div>
+      <div class="asset-card">
+        <div class="banner-preview"><img src="screenshots/06-mobile-matches.png" alt="Mobile matches" style="max-height:400px"></div>
+        <div class="asset-info">
+          <div class="asset-name">Mobile Matches</div>
+          <div class="asset-desc">Match cards with odds on mobile</div>
+          <div class="asset-links"><a href="screenshots/06-mobile-matches.png" download class="dl-png">PNG</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DIRECTORY SUBMISSION TEXT -->
+  <div class="section">
+    <h2>Directory Submission Copy</h2>
+    <div class="tone-card">
+      <div style="margin-bottom:16px">
+        <div style="color:var(--accent);font-weight:800;font-size:0.82rem;margin-bottom:4px">TAGLINE (80 chars)</div>
+        <div style="font-size:0.92rem" id="tagline">Free World Cup 2026 prediction game where you compete against a monkey that watches real zoo webcams</div>
+        <button class="copy-btn" onclick="copyText('tagline')" style="margin-top:6px;padding:4px 12px;border-radius:6px;border:1px solid var(--border);background:var(--card2);color:var(--muted);cursor:pointer;font-size:0.75rem">Copy</button>
+      </div>
+      <div style="margin-bottom:16px">
+        <div style="color:var(--accent);font-weight:800;font-size:0.82rem;margin-bottom:4px">SHORT DESCRIPTION (150 chars)</div>
+        <div style="font-size:0.92rem" id="shortdesc">Predict all 104 World Cup matches. Create groups with friends. Try to beat a monkey that watches real zoo webcams to make its picks.</div>
+        <button class="copy-btn" onclick="copyText('shortdesc')" style="margin-top:6px;padding:4px 12px;border-radius:6px;border:1px solid var(--border);background:var(--card2);color:var(--muted);cursor:pointer;font-size:0.75rem">Copy</button>
+      </div>
+      <div style="margin-bottom:16px">
+        <div style="color:var(--accent);font-weight:800;font-size:0.82rem;margin-bottom:4px">CATEGORY</div>
+        <div style="font-size:0.92rem">Sports &amp; Entertainment / Gaming</div>
+      </div>
+      <div>
+        <div style="color:var(--accent);font-weight:800;font-size:0.82rem;margin-bottom:4px">TAGS</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <span style="background:var(--card2);border:1px solid var(--border);padding:3px 10px;border-radius:6px;font-size:0.82rem">world cup</span>
+          <span style="background:var(--card2);border:1px solid var(--border);padding:3px 10px;border-radius:6px;font-size:0.82rem">football</span>
+          <span style="background:var(--card2);border:1px solid var(--border);padding:3px 10px;border-radius:6px;font-size:0.82rem">soccer</span>
+          <span style="background:var(--card2);border:1px solid var(--border);padding:3px 10px;border-radius:6px;font-size:0.82rem">predictions</span>
+          <span style="background:var(--card2);border:1px solid var(--border);padding:3px 10px;border-radius:6px;font-size:0.82rem">sports</span>
+          <span style="background:var(--card2);border:1px solid var(--border);padding:3px 10px;border-radius:6px;font-size:0.82rem">game</span>
+          <span style="background:var(--card2);border:1px solid var(--border);padding:3px 10px;border-radius:6px;font-size:0.82rem">monkey</span>
+          <span style="background:var(--card2);border:1px solid var(--border);padding:3px 10px;border-radius:6px;font-size:0.82rem">2026</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- VOICE -->
   <div class="section">
     <h2>Voice &amp; Tone</h2>
@@ -284,5 +366,15 @@
     TikiTaka.vip &mdash; World Cup 2026 Predictions &mdash; Brand Kit
   </p>
 </div>
+<script>
+function copyText(id) {
+  const text = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = event.target;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 1500);
+  });
+}
+</script>
 </body>
 </html>
