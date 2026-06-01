@@ -381,6 +381,10 @@ function detectLang() {
 
 let currentLang = detectLang();
 
+// Apply detected language immediately
+document.documentElement.lang = currentLang;
+document.documentElement.dir = LANGS[currentLang]?.dir || 'ltr';
+
 function t(key) { return T[currentLang]?.[key] || T.en[key] || key; }
 
 // Stage name translations (DB stores Hebrew)
