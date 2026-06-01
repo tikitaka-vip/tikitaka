@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="headerBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1a1a2e"/>
+      <stop offset="50%" stop-color="#16213e"/>
+      <stop offset="100%" stop-color="#0f3460"/>
+    </linearGradient>
+    <!-- Star pattern -->
+    <pattern id="stars" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M30 5L35 20 50 20 38 30 42 45 30 35 18 45 22 30 10 20 25 20Z" fill="rgba(201,162,39,0.06)"/>
+    </pattern>
+  </defs>
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#headerBg)"/>
+  <rect width="1200" height="630" fill="url(#stars)"/>
+  <!-- Gold border -->
+  <rect x="20" y="20" width="1160" height="590" rx="16" fill="none" stroke="#c9a227" stroke-width="3"/>
+  <!-- Monkey -->
+  <text x="400" y="300" font-size="120" text-anchor="middle">&#x1F412;</text>
+  <!-- VS -->
+  <text x="600" y="310" font-family="'Heebo', 'Arial', sans-serif" font-weight="900" font-size="48" fill="#c9a227" text-anchor="middle">VS</text>
+  <!-- Soccer ball -->
+  <text x="800" y="300" font-size="120" text-anchor="middle">&#x26BD;</text>
+  <!-- Title -->
+  <text x="600" y="440" font-family="'Heebo', 'Arial', sans-serif" font-weight="900" font-size="56" fill="#e8e6e3" text-anchor="middle">
+    Tiki<tspan fill="#c9a227">Taka</tspan>.vip
+  </text>
+  <!-- Subtitle Hebrew -->
+  <text x="600" y="490" font-family="'Heebo', 'Arial', sans-serif" font-weight="700" font-size="28" fill="#7a8ba7" text-anchor="middle" direction="rtl">
+    ניחושי מונדיאל 2026 — אתם נגד הקוף
+  </text>
+  <!-- CTA -->
+  <rect x="440" y="520" width="320" height="50" rx="12" fill="#c9a227"/>
+  <text x="600" y="553" font-family="'Heebo', 'Arial', sans-serif" font-weight="800" font-size="24" fill="#0a0e17" text-anchor="middle">tikitaka.vip — !הצטרפו</text>
+  <!-- Year badge -->
+  <text x="600" y="160" font-family="'Heebo', 'Arial', sans-serif" font-weight="900" font-size="72" fill="#c9a227" text-anchor="middle" opacity="0.15">2026</text>
+</svg>

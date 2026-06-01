@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640" width="1280" height="640">
+  <defs>
+    <linearGradient id="headerBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1a1a2e"/>
+      <stop offset="50%" stop-color="#16213e"/>
+      <stop offset="100%" stop-color="#0f3460"/>
+    </linearGradient>
+    <pattern id="stars" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M30 5L35 20 50 20 38 30 42 45 30 35 18 45 22 30 10 20 25 20Z" fill="rgba(201,162,39,0.06)"/>
+    </pattern>
+  </defs>
+  <rect width="1280" height="640" fill="url(#headerBg)"/>
+  <rect width="1280" height="640" fill="url(#stars)"/>
+  <rect x="16" y="16" width="1248" height="608" rx="12" fill="none" stroke="#c9a227" stroke-width="2.5"/>
+  <!-- Left: emojis -->
+  <text x="280" y="300" font-size="140" text-anchor="middle">&#x1F412;</text>
+  <text x="280" y="350" font-size="40" text-anchor="middle">&#x1F525;</text>
+  <!-- Center: title -->
+  <text x="640" y="240" font-family="'Heebo', 'Arial', sans-serif" font-weight="900" font-size="80" fill="#e8e6e3" text-anchor="middle">
+    Tiki<tspan fill="#c9a227">Taka</tspan><tspan fill="#c9a227" font-size="36">.vip</tspan>
+  </text>
+  <text x="640" y="310" font-family="'Heebo', 'Arial', sans-serif" font-weight="700" font-size="32" fill="#7a8ba7" text-anchor="middle" direction="rtl">
+    ניחושי מונדיאל 2026
+  </text>
+  <text x="640" y="370" font-family="'Heebo', 'Arial', sans-serif" font-weight="400" font-size="24" fill="#4a5568" text-anchor="middle" direction="rtl">
+    קוף אמיתי מנחש את כל 104 המשחקים. ניחוש הפתעה שווה פי 8!
+  </text>
+  <!-- CTA -->
+  <rect x="480" y="420" width="320" height="56" rx="14" fill="#c9a227"/>
+  <text x="640" y="458" font-family="'Heebo', 'Arial', sans-serif" font-weight="800" font-size="26" fill="#0a0e17" text-anchor="middle">!הצטרפו עכשיו</text>
+  <!-- Right: soccer -->
+  <text x="1000" y="300" font-size="140" text-anchor="middle">&#x26BD;</text>
+  <!-- Bottom bar -->
+  <rect x="16" y="530" width="1248" height="3" fill="#c9a227" opacity="0.3"/>
+  <text x="640" y="580" font-family="'Heebo', 'Arial', sans-serif" font-weight="400" font-size="20" fill="#4a5568" text-anchor="middle">
+    USA / Canada / Mexico  ·  June 11 — July 19
+  </text>
+</svg>

@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080" width="1080" height="1080">
+  <defs>
+    <linearGradient id="headerBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1a1a2e"/>
+      <stop offset="50%" stop-color="#16213e"/>
+      <stop offset="100%" stop-color="#0f3460"/>
+    </linearGradient>
+    <pattern id="stars" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M30 5L35 20 50 20 38 30 42 45 30 35 18 45 22 30 10 20 25 20Z" fill="rgba(201,162,39,0.06)"/>
+    </pattern>
+  </defs>
+  <rect width="1080" height="1080" fill="url(#headerBg)"/>
+  <rect width="1080" height="1080" fill="url(#stars)"/>
+  <rect x="24" y="24" width="1032" height="1032" rx="16" fill="none" stroke="#c9a227" stroke-width="3"/>
+  <!-- Monkey emoji -->
+  <text x="540" y="340" font-size="180" text-anchor="middle">&#x1F412;</text>
+  <!-- VS text -->
+  <text x="540" y="440" font-family="'Heebo', 'Arial', sans-serif" font-weight="900" font-size="36" fill="#c9a227" text-anchor="middle">?אתם יכולים לנצח אותו</text>
+  <!-- Soccer ball -->
+  <text x="540" y="560" font-size="80" text-anchor="middle">&#x26BD;</text>
+  <!-- Title -->
+  <text x="540" y="700" font-family="'Heebo', 'Arial', sans-serif" font-weight="900" font-size="80" fill="#e8e6e3" text-anchor="middle">
+    Tiki<tspan fill="#c9a227">Taka</tspan>
+  </text>
+  <!-- Subtitle -->
+  <text x="540" y="760" font-family="'Heebo', 'Arial', sans-serif" font-weight="700" font-size="32" fill="#7a8ba7" text-anchor="middle" direction="rtl">
+    ניחושי מונדיאל 2026
+  </text>
+  <!-- CTA button -->
+  <rect x="340" y="820" width="400" height="60" rx="14" fill="#c9a227"/>
+  <text x="540" y="860" font-family="'Heebo', 'Arial', sans-serif" font-weight="800" font-size="28" fill="#0a0e17" text-anchor="middle">tikitaka.vip</text>
+  <!-- Tagline -->
+  <text x="540" y="950" font-family="'Heebo', 'Arial', sans-serif" font-weight="400" font-size="22" fill="#4a5568" text-anchor="middle" direction="rtl">
+    קוף אמיתי מגן החיות מנחש. אתם?
+  </text>
+</svg>

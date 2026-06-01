@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 200" width="800" height="200">
+  <defs>
+    <linearGradient id="ring" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d4ad2b"/>
+      <stop offset="100%" stop-color="#b89220"/>
+    </linearGradient>
+    <linearGradient id="navyBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1a1a2e"/>
+      <stop offset="50%" stop-color="#16213e"/>
+      <stop offset="100%" stop-color="#0f3460"/>
+    </linearGradient>
+  </defs>
+  <!-- Icon -->
+  <g transform="translate(20,10) scale(0.35)">
+    <circle cx="256" cy="256" r="248" fill="url(#ring)"/>
+    <circle cx="256" cy="256" r="220" fill="url(#navyBg)"/>
+    <circle cx="256" cy="256" r="190" fill="#ffffff"/>
+    <polygon points="256,160 278,178 270,204 242,204 234,178" fill="#0a0e17"/>
+    <polygon points="256,230 284,230 296,256 284,282 256,282 244,256" fill="#0a0e17"/>
+    <polygon points="172,218 194,200 216,212 212,238 188,244" fill="#0a0e17"/>
+    <polygon points="340,218 318,200 296,212 300,238 324,244" fill="#0a0e17"/>
+    <polygon points="196,302 210,280 236,280 240,306 220,322" fill="#0a0e17"/>
+    <polygon points="316,302 302,280 276,280 272,306 292,322" fill="#0a0e17"/>
+  </g>
+  <!-- Text: TikiTaka -->
+  <text x="220" y="100" font-family="'Heebo', 'Arial', sans-serif" font-weight="900" font-size="72" fill="#e8e6e3" letter-spacing="-1">
+    Tiki<tspan fill="#c9a227">Taka</tspan>
+  </text>
+  <!-- Subtitle -->
+  <text x="220" y="140" font-family="'Heebo', 'Arial', sans-serif" font-weight="400" font-size="22" fill="#7a8ba7">
+    World Cup 2026 Predictions
+  </text>
+  <!-- .vip badge -->
+  <rect x="530" y="62" width="65" height="30" rx="6" fill="#c9a227"/>
+  <text x="562" y="83" font-family="'Heebo', 'Arial', sans-serif" font-weight="800" font-size="18" fill="#0a0e17" text-anchor="middle">.vip</text>
+</svg>

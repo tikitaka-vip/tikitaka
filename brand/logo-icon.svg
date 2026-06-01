@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="ring" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d4ad2b"/>
+      <stop offset="100%" stop-color="#b89220"/>
+    </linearGradient>
+    <linearGradient id="navyBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1a1a2e"/>
+      <stop offset="50%" stop-color="#16213e"/>
+      <stop offset="100%" stop-color="#0f3460"/>
+    </linearGradient>
+  </defs>
+  <!-- Gold outer ring -->
+  <circle cx="256" cy="256" r="248" fill="url(#ring)"/>
+  <!-- Navy inner ring -->
+  <circle cx="256" cy="256" r="220" fill="url(#navyBg)"/>
+  <!-- White ball area -->
+  <circle cx="256" cy="256" r="190" fill="#ffffff"/>
+  <!-- Soccer ball pentagons -->
+  <polygon points="256,160 278,178 270,204 242,204 234,178" fill="#0a0e17"/>
+  <polygon points="256,226 284,226 296,252 284,278 256,278 244,252" fill="#0a0e17" transform="translate(0,4)"/>
+  <polygon points="172,218 194,200 216,212 212,238 188,244" fill="#0a0e17"/>
+  <polygon points="340,218 318,200 296,212 300,238 324,244" fill="#0a0e17"/>
+  <polygon points="196,302 210,280 236,280 240,306 220,322" fill="#0a0e17"/>
+  <polygon points="316,302 302,280 276,280 272,306 292,322" fill="#0a0e17"/>
+  <!-- Connecting lines -->
+  <g stroke="#0a0e17" stroke-width="4" fill="none" opacity="0.6">
+    <line x1="242" y1="204" x2="244" y2="230"/>
+    <line x1="270" y1="204" x2="284" y2="226"/>
+    <line x1="234" y1="178" x2="216" y2="212"/>
+    <line x1="278" y1="178" x2="296" y2="212"/>
+    <line x1="212" y1="238" x2="210" y2="280"/>
+    <line x1="300" y1="238" x2="302" y2="280"/>
+    <line x1="240" y1="310" x2="256" y2="282"/>
+    <line x1="272" y1="310" x2="256" y2="282"/>
+  </g>
+</svg>

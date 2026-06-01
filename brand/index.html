@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TikiTaka.vip — Brand Kit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17; --card: #141b2d; --card2: #1a2238; --border: #1e2a45;
+    --accent: #c9a227; --text: #e8e6e3; --muted: #7a8ba7; --dimmed: #4a5568;
+    --green: #27ae60; --red: #c0392b; --blue: #2980b9; --orange: #e67e22;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Heebo', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+  .container { max-width: 1000px; margin: 0 auto; padding: 32px 20px; }
+  h1 { font-size: 2.2rem; font-weight: 900; text-align: center; margin-bottom: 6px; }
+  h1 span { color: var(--accent); }
+  .subtitle { text-align: center; color: var(--muted); font-size: 0.95rem; margin-bottom: 40px; }
+  h2 { color: var(--accent); font-size: 1.1rem; font-weight: 800; margin: 36px 0 16px; padding-bottom: 8px; border-bottom: 2px solid var(--border); }
+  .section { margin-bottom: 32px; }
+
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+  .color-card { border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
+  .color-swatch { height: 70px; }
+  .color-info { padding: 10px 12px; background: var(--card); }
+  .color-name { font-weight: 700; font-size: 0.88rem; }
+  .color-hex { font-size: 0.78rem; color: var(--muted); font-family: monospace; }
+
+  .asset-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+  .asset-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .asset-preview { padding: 20px; display: flex; align-items: center; justify-content: center; min-height: 180px; }
+  .asset-preview.checkerboard { background: repeating-conic-gradient(#1a2238 0% 25%, #0f1520 0% 50%) 0 0 / 20px 20px; }
+  .asset-preview img { max-width: 100%; max-height: 200px; border-radius: 4px; }
+  .asset-info { padding: 14px 16px; border-top: 1px solid var(--border); }
+  .asset-name { font-weight: 700; font-size: 0.92rem; margin-bottom: 4px; }
+  .asset-desc { font-size: 0.78rem; color: var(--muted); margin-bottom: 10px; }
+  .asset-links { display: flex; gap: 8px; flex-wrap: wrap; }
+  .asset-links a {
+    display: inline-block; padding: 5px 14px; border-radius: 6px; font-size: 0.78rem;
+    font-weight: 700; text-decoration: none; transition: filter 0.15s;
+  }
+  .asset-links a:hover { filter: brightness(1.2); }
+  .dl-svg { background: var(--blue); color: #fff; }
+  .dl-png { background: var(--accent); color: #000; }
+
+  .font-demo { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; }
+  .font-row { margin-bottom: 16px; }
+  .font-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+  .font-sample-900 { font-weight: 900; font-size: 2rem; }
+  .font-sample-800 { font-weight: 800; font-size: 1.4rem; }
+  .font-sample-700 { font-weight: 700; font-size: 1.1rem; }
+  .font-sample-400 { font-weight: 400; font-size: 1rem; color: var(--muted); }
+
+  .tone-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+  .tone-card li { margin: 8px 0; color: var(--muted); font-size: 0.9rem; line-height: 1.5; }
+  .tone-card strong { color: var(--text); }
+
+  .banner-preview { width: 100%; }
+  .banner-preview img { width: 100%; border-radius: 4px; }
+
+  .back-link { display: inline-block; color: var(--accent); text-decoration: none; font-weight: 700; font-size: 0.88rem; margin-bottom: 20px; }
+  .back-link:hover { text-decoration: underline; }
+
+  @media (max-width: 600px) {
+    .container { padding: 16px 12px; }
+    h1 { font-size: 1.6rem; }
+    .asset-grid { grid-template-columns: 1fr; }
+    .color-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <a href="/" class="back-link">&larr; Back to app</a>
+
+  <h1>Tiki<span>Taka</span>.vip Brand Kit</h1>
+  <p class="subtitle">World Cup 2026 Predictions &mdash; Assets, colors, typography, guidelines</p>
+
+  <!-- COLORS -->
+  <div class="section">
+    <h2>Colors</h2>
+    <h3 style="color:var(--text);font-size:0.9rem;font-weight:700;margin:12px 0 8px">Primary</h3>
+    <div class="color-grid">
+      <div class="color-card">
+        <div class="color-swatch" style="background:#0a0e17"></div>
+        <div class="color-info"><div class="color-name">Navy</div><div class="color-hex">#0a0e17</div></div>
+      </div>
+      <div class="color-card">
+        <div class="color-swatch" style="background:#c9a227"></div>
+        <div class="color-info"><div class="color-name">Gold</div><div class="color-hex">#c9a227</div></div>
+      </div>
+      <div class="color-card">
+        <div class="color-swatch" style="background:#e8e6e3"></div>
+        <div class="color-info"><div class="color-name">White</div><div class="color-hex">#e8e6e3</div></div>
+      </div>
+    </div>
+
+    <h3 style="color:var(--text);font-size:0.9rem;font-weight:700;margin:20px 0 8px">Secondary</h3>
+    <div class="color-grid">
+      <div class="color-card">
+        <div class="color-swatch" style="background:#141b2d"></div>
+        <div class="color-info"><div class="color-name">Card</div><div class="color-hex">#141b2d</div></div>
+      </div>
+      <div class="color-card">
+        <div class="color-swatch" style="background:#1a2238"></div>
+        <div class="color-info"><div class="color-name">Card Alt</div><div class="color-hex">#1a2238</div></div>
+      </div>
+      <div class="color-card">
+        <div class="color-swatch" style="background:#1e2a45"></div>
+        <div class="color-info"><div class="color-name">Border</div><div class="color-hex">#1e2a45</div></div>
+      </div>
+      <div class="color-card">
+        <div class="color-swatch" style="background:#7a8ba7"></div>
+        <div class="color-info"><div class="color-name">Muted</div><div class="color-hex">#7a8ba7</div></div>
+      </div>
+    </div>
+
+    <h3 style="color:var(--text);font-size:0.9rem;font-weight:700;margin:20px 0 8px">Semantic</h3>
+    <div class="color-grid">
+      <div class="color-card">
+        <div class="color-swatch" style="background:#27ae60"></div>
+        <div class="color-info"><div class="color-name">Green (Exact)</div><div class="color-hex">#27ae60</div></div>
+      </div>
+      <div class="color-card">
+        <div class="color-swatch" style="background:#2980b9"></div>
+        <div class="color-info"><div class="color-name">Blue (Close)</div><div class="color-hex">#2980b9</div></div>
+      </div>
+      <div class="color-card">
+        <div class="color-swatch" style="background:#c0392b"></div>
+        <div class="color-info"><div class="color-name">Red (Wrong)</div><div class="color-hex">#c0392b</div></div>
+      </div>
+      <div class="color-card">
+        <div class="color-swatch" style="background:#e67e22"></div>
+        <div class="color-info"><div class="color-name">Orange (Surprise)</div><div class="color-hex">#e67e22</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TYPOGRAPHY -->
+  <div class="section">
+    <h2>Typography</h2>
+    <div class="font-demo">
+      <div class="font-row">
+        <div class="font-label">Heebo 900 &mdash; Titles &amp; Wordmark</div>
+        <div class="font-sample-900">Tiki<span style="color:var(--accent)">Taka</span>.vip</div>
+      </div>
+      <div class="font-row">
+        <div class="font-label">Heebo 800 &mdash; Section Headings</div>
+        <div class="font-sample-800">World Cup 2026 Predictions</div>
+      </div>
+      <div class="font-row">
+        <div class="font-label">Heebo 700 &mdash; Labels &amp; Emphasis</div>
+        <div class="font-sample-700">Beat the monkey. Win the group.</div>
+      </div>
+      <div class="font-row" style="margin-bottom:0">
+        <div class="font-label">Heebo 400 &mdash; Body Text</div>
+        <div class="font-sample-400">A real zoo monkey predicts all 104 World Cup matches using live webcam feeds. Surprise predictions earn up to 8x points.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOGOS -->
+  <div class="section">
+    <h2>Logos</h2>
+    <div class="asset-grid">
+      <div class="asset-card">
+        <div class="asset-preview checkerboard"><img src="logo-icon.png" alt="Icon logo"></div>
+        <div class="asset-info">
+          <div class="asset-name">Icon</div>
+          <div class="asset-desc">App icon, favicons, small contexts</div>
+          <div class="asset-links">
+            <a href="logo-icon.svg" download class="dl-svg">SVG</a>
+            <a href="logo-icon.png" download class="dl-png">PNG</a>
+          </div>
+        </div>
+      </div>
+      <div class="asset-card">
+        <div class="asset-preview" style="background:var(--bg)"><img src="logo-full-dark.png" alt="Full logo dark"></div>
+        <div class="asset-info">
+          <div class="asset-name">Full Logo (Dark BG)</div>
+          <div class="asset-desc">Horizontal wordmark for dark backgrounds</div>
+          <div class="asset-links">
+            <a href="logo-full-dark.svg" download class="dl-svg">SVG</a>
+            <a href="logo-full-dark.png" download class="dl-png">PNG</a>
+          </div>
+        </div>
+      </div>
+      <div class="asset-card">
+        <div class="asset-preview" style="background:#f0f0f0"><img src="logo-full-light.png" alt="Full logo light"></div>
+        <div class="asset-info">
+          <div class="asset-name">Full Logo (Light BG)</div>
+          <div class="asset-desc">Horizontal wordmark for light backgrounds</div>
+          <div class="asset-links">
+            <a href="logo-full-light.svg" download class="dl-svg">SVG</a>
+            <a href="logo-full-light.png" download class="dl-png">PNG</a>
+          </div>
+        </div>
+      </div>
+      <div class="asset-card">
+        <div class="asset-preview checkerboard"><img src="logo-stacked.png" alt="Stacked logo"></div>
+        <div class="asset-info">
+          <div class="asset-name">Stacked Logo</div>
+          <div class="asset-desc">Square contexts, social media bios</div>
+          <div class="asset-links">
+            <a href="logo-stacked.svg" download class="dl-svg">SVG</a>
+            <a href="logo-stacked.png" download class="dl-png">PNG</a>
+          </div>
+        </div>
+      </div>
+      <div class="asset-card">
+        <div class="asset-preview checkerboard"><img src="profile-pic.png" alt="Profile picture"></div>
+        <div class="asset-info">
+          <div class="asset-name">Profile Picture</div>
+          <div class="asset-desc">Social media profile pics (400x400)</div>
+          <div class="asset-links">
+            <a href="profile-pic.svg" download class="dl-svg">SVG</a>
+            <a href="profile-pic.png" download class="dl-png">PNG</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BANNERS -->
+  <div class="section">
+    <h2>Social Media Banners</h2>
+    <div class="asset-grid" style="grid-template-columns:1fr">
+      <div class="asset-card">
+        <div class="banner-preview"><img src="banner-whatsapp.png" alt="WhatsApp banner"></div>
+        <div class="asset-info">
+          <div class="asset-name">WhatsApp / Facebook / OG Banner</div>
+          <div class="asset-desc">1200x630 &mdash; Link previews, Facebook posts, Open Graph</div>
+          <div class="asset-links">
+            <a href="banner-whatsapp.svg" download class="dl-svg">SVG</a>
+            <a href="banner-whatsapp.png" download class="dl-png">PNG</a>
+          </div>
+        </div>
+      </div>
+      <div class="asset-card">
+        <div class="banner-preview"><img src="banner-telegram.png" alt="Telegram banner"></div>
+        <div class="asset-info">
+          <div class="asset-name">Telegram Channel Banner</div>
+          <div class="asset-desc">1280x640 &mdash; Telegram group/channel header</div>
+          <div class="asset-links">
+            <a href="banner-telegram.svg" download class="dl-svg">SVG</a>
+            <a href="banner-telegram.png" download class="dl-png">PNG</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="asset-grid" style="margin-top:20px">
+      <div class="asset-card">
+        <div class="asset-preview" style="background:var(--bg)"><img src="banner-instagram.png" alt="Instagram banner" style="max-height:300px"></div>
+        <div class="asset-info">
+          <div class="asset-name">Instagram Post</div>
+          <div class="asset-desc">1080x1080 &mdash; Instagram feed + stories</div>
+          <div class="asset-links">
+            <a href="banner-instagram.svg" download class="dl-svg">SVG</a>
+            <a href="banner-instagram.png" download class="dl-png">PNG</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VOICE -->
+  <div class="section">
+    <h2>Voice &amp; Tone</h2>
+    <div class="tone-card">
+      <ul>
+        <li><strong>Playful &amp; competitive</strong> &mdash; the monkey is a real opponent, not a gimmick</li>
+        <li><strong>"Beat the monkey"</strong> is the core hook &mdash; reference it everywhere</li>
+        <li><strong>Surprise = reward</strong> &mdash; bold predictions earn up to 8x points</li>
+        <li><strong>Hebrew-first</strong> for Israeli audience, English available via language picker</li>
+        <li><strong>"Tiki" in white, "Taka" in gold</strong> &mdash; always split the wordmark this way</li>
+        <li><strong>.vip in a gold pill badge</strong> &mdash; never just plain text</li>
+      </ul>
+    </div>
+  </div>
+
+  <p style="text-align:center;color:var(--dimmed);font-size:0.78rem;margin-top:40px;padding-bottom:20px">
+    TikiTaka.vip &mdash; World Cup 2026 Predictions &mdash; Brand Kit
+  </p>
+</div>
+</body>
+</html>
