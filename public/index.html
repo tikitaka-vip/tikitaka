@@ -882,33 +882,34 @@ async function setLoggedIn(id, name, token, avatarUrl) {
 
 async function showNotifBanner(token) {
   const banner = document.getElementById('notifBanner');
-  let showBanner = false;
+  const pushBanner = document.getElementById('pushBanner');
+  const tgBanner = document.getElementById('tgBanner');
 
   // Push notifications
-  const pushBanner = document.getElementById('pushBanner');
-  if ('Notification' in window && 'serviceWorker' in navigator && Notification.permission !== 'granted' && Notification.permission !== 'denied') {
-    pushBanner.style.display = 'block';
-    document.getElementById('pushBannerText').textContent = t('enable_push') || 'Get notified so you never forget to predict ⚽';
-    document.getElementById('pushBannerBtn').textContent = t('enable_push_btn') || 'Enable notifications';
-    showBanner = true;
-  } else if (Notification.permission === 'granted') {
-    // Already granted, ensure subscription exists
-    registerPushSilent();
+  if ('Notification' in window && 'serviceWorker' in navigator) {
+    if (Notification.permission === 'default') {
+      pushBanner.style.display = 'block';
+      document.getElementById('pushBannerText').textContent = t('enable_push') || 'Get notified so you never forget to predict ⚽';
+      document.getElementById('pushBannerBtn').textContent = t('enable_push_btn') || 'Enable notifications';
+    } else if (Notification.permission === 'granted') {
+      registerPushSilent();
+    }
   }
 
-  // Telegram
-  const tgBanner = document.getElementById('tgBanner');
+  // Telegram — always show if not linked
   try {
     const me = await api(`/api/auth/me?token=${encodeURIComponent(token)}`);
-    if (!me.telegram_chat_id) {
+    if (me && !me.error && !me.telegram_chat_id) {
       tgBanner.style.display = 'block';
       document.getElementById('tgBannerText').textContent = t('connect_tg') || 'Connect Telegram for reminders';
       document.getElementById('tgBannerBtn').textContent = t('connect_tg_btn') || '🔗 Connect Telegram';
-      showBanner = true;
     }
-  } catch {}
+  } catch (e) {
+    console.error('TG banner check failed:', e);
+  }
 
-  banner.style.display = showBanner ? 'block' : 'none';
+  // Show banner if either sub-banner is visible
+  banner.style.display = (pushBanner.style.display === 'block' || tgBanner.style.display === 'block') ? 'block' : 'none';
 }
 
 async function subscribePush() {
