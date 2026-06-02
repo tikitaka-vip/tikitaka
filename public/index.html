@@ -878,6 +878,7 @@ async function setLoggedIn(id, name, token, avatarUrl) {
   // Check admin
   const adminCheck = await api(`/api/auth/is-admin?token=${encodeURIComponent(token)}`);
   document.getElementById('adminTab').style.display = adminCheck.admin ? '' : 'none';
+  if (adminCheck.admin) loadOddsKey().catch(() => {});
   loadPredictions();
   handlePendingJoin();
   showNotifBanner(token);
@@ -1930,6 +1931,7 @@ async function loadActualResults() {
 }
 
 async function loadOddsKey() {
+  if (document.getElementById('adminTab')?.style.display === 'none') return;
   try {
     const r = await api('/api/settings/odds_api_key');
     if (r.value) document.getElementById('oddsApiKey').value = r.value;
@@ -2216,7 +2218,6 @@ initGoogleAuth().catch(() => {});
 loadOutrightOdds().catch(() => {});
 loadMatches().catch(() => {});
 loadActualResults().catch(() => {});
-loadOddsKey().catch(() => {});
 
 // If there's a join code and user is already logged in
 const _joinCode = getPendingJoinCode();
