@@ -65,7 +65,9 @@ app.use('/brand', express.static(path.join(__dirname, 'brand'), {
 app.use(express.static(path.join(__dirname, 'public'), {
   maxAge: '1h',
   setHeaders: (res, filePath) => {
-    if (filePath.endsWith('.html')) {
+    if (filePath.endsWith('sw.js')) {
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    } else if (filePath.endsWith('.html')) {
       res.setHeader('Cache-Control', 'public, max-age=60, s-maxage=300');
     } else if (filePath.endsWith('.png') || filePath.endsWith('.json')) {
       res.setHeader('Cache-Control', 'public, max-age=86400');
