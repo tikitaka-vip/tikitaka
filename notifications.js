@@ -139,22 +139,103 @@ function setupNotificationRoutes(app, db) {
     res.json({ url: `https://t.me/${botUsername}?start=${linkToken}`, inviteCode });
   });
 
+  // TG login — init (frontend requests a login token)
+  app.post('/api/auth/tg-login-init', (req, res) => {
+    const token = require('crypto').randomBytes(16).toString('hex');
+    db.prepare("INSERT INTO tg_login_tokens (token, created_at) VALUES (?, datetime('now'))").run(token);
+    // Clean up old tokens (> 10 min)
+    db.prepare("DELETE FROM tg_login_tokens WHERE created_at < datetime('now', '-10 minutes')").run();
+
+    const botUsername = db.prepare("SELECT value FROM settings WHERE key = 'tg_bot_username'").get()?.value;
+    res.json({ token, url: `https://t.me/${botUsername}?start=login_${token}` });
+  });
+
+  // TG login — poll (frontend checks if bot has processed the login)
+  app.get('/api/auth/tg-login-check', (req, res) => {
+    const { token } = req.query;
+    if (!token) return res.status(400).json({ error: 'Missing token' });
+
+    const row = db.prepare('SELECT session_token, player_id, player_name FROM tg_login_tokens WHERE token = ?').get(token);
+    if (!row || !row.session_token) return res.json({ ready: false });
+
+    // Login complete — return session and clean up
+    const player = db.prepare('SELECT id, name, email, avatar_url FROM players WHERE id = ?').get(row.player_id);
+    db.prepare('DELETE FROM tg_login_tokens WHERE token = ?').run(token);
+    res.json({ ready: true, id: player.id, name: player.name, email: player.email, avatar_url: player.avatar_url, token: row.session_token });
+  });
+
   // Telegram webhook handler
   app.post('/api/telegram/webhook', async (req, res) => {
-    res.json({ ok: true }); // respond immediately
+    res.json({ ok: true });
 
     const msg = req.body?.message;
     if (!msg?.text) return;
 
     const chatId = msg.chat.id;
     const text = msg.text.trim();
+    const tgUser = msg.from;
 
-    // Handle /start with link token
-    if (text.startsWith('/start ')) {
-      const linkToken = text.slice(7).trim();
-      const player = db.prepare('SELECT id, name, lang FROM players WHERE tg_link_token = ?').get(linkToken);
+    if (!text.startsWith('/start')) return;
+
+    const payload = text.slice(7).trim(); // everything after "/start "
+
+    // TG Login: /start login_XXXXX
+    if (payload.startsWith('login_')) {
+      const loginToken = payload.slice(6);
+      const row = db.prepare('SELECT token FROM tg_login_tokens WHERE token = ?').get(loginToken);
+      if (!row) {
+        await sendTelegram(chatId, '❌ Expired login link. Try again from tikitaka.vip');
+        return;
+      }
+
+      const tgName = [tgUser.first_name, tgUser.last_name].filter(Boolean).join(' ') || tgUser.username || 'Player';
+      const lang = tgUser.language_code && NOTIFY_STRINGS[tgUser.language_code] ? tgUser.language_code : 'he';
+
+      // Find existing player by TG chat ID, or create new one
+      let player = db.prepare('SELECT * FROM players WHERE telegram_chat_id = ?').get(String(chatId));
+      const generateToken = () => {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let t = ''; for (let i = 0; i < 48; i++) t += chars[Math.floor(Math.random() * chars.length)];
+        return t;
+      };
+      const sessionToken = generateToken();
+
+      if (player) {
+        db.prepare('UPDATE players SET session_token = ?, lang = ? WHERE id = ?').run(sessionToken, lang, player.id);
+      } else {
+        const result = db.prepare(
+          "INSERT INTO players (name, pin, session_token, lang, telegram_chat_id, email_verified) VALUES (?, 'tg-auth', ?, ?, ?, 0)"
+        ).run(tgName, sessionToken, lang, String(chatId));
+        player = { id: result.lastInsertRowid, name: tgName };
+
+        // Create auto-group for new player
+        const GROUP_SUFFIX = { he: 'והחברים', en: 'and friends', es: 'y amigos', fr: 'et amis', pt: 'e amigos', ar: 'والأصدقاء', ru: 'и друзья', de: 'und Freunde', ja: 'と仲間' };
+        const suffix = GROUP_SUFFIX[lang] || GROUP_SUFFIX.en;
+        const invCode = (() => { const c = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let s = ''; for (let i = 0; i < 6; i++) s += c[Math.floor(Math.random() * c.length)]; return s; })();
+        const DEFAULT_SCORING = db.prepare("SELECT scoring_config FROM groups LIMIT 1").get()?.scoring_config || '{}';
+        const gr = db.prepare('INSERT INTO groups (name, invite_code, manager_id, scoring_config) VALUES (?, ?, ?, ?)').run(`${tgName} ${suffix}`, invCode, player.id, DEFAULT_SCORING);
+        db.prepare('INSERT INTO group_members (group_id, player_id) VALUES (?, ?)').run(gr.lastInsertRowid, player.id);
+      }
+
+      // Complete the login token
+      db.prepare('UPDATE tg_login_tokens SET session_token = ?, player_id = ?, player_name = ? WHERE token = ?')
+        .run(sessionToken, player.id, player.name, loginToken);
+
+      await sendTelegram(chatId, ns(lang, 'welcome_tg'));
+
+      const inviteCode = getPlayerInviteCode(db, player.id);
+      if (inviteCode) {
+        const inviteLink = `https://tikitaka.vip/join/${inviteCode}`;
+        await sendTelegram(chatId, ns(lang, 'invite_tg').replace('{link}', inviteLink));
+      }
+      return;
+    }
+
+    // Existing account linking: /start XXXXX (non-login tokens)
+    if (payload && !payload.startsWith('login_')) {
+      const player = db.prepare('SELECT id, name, lang FROM players WHERE tg_link_token = ?').get(payload);
       if (!player) {
-        sendTelegram(chatId, '❌ Invalid or expired link. Try generating a new one from tikitaka.vip');
+        await sendTelegram(chatId, '❌ Invalid or expired link. Try generating a new one from tikitaka.vip');
         return;
       }
       db.prepare('UPDATE players SET telegram_chat_id = ?, tg_link_token = NULL WHERE id = ?').run(String(chatId), player.id);
@@ -164,17 +245,13 @@ function setupNotificationRoutes(app, db) {
       const inviteCode = getPlayerInviteCode(db, player.id);
       if (inviteCode) {
         const inviteLink = `https://tikitaka.vip/join/${inviteCode}`;
-        const inviteMsg = ns(lang, 'invite_tg').replace('{link}', inviteLink);
-        await sendTelegram(chatId, inviteMsg);
+        await sendTelegram(chatId, ns(lang, 'invite_tg').replace('{link}', inviteLink));
       }
       return;
     }
 
-    // Handle plain /start
-    if (text === '/start') {
-      sendTelegram(chatId, '🐒 TikiTaka World Cup 2026\n\nTo get reminders, link your account from tikitaka.vip → click "Connect Telegram"');
-      return;
-    }
+    // Plain /start
+    await sendTelegram(chatId, '🐒 TikiTaka World Cup 2026\n\nTo get reminders, link your account from tikitaka.vip → click "Connect Telegram"');
   });
 }
 

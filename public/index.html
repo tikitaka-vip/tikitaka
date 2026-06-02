@@ -476,7 +476,9 @@
 <div class="auth-bar">
   <div id="authSection">
     <div id="googleBtnWrap"></div>
-    <div style="display:flex;gap:8px;font-size:0.78rem;margin-top:4px">
+    <div style="display:flex;gap:8px;font-size:0.78rem;margin-top:4px;flex-wrap:wrap;justify-content:center">
+      <a href="#" onclick="tgLogin();return false" style="color:#0088cc;font-weight:bold">Telegram ➜</a>
+      <span style="color:var(--dimmed)">|</span>
       <a href="#" id="emailAuthToggle" onclick="showAuthForm('email');return false" style="color:var(--muted)" data-i18n="login_email_toggle">כניסה עם מייל</a>
       <span style="color:var(--dimmed)">|</span>
       <a href="#" id="pinAuthToggle" onclick="showAuthForm('pin');return false" style="color:var(--muted)" data-i18n="login_code">כניסה עם קוד</a>
@@ -1055,6 +1057,35 @@ function register() {
       setLoggedIn(r.id, r.name, r.token);
       toast('!ברוך הבא ' + r.name);
     });
+}
+
+async function tgLogin() {
+  const res = await api('/api/auth/tg-login-init', { method: 'POST' });
+  if (!res.url) return alert('Failed to init TG login');
+  window.open(res.url, '_blank');
+
+  // Poll until bot confirms login
+  const pollToken = res.token;
+  const pollDiv = document.createElement('div');
+  pollDiv.id = 'tgLoginPoll';
+  pollDiv.style.cssText = 'text-align:center;padding:8px;color:#4ecdc4;font-size:0.85rem;margin-top:6px';
+  pollDiv.textContent = t('tg_login_waiting') || 'Waiting for Telegram... Click Start in the bot ➜';
+  document.getElementById('authSection').appendChild(pollDiv);
+
+  let attempts = 0;
+  const poll = setInterval(async () => {
+    attempts++;
+    if (attempts > 60) { clearInterval(poll); pollDiv.textContent = t('tg_login_expired') || 'Expired. Try again.'; return; }
+    try {
+      const check = await api(`/api/auth/tg-login-check?token=${encodeURIComponent(pollToken)}`);
+      if (check.ready) {
+        clearInterval(poll);
+        pollDiv.remove();
+        setLoggedIn(check.id, check.name, check.token, check.avatar_url);
+        toast((t('welcome_toast') || 'Welcome {name}!').replace('{name}', check.name));
+      }
+    } catch {}
+  }, 2000);
 }
 
 function showAuthForm(which) {
@@ -2039,6 +2070,17 @@ function switchLang(lang) {
   updateStaticText();
   updateCountdown();
   renderPredictions();
+  // Update notification banner text
+  const pb = document.getElementById('pushBanner');
+  if (pb && pb.style.display === 'block') {
+    document.getElementById('pushBannerText').textContent = t('enable_push');
+    document.getElementById('pushBannerBtn').textContent = t('enable_push_btn');
+  }
+  const tb = document.getElementById('tgBanner');
+  if (tb && tb.style.display === 'block') {
+    document.getElementById('tgBannerText').textContent = t('connect_tg');
+    document.getElementById('tgBannerBtn').textContent = t('connect_tg_btn');
+  }
 }
 
 function updateStaticText() {

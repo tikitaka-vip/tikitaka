@@ -202,6 +202,13 @@ db.exec(`
     type TEXT NOT NULL,
     sent_at DATETIME DEFAULT CURRENT_TIMESTAMP
   );
+  CREATE TABLE IF NOT EXISTS tg_login_tokens (
+    token TEXT PRIMARY KEY,
+    session_token TEXT,
+    player_id INTEGER,
+    player_name TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  );
 `);
 
 // --- Seed matches ---
