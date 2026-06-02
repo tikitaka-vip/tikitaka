@@ -542,10 +542,10 @@
     <!-- Invite nudge (shown after first prediction) -->
     <div id="inviteNudge" class="card" style="display:none;background:linear-gradient(135deg,var(--card2),var(--card));border:2px solid var(--accent);text-align:center;padding:20px">
       <div style="font-size:2rem;margin-bottom:6px">🎉🐒</div>
-      <p style="font-size:1rem;font-weight:800;margin-bottom:6px">ניחשתם! עכשיו שלחו לחברים</p>
-      <p style="color:var(--muted);font-size:0.85rem;margin-bottom:14px">שלחו לקבוצת הוואטסאפ — קוף אמיתי ממקלט כבר ניחש את כל המשחקים. אתם יכולים לנצח אותו?</p>
+      <p id="nudgeTitle" style="font-size:1rem;font-weight:800;margin-bottom:6px"></p>
+      <p id="nudgeDesc" style="color:var(--muted);font-size:0.85rem;margin-bottom:14px"></p>
       <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap" id="nudgeButtons"></div>
-      <p style="color:var(--dimmed);font-size:0.72rem;margin-top:10px;cursor:pointer" onclick="document.getElementById('inviteNudge').style.display='none';localStorage.setItem('wc_nudge_dismissed','1')">אחר כך ←</p>
+      <p id="nudgeDismiss" style="color:var(--dimmed);font-size:0.72rem;margin-top:10px;cursor:pointer" onclick="document.getElementById('inviteNudge').style.display='none';localStorage.setItem('wc_nudge_dismissed','1')"></p>
     </div>
 
     <div class="missing-alert" id="missingAlert"></div>
@@ -2019,17 +2019,18 @@ async function loadNudgeButtons() {
     if (groups.length > 0) {
       const g = groups[0];
       const link = `${location.origin}/join/${g.invite_code}`;
-      const text = encodeURIComponent(`⚽ בואו לנחש איתי תוצאות מונדיאל 2026!\n\n${link}\n\n🐒 קוף אמיתי ממקלט מנחש את המונדיאל\n🤫 חסוי עד שריקת הפתיחה\n🍺 מפסיד לקוף = מביא בירות`);
+      const shareMsg = t('nudge_share_msg').replace('{link}', link);
+      const text = encodeURIComponent(shareMsg);
       el.innerHTML = `
-        <a class="btn btn-sm" style="background:#25D366;color:#fff;text-decoration:none;font-size:0.9rem;padding:10px 20px" href="https://wa.me/?text=${text}" target="_blank">💬 שלח בוואטסאפ</a>
-        <a class="btn btn-sm" style="background:#0088cc;color:#fff;text-decoration:none" href="https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent('⚽ ניחושי מונדיאל 2026 🐒')}" target="_blank">✈️ טלגרם</a>
-        <button class="btn btn-sm" style="background:var(--border);color:var(--text)" onclick="navigator.clipboard.writeText('${link}');toast('הלינק הועתק!')">📋 העתק</button>
+        <a class="btn btn-sm" style="background:#25D366;color:#fff;text-decoration:none;font-size:0.9rem;padding:10px 20px" href="https://wa.me/?text=${text}" target="_blank">💬 ${t('nudge_wa')}</a>
+        <a class="btn btn-sm" style="background:#0088cc;color:#fff;text-decoration:none" href="https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(shareMsg)}" target="_blank">✈️ ${t('nudge_tg')}</a>
+        <button class="btn btn-sm" style="background:var(--border);color:var(--text)" onclick="navigator.clipboard.writeText('${link}');toast(t('copied') || 'Copied!')">📋 ${t('nudge_copy')}</button>
       `;
     } else {
-      el.innerHTML = `<button class="btn btn-primary" onclick="document.querySelector('[data-tab=groups]').click()">&#128101; צרו קבוצה ושתפו</button>`;
+      el.innerHTML = `<button class="btn btn-primary" onclick="document.querySelector('[data-tab=groups]').click()">👥 ${t('nudge_create_group')}</button>`;
     }
   } catch(e) {
-    el.innerHTML = `<button class="btn btn-primary" onclick="document.querySelector('[data-tab=groups]').click()">&#128101; צרו קבוצה ושתפו</button>`;
+    el.innerHTML = `<button class="btn btn-primary" onclick="document.querySelector('[data-tab=groups]').click()">👥 ${t('nudge_create_group')}</button>`;
   }
 }
 
@@ -2166,8 +2167,12 @@ function updateStaticText() {
   if (obCta) obCta.textContent = t('ob_cta');
 
   // Invite nudge
-  const nudgeTitle = document.querySelector('#inviteNudge p:first-of-type');
-  if (nudgeTitle) nudgeTitle.textContent = currentLang === 'he' ? 'ניחשתם! עכשיו שלחו לחברים' : 'Great! Now share with friends';
+  const nt = document.getElementById('nudgeTitle');
+  if (nt) nt.textContent = t('nudge_title');
+  const nd = document.getElementById('nudgeDesc');
+  if (nd) nd.textContent = t('nudge_desc');
+  const ndis = document.getElementById('nudgeDismiss');
+  if (ndis) ndis.textContent = t('nudge_dismiss');
 
   // Install banners
   const installText = document.getElementById('installText');
