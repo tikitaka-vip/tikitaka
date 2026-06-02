@@ -922,10 +922,10 @@ async function subscribePush() {
 
     const reg = await navigator.serviceWorker.ready;
     const keyRes = await api('/api/push/vapid-key');
-    const sub = await reg.pushManager.subscribe({
-      userVisibleOnly: true,
-      applicationServerKey: urlBase64ToUint8Array(keyRes.publicKey)
-    });
+    const vapidKey = urlBase64ToUint8Array(keyRes.publicKey);
+    const oldSub = await reg.pushManager.getSubscription();
+    if (oldSub) await oldSub.unsubscribe().catch(() => {});
+    const sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: vapidKey });
 
     const subRes = await api('/api/push/subscribe', {
       method: 'POST',
@@ -950,19 +950,26 @@ async function registerPushSilent() {
   try {
     if (!currentPlayer) return;
     const reg = await navigator.serviceWorker.ready;
+    const keyRes = await api('/api/push/vapid-key');
+    const vapidKey = urlBase64ToUint8Array(keyRes.publicKey);
+
     let sub = await reg.pushManager.getSubscription();
-    if (!sub) {
-      const keyRes = await api('/api/push/vapid-key');
-      sub = await reg.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(keyRes.publicKey)
-      });
+    if (sub) {
+      try {
+        const subKey = sub.options?.applicationServerKey;
+        if (!subKey || new Uint8Array(subKey).toString() !== vapidKey.toString()) {
+          await sub.unsubscribe();
+          sub = null;
+        }
+      } catch { await sub.unsubscribe().catch(() => {}); sub = null; }
     }
-    const res = await api('/api/push/subscribe', {
+    if (!sub) {
+      sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: vapidKey });
+    }
+    await api('/api/push/subscribe', {
       method: 'POST',
       body: JSON.stringify({ subscription: sub.toJSON(), player_id: currentPlayer })
     });
-    console.log('Push registered:', res);
   } catch (e) {
     console.error('registerPushSilent failed:', e);
   }
