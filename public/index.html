@@ -2083,6 +2083,9 @@ function toggleLangDrop(btn) {
 
 function switchLang(lang) {
   setLang(lang);
+  if (currentPlayer) {
+    api('/api/auth/update-lang', { method: 'POST', body: JSON.stringify({ lang }) }).catch(() => {});
+  }
   document.getElementById('langDrop').classList.remove('open');
   renderLangPicker();
   updateStaticText();

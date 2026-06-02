@@ -532,6 +532,15 @@ app.post('/api/login', (req, res) => {
   res.json({ id: player.id, name: player.name, token });
 });
 
+// Update language preference
+app.post('/api/auth/update-lang', (req, res) => {
+  const player = authPlayer(req);
+  if (!player) return res.status(401).json({ error: 'not logged in' });
+  const { lang } = req.body;
+  if (lang) db.prepare('UPDATE players SET lang = ? WHERE id = ?').run(lang, player.id);
+  res.json({ ok: true });
+});
+
 // Session restore
 app.get('/api/auth/me', (req, res) => {
   const player = authPlayer(req);
