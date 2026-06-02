@@ -923,7 +923,7 @@ async function subscribePush() {
       applicationServerKey: urlBase64ToUint8Array(keyRes.publicKey)
     });
 
-    await api('/api/push/subscribe', {
+    const subRes = await api('/api/push/subscribe', {
       method: 'POST',
       body: JSON.stringify({ subscription: sub.toJSON(), player_id: currentPlayer })
     });
@@ -932,6 +932,10 @@ async function subscribePush() {
     toast(t('notifications_enabled') || 'Notifications enabled! ✅');
     if (document.getElementById('tgBanner').style.display === 'none') {
       document.getElementById('notifBanner').style.display = 'none';
+    }
+
+    if (subRes.inviteCode) {
+      showSharePrompt(subRes.inviteCode);
     }
   } catch (e) {
     console.error('Push subscribe failed:', e);
@@ -963,9 +967,59 @@ async function connectTelegram() {
   if (res.url) {
     window.open(res.url, '_blank');
     document.getElementById('tgBanner').innerHTML = '<span style="color:#4ecdc4;font-size:0.85rem">✅ ' + (t('tg_opened') || 'Telegram opened — click Start in the bot!') + '</span>';
+    if (res.inviteCode) {
+      showSharePrompt(res.inviteCode);
+    }
   } else {
     alert(res.error || 'Failed to generate link');
   }
+}
+
+function showSharePrompt(inviteCode) {
+  const link = `https://tikitaka.vip/join/${inviteCode}`;
+  const session = JSON.parse(localStorage.getItem('wc_session') || '{}');
+  const name = session.name || '';
+
+  const shareText = currentLang === 'he'
+    ? `⚽🐒 הצטרפתי למשחק ניחושים למונדיאל 2026 — נגד קוף אמיתי!\n\nבואו לקבוצה שלי, מי שמפסיד לקוף מביא בירות 🍺\n\n👉 ${link}`
+    : `⚽🐒 I joined a World Cup 2026 prediction game — against a REAL monkey!\n\nJoin my group, whoever loses to the monkey buys beers 🍺\n\n👉 ${link}`;
+
+  const overlay = document.createElement('div');
+  overlay.id = 'shareOverlay';
+  overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px';
+  const isRtl = LANGS[currentLang]?.dir === 'rtl';
+  overlay.innerHTML = `
+    <div style="background:#1a1a3e;border-radius:16px;padding:24px;max-width:400px;width:100%;border:1px solid #444488;direction:${isRtl ? 'rtl' : 'ltr'}">
+      <h3 style="color:#ffd700;margin:0 0 8px;text-align:center">${t('share_invite_title') || '🎉 Now invite your friends!'}</h3>
+      <p style="color:#ccc;font-size:0.9rem;text-align:center;margin:0 0 16px">${t('share_invite_sub') || 'Send this to your WhatsApp group or friends:'}</p>
+      <div style="background:#0a0a23;border-radius:8px;padding:12px;white-space:pre-wrap;font-size:0.85rem;color:#e0e0e0;line-height:1.5;margin:0 0 16px">${shareText}</div>
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+        <button onclick="shareVia('whatsapp','${inviteCode}')" class="btn btn-sm" style="background:#25D366;color:#fff">WhatsApp</button>
+        <button onclick="shareVia('telegram','${inviteCode}')" class="btn btn-sm" style="background:#0088cc;color:#fff">Telegram</button>
+        <button onclick="shareVia('copy','${inviteCode}')" class="btn btn-sm" style="background:#666;color:#fff">${t('groups_copy') || 'Copy'}</button>
+      </div>
+      <div style="text-align:center;margin-top:12px">
+        <a href="#" onclick="document.getElementById('shareOverlay').remove();return false" style="color:#888;font-size:0.8rem">${t('share_later') || 'Maybe later'}</a>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+}
+
+function shareVia(platform, inviteCode) {
+  const link = `https://tikitaka.vip/join/${inviteCode}`;
+  const shareText = currentLang === 'he'
+    ? `⚽🐒 הצטרפתי למשחק ניחושים למונדיאל 2026 — נגד קוף אמיתי!\n\nבואו לקבוצה שלי, מי שמפסיד לקוף מביא בירות 🍺\n\n👉 ${link}`
+    : `⚽🐒 I joined a World Cup 2026 prediction game — against a REAL monkey!\n\nJoin my group, whoever loses to the monkey buys beers 🍺\n\n👉 ${link}`;
+
+  if (platform === 'whatsapp') {
+    window.open(`https://wa.me/?text=${encodeURIComponent(shareText)}`, '_blank');
+  } else if (platform === 'telegram') {
+    window.open(`https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(shareText)}`, '_blank');
+  } else {
+    navigator.clipboard.writeText(shareText).then(() => toast(t('copied') || 'Copied! ✅'));
+  }
+  const overlay = document.getElementById('shareOverlay');
+  if (overlay) overlay.remove();
 }
 
 function urlBase64ToUint8Array(base64String) {

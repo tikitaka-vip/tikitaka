@@ -62,6 +62,7 @@ const NOTIFY_STRINGS = {
     tournament_lock_title: '🏆 ניחושי טורניר ננעלים!',
     tournament_lock_body: 'ניחושי אלוף, סגן ומלך שערים ננעלים עוד {hours} שעות!',
     welcome_tg: '🐒 ברוכים הבאים ל-TikiTaka!\nתקבלו התראות לפני משחקים כדי שלא תשכחו לנחש.\n\nהחשבון שלכם חובר בהצלחה ✅',
+    invite_tg: '⚽🐒 הצטרפתי למשחק ניחושים למונדיאל 2026 — נגד קוף אמיתי!\n\nבואו לקבוצה שלי, מי שמפסיד לקוף מביא בירות 🍺\n\n👉 {link}\n\ntikitaka.vip',
     enable_push: 'קבלו התראות כדי לא לשכוח לנחש ⚽',
     enable_push_btn: 'הפעילו התראות',
     connect_tg: 'חברו טלגרם לקבלת תזכורות',
@@ -77,6 +78,7 @@ const NOTIFY_STRINGS = {
     tournament_lock_title: '🏆 Tournament predictions locking!',
     tournament_lock_body: 'Winner, runner-up & top scorer predictions lock in {hours} hours!',
     welcome_tg: "🐒 Welcome to TikiTaka!\nYou'll get reminders before matches so you never forget to predict.\n\nYour account is linked ✅",
+    invite_tg: "⚽🐒 I joined a World Cup 2026 prediction game — against a REAL monkey!\n\nJoin my group, whoever loses to the monkey buys beers 🍺\n\n👉 {link}\n\ntikitaka.vip",
     enable_push: "Get notified so you never forget to predict ⚽",
     enable_push_btn: 'Enable notifications',
     connect_tg: 'Connect Telegram for reminders',
@@ -86,6 +88,11 @@ const NOTIFY_STRINGS = {
 
 function ns(lang, key) {
   return NOTIFY_STRINGS[lang]?.[key] || NOTIFY_STRINGS.en[key];
+}
+
+function getPlayerInviteCode(db, playerId) {
+  const group = db.prepare('SELECT invite_code FROM groups WHERE manager_id = ? LIMIT 1').get(playerId);
+  return group?.invite_code || null;
 }
 
 function setupNotificationRoutes(app, db) {
@@ -98,7 +105,9 @@ function setupNotificationRoutes(app, db) {
       VALUES (?, ?, ?, ?, datetime('now'))`).run(
       player_id, subscription.endpoint, subscription.keys.p256dh, subscription.keys.auth
     );
-    res.json({ ok: true });
+
+    const inviteCode = getPlayerInviteCode(db, player_id);
+    res.json({ ok: true, inviteCode: inviteCode || null });
   });
 
   // Remove push subscription
@@ -126,11 +135,12 @@ function setupNotificationRoutes(app, db) {
     const botUsername = db.prepare("SELECT value FROM settings WHERE key = 'tg_bot_username'").get()?.value;
     if (!botUsername) return res.status(500).json({ error: 'TG bot not configured' });
 
-    res.json({ url: `https://t.me/${botUsername}?start=${linkToken}` });
+    const inviteCode = getPlayerInviteCode(db, player.id);
+    res.json({ url: `https://t.me/${botUsername}?start=${linkToken}`, inviteCode });
   });
 
   // Telegram webhook handler
-  app.post('/api/telegram/webhook', (req, res) => {
+  app.post('/api/telegram/webhook', async (req, res) => {
     res.json({ ok: true }); // respond immediately
 
     const msg = req.body?.message;
@@ -148,7 +158,15 @@ function setupNotificationRoutes(app, db) {
         return;
       }
       db.prepare('UPDATE players SET telegram_chat_id = ?, tg_link_token = NULL WHERE id = ?').run(String(chatId), player.id);
-      sendTelegram(chatId, ns(player.lang || 'he', 'welcome_tg'));
+      const lang = player.lang || 'he';
+      await sendTelegram(chatId, ns(lang, 'welcome_tg'));
+
+      const inviteCode = getPlayerInviteCode(db, player.id);
+      if (inviteCode) {
+        const inviteLink = `https://tikitaka.vip/join/${inviteCode}`;
+        const inviteMsg = ns(lang, 'invite_tg').replace('{link}', inviteLink);
+        await sendTelegram(chatId, inviteMsg);
+      }
       return;
     }
 
