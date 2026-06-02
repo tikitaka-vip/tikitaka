@@ -948,6 +948,7 @@ async function subscribePush() {
 
 async function registerPushSilent() {
   try {
+    if (!currentPlayer) return;
     const reg = await navigator.serviceWorker.ready;
     let sub = await reg.pushManager.getSubscription();
     if (!sub) {
@@ -957,11 +958,14 @@ async function registerPushSilent() {
         applicationServerKey: urlBase64ToUint8Array(keyRes.publicKey)
       });
     }
-    await api('/api/push/subscribe', {
+    const res = await api('/api/push/subscribe', {
       method: 'POST',
       body: JSON.stringify({ subscription: sub.toJSON(), player_id: currentPlayer })
     });
-  } catch {}
+    console.log('Push registered:', res);
+  } catch (e) {
+    console.error('registerPushSilent failed:', e);
+  }
 }
 
 async function connectTelegram() {
