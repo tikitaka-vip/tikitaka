@@ -922,10 +922,11 @@ async function subscribePush() {
     if (permission !== 'granted') return;
 
     const reg = await navigator.serviceWorker.ready;
+    await reg.update();
     const keyRes = await api('/api/push/vapid-key');
     const vapidKey = urlBase64ToUint8Array(keyRes.publicKey);
     const oldSub = await reg.pushManager.getSubscription();
-    if (oldSub) await oldSub.unsubscribe().catch(() => {});
+    if (oldSub) { await oldSub.unsubscribe(); await new Promise(r => setTimeout(r, 500)); }
     const sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: vapidKey });
 
     const subRes = await api('/api/push/subscribe', {
@@ -1969,7 +1970,9 @@ function dismissInstall() {
 }
 
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js');
+  navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' })
+    .then(reg => reg.update())
+    .catch(() => {});
 }
 
 // iOS install hint
