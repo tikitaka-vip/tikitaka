@@ -4,8 +4,8 @@
 - **Full**: TikiTaka.vip
 - **Short**: TikiTaka / Tiki
 - **Hebrew**: ניחושי מונדיאל 2026
-- **Tagline (HE)**: קוף אמיתי מגן החיות מנחש. אתם יכולים לנצח אותו?
-- **Tagline (EN)**: A real zoo monkey predicts all 104 matches. Can you beat it?
+- **Tagline (HE)**: קוף אמיתי ממקלט מנחש. אתם יכולים לנצח אותו?
+- **Tagline (EN)**: A real shelter monkey predicts all 104 matches. Can you beat it?
 
 ## Colors
 
