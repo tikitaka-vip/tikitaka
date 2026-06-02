@@ -49,6 +49,9 @@ app.use('/api/login', rateLimit(60000, 10));
 app.use('/api/players', rateLimit(60000, 10));
 app.use('/api/predictions', rateLimit(60000, 60));
 app.use('/api', rateLimit(60000, 120));
+app.use('/socials', express.static(path.join(__dirname, 'socials'), {
+  maxAge: '1h'
+}));
 app.use('/brand', express.static(path.join(__dirname, 'brand'), {
   maxAge: '1h',
   setHeaders: (res, filePath) => {

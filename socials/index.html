@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TikiTaka.vip — Social Media Setup Kit</title>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #0a0e17; color: #e8e6e3; font-family: 'Heebo', Arial, sans-serif; line-height: 1.6; }
+    .container { max-width: 900px; margin: 0 auto; padding: 24px 20px; }
+    h1 { font-size: 2rem; font-weight: 900; margin-bottom: 8px; }
+    h1 span { color: #c9a227; }
+    .subtitle { color: #7a8ba7; margin-bottom: 32px; }
+    h2 { font-size: 1.3rem; font-weight: 800; color: #c9a227; margin: 32px 0 16px; border-bottom: 1px solid #1e2a45; padding-bottom: 8px; }
+    h3 { font-size: 1.05rem; font-weight: 700; margin: 20px 0 10px; }
+
+    .platform { background: #141b2d; border: 1px solid #1e2a45; border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+    .platform-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+    .platform-icon { font-size: 1.6rem; }
+    .platform-name { font-weight: 800; font-size: 1.15rem; }
+    .platform-handle { color: #c9a227; font-weight: 700; }
+
+    .field { margin-bottom: 14px; }
+    .field-label { font-size: 0.82rem; font-weight: 700; color: #7a8ba7; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+    .field-value { background: #1a2238; border: 1px solid #1e2a45; border-radius: 8px; padding: 10px 14px; font-size: 0.92rem; position: relative; cursor: pointer; transition: border-color 0.2s; }
+    .field-value:hover { border-color: #c9a227; }
+    .field-value::after { content: '📋'; position: absolute; right: 10px; top: 50%; transform: translateY(-50%); opacity: 0.5; font-size: 0.8rem; }
+    .field-value.copied::after { content: '✓'; color: #27ae60; opacity: 1; }
+    .field-value.rtl { direction: rtl; text-align: right; }
+    .char-count { font-size: 0.75rem; color: #4a5568; margin-top: 2px; }
+
+    .asset-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin: 12px 0; }
+    .asset-card { background: #1a2238; border: 1px solid #1e2a45; border-radius: 8px; overflow: hidden; }
+    .asset-card img { width: 100%; display: block; }
+    .asset-card .asset-info { padding: 8px 12px; }
+    .asset-card .asset-name { font-weight: 700; font-size: 0.85rem; }
+    .asset-card .asset-size { font-size: 0.75rem; color: #7a8ba7; }
+    .asset-card a { display: block; padding: 6px 12px; background: #c9a227; color: #0a0e17; text-align: center; font-weight: 700; font-size: 0.85rem; text-decoration: none; }
+    .asset-card a:hover { background: #d4ad3a; }
+
+    .steps { list-style: none; counter-reset: step; }
+    .steps li { counter-increment: step; padding: 8px 0 8px 36px; position: relative; border-left: 2px solid #1e2a45; margin-left: 12px; }
+    .steps li::before { content: counter(step); position: absolute; left: -13px; top: 8px; background: #c9a227; color: #0a0e17; width: 24px; height: 24px; border-radius: 50%; text-align: center; line-height: 24px; font-weight: 800; font-size: 0.8rem; }
+    .steps li:last-child { border-left-color: transparent; }
+
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+    .tag { background: #1a2238; border: 1px solid #1e2a45; border-radius: 6px; padding: 4px 10px; font-size: 0.82rem; cursor: pointer; }
+    .tag:hover { border-color: #c9a227; }
+
+    .checklist { list-style: none; margin: 8px 0; }
+    .checklist li { padding: 6px 0; padding-left: 24px; position: relative; }
+    .checklist li::before { content: '☐'; position: absolute; left: 0; color: #c9a227; }
+
+    .note { background: rgba(201,162,39,0.1); border: 1px solid rgba(201,162,39,0.3); border-radius: 8px; padding: 12px 16px; font-size: 0.9rem; margin: 12px 0; }
+    .note strong { color: #c9a227; }
+
+    .section-divider { height: 1px; background: linear-gradient(90deg, transparent, #1e2a45, transparent); margin: 32px 0; }
+
+    @media (max-width: 600px) {
+      .asset-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Tiki<span>Taka</span>.vip — Social Setup Kit</h1>
+  <p class="subtitle">Everything you need to open and set up accounts on every platform. Copy text, download images, follow the steps.</p>
+
+  <!-- ============ UNIVERSAL BIO & TEXT ============ -->
+  <h2>Universal Text Assets</h2>
+  <p style="color:#7a8ba7; margin-bottom:16px;">Click any text field to copy it.</p>
+
+  <div class="field">
+    <div class="field-label">Display Name</div>
+    <div class="field-value" onclick="copyText(this)">TikiTaka.vip 🐒⚽</div>
+  </div>
+
+  <div class="field">
+    <div class="field-label">Bio — English (short, fits everywhere)</div>
+    <div class="field-value" onclick="copyText(this)">A real zoo monkey predicts all 104 World Cup matches. Can you beat it? 🐒⚽ Free to play → tikitaka.vip</div>
+    <div class="char-count">113 chars</div>
+  </div>
+
+  <div class="field">
+    <div class="field-label">Bio — Hebrew (short)</div>
+    <div class="field-value rtl" onclick="copyText(this)">קוף אמיתי מגן החיות מנחש את כל 104 משחקי המונדיאל. תוכלו לנצח אותו? 🐒⚽ חינם → tikitaka.vip</div>
+    <div class="char-count">93 chars</div>
+  </div>
+
+  <div class="field">
+    <div class="field-label">Bio — English (long, for "about" sections)</div>
+    <div class="field-value" onclick="copyText(this)">TikiTaka.vip is a free World Cup 2026 prediction game with a twist — you're competing against a real monkey from the zoo who picks every match. Surprise predictions earn 8x points! 104 matches, USA/Canada/Mexico, June 11 – July 19. Can you outsmart the monkey?</div>
+  </div>
+
+  <div class="field">
+    <div class="field-label">Bio — Hebrew (long)</div>
+    <div class="field-value rtl" onclick="copyText(this)">TikiTaka.vip — משחק ניחושים חינמי למונדיאל 2026 עם טוויסט: אתם מתחרים נגד קוף אמיתי מגן החיות שמנחש כל משחק. ניחוש הפתעה שווה פי 8 נקודות! 104 משחקים, ארה״ב/קנדה/מקסיקו, 11 ביוני – 19 ביולי.</div>
+  </div>
+
+  <div class="field">
+    <div class="field-label">Tagline (under 80 chars)</div>
+    <div class="field-value" onclick="copyText(this)">Beat the monkey. Predict the World Cup. Surprise picks = 8x points.</div>
+    <div class="char-count">68 chars</div>
+  </div>
+
+  <div class="field">
+    <div class="field-label">One-liner</div>
+    <div class="field-value" onclick="copyText(this)">Free World Cup 2026 prediction game — compete against a real zoo monkey 🐒</div>
+  </div>
+
+  <div class="field">
+    <div class="field-label">Website URL</div>
+    <div class="field-value" onclick="copyText(this)">https://tikitaka.vip</div>
+  </div>
+
+  <div class="field">
+    <div class="field-label">Category</div>
+    <div class="field-value" onclick="copyText(this)">Sports / Games / Entertainment</div>
+  </div>
+
+  <div class="field">
+    <div class="field-label">Hashtags — English</div>
+    <div class="tags">
+      <span class="tag" onclick="copyTag(this)">#WorldCup2026</span>
+      <span class="tag" onclick="copyTag(this)">#TikiTaka</span>
+      <span class="tag" onclick="copyTag(this)">#FIFA2026</span>
+      <span class="tag" onclick="copyTag(this)">#BeatTheMonkey</span>
+      <span class="tag" onclick="copyTag(this)">#WorldCupPredictions</span>
+      <span class="tag" onclick="copyTag(this)">#FreePredictionGame</span>
+      <span class="tag" onclick="copyTag(this)">#SoccerPredictions</span>
+      <span class="tag" onclick="copyTag(this)">#Mundial2026</span>
+    </div>
+  </div>
+
+  <div class="field">
+    <div class="field-label">All Hashtags (copy block)</div>
+    <div class="field-value" onclick="copyText(this)">#WorldCup2026 #TikiTaka #FIFA2026 #BeatTheMonkey #WorldCupPredictions #FreePredictionGame #SoccerPredictions #Mundial2026</div>
+  </div>
+
+  <div class="field">
+    <div class="field-label">Hashtags — Hebrew</div>
+    <div class="field-value rtl" onclick="copyText(this)">#מונדיאל2026 #טיקיטאקה #ניחושים #כדורגל #גביע_העולם #פיפא2026</div>
+  </div>
+
+  <!-- ============ IMAGES ============ -->
+  <h2>Images — Download All</h2>
+
+  <h3>Profile Pictures</h3>
+  <div class="asset-grid">
+    <div class="asset-card">
+      <img src="profile-800.png" alt="Profile 800x800">
+      <div class="asset-info">
+        <div class="asset-name">High-res profile</div>
+        <div class="asset-size">800×800 — Instagram, TikTok, YouTube</div>
+      </div>
+      <a href="profile-800.png" download>Download</a>
+    </div>
+    <div class="asset-card">
+      <img src="profile-400.png" alt="Profile 400x400">
+      <div class="asset-info">
+        <div class="asset-name">Standard profile</div>
+        <div class="asset-size">400×400 — Twitter/X, Facebook, Telegram</div>
+      </div>
+      <a href="profile-400.png" download>Download</a>
+    </div>
+    <div class="asset-card">
+      <img src="profile-320.png" alt="Profile 320x320">
+      <div class="asset-info">
+        <div class="asset-name">Small profile</div>
+        <div class="asset-size">320×320 — WhatsApp, Threads</div>
+      </div>
+      <a href="profile-320.png" download>Download</a>
+    </div>
+  </div>
+
+  <h3>Banners / Cover Photos</h3>
+  <div class="asset-grid">
+    <div class="asset-card">
+      <img src="banner-1500x500.png" alt="X/Twitter banner">
+      <div class="asset-info">
+        <div class="asset-name">X / Twitter banner</div>
+        <div class="asset-size">1500×500</div>
+      </div>
+      <a href="banner-1500x500.png" download>Download</a>
+    </div>
+    <div class="asset-card">
+      <img src="banner-820x312.png" alt="Facebook cover">
+      <div class="asset-info">
+        <div class="asset-name">Facebook cover</div>
+        <div class="asset-size">820×312</div>
+      </div>
+      <a href="banner-820x312.png" download>Download</a>
+    </div>
+    <div class="asset-card">
+      <img src="banner-2560x1440.png" alt="YouTube banner">
+      <div class="asset-info">
+        <div class="asset-name">YouTube banner</div>
+        <div class="asset-size">2560×1440</div>
+      </div>
+      <a href="banner-2560x1440.png" download>Download</a>
+    </div>
+    <div class="asset-card">
+      <img src="banner-1080x1080.png" alt="Instagram post">
+      <div class="asset-info">
+        <div class="asset-name">Instagram post / story</div>
+        <div class="asset-size">1080×1080</div>
+      </div>
+      <a href="banner-1080x1080.png" download>Download</a>
+    </div>
+    <div class="asset-card">
+      <img src="banner-1280x640.png" alt="Telegram banner">
+      <div class="asset-info">
+        <div class="asset-name">Telegram channel</div>
+        <div class="asset-size">1280×640</div>
+      </div>
+      <a href="banner-1280x640.png" download>Download</a>
+    </div>
+    <div class="asset-card">
+      <img src="banner-1200x630.png" alt="WhatsApp/OG banner">
+      <div class="asset-info">
+        <div class="asset-name">WhatsApp / OG share</div>
+        <div class="asset-size">1200×630</div>
+      </div>
+      <a href="banner-1200x630.png" download>Download</a>
+    </div>
+  </div>
+
+  <h3>App Screenshots (for posts & directories)</h3>
+  <div class="asset-grid">
+    <div class="asset-card">
+      <img src="01-homepage-desktop.png" alt="Homepage">
+      <div class="asset-info"><div class="asset-name">Homepage (Hebrew)</div></div>
+      <a href="01-homepage-desktop.png" download>Download</a>
+    </div>
+    <div class="asset-card">
+      <img src="02-homepage-english.png" alt="Homepage EN">
+      <div class="asset-info"><div class="asset-name">Homepage (English)</div></div>
+      <a href="02-homepage-english.png" download>Download</a>
+    </div>
+    <div class="asset-card">
+      <img src="03-scoring.png" alt="Scoring">
+      <div class="asset-info"><div class="asset-name">Scoring system</div></div>
+      <a href="03-scoring.png" download>Download</a>
+    </div>
+    <div class="asset-card">
+      <img src="04-matches.png" alt="Matches">
+      <div class="asset-info"><div class="asset-name">Match predictions</div></div>
+      <a href="04-matches.png" download>Download</a>
+    </div>
+    <div class="asset-card">
+      <img src="05-mobile-home.png" alt="Mobile home">
+      <div class="asset-info"><div class="asset-name">Mobile home</div></div>
+      <a href="05-mobile-home.png" download>Download</a>
+    </div>
+    <div class="asset-card">
+      <img src="06-mobile-matches.png" alt="Mobile matches">
+      <div class="asset-info"><div class="asset-name">Mobile matches</div></div>
+      <a href="06-mobile-matches.png" download>Download</a>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- ============ PLATFORM-BY-PLATFORM ============ -->
+  <h2>Platform-by-Platform Setup</h2>
+
+  <!-- INSTAGRAM -->
+  <div class="platform">
+    <div class="platform-header">
+      <span class="platform-icon">📸</span>
+      <span class="platform-name">Instagram</span>
+      <span class="platform-handle">@tikitaka.vip</span>
+    </div>
+    <div class="note"><strong>Account type:</strong> Business or Creator account (for analytics & link in bio)</div>
+    <ol class="steps">
+      <li>Create account with username <strong>tikitaka.vip</strong> (or tikitakavip if taken)</li>
+      <li>Upload <strong>profile-800.png</strong> as profile picture</li>
+      <li>Set display name to: <strong>TikiTaka.vip 🐒⚽</strong></li>
+      <li>Set bio (click to copy above): use the Hebrew short bio for Israeli audience</li>
+      <li>Set website to: <strong>https://tikitaka.vip</strong></li>
+      <li>Set category to: <strong>Gaming</strong> or <strong>Sports</strong></li>
+      <li>Switch to Professional → Creator or Business account</li>
+      <li>Post <strong>banner-1080x1080.png</strong> as the first post</li>
+      <li>Add a Story highlight "Play Now" linking to the site</li>
+    </ol>
+    <div class="field" style="margin-top:12px">
+      <div class="field-label">First post caption (Hebrew)</div>
+      <div class="field-value rtl" onclick="copyText(this)">🐒⚽ קוף אמיתי מגן החיות מנחש את כל 104 משחקי המונדיאל 2026. תוכלו לנצח אותו?
+
+ניחוש הפתעה שווה פי 8 נקודות! 🎯
+
+חינם לגמרי. קישור בביו 👆
+
+#מונדיאל2026 #טיקיטאקה #ניחושים #כדורגל #גביע_העולם #WorldCup2026 #BeatTheMonkey</div>
+    </div>
+    <div class="field">
+      <div class="field-label">First post caption (English)</div>
+      <div class="field-value" onclick="copyText(this)">🐒⚽ A real zoo monkey predicts all 104 World Cup 2026 matches. Can you beat it?
+
+Surprise picks = 8x points! 🎯
+
+Free to play. Link in bio 👆
+
+#WorldCup2026 #TikiTaka #FIFA2026 #BeatTheMonkey #WorldCupPredictions #FreePredictionGame</div>
+    </div>
+  </div>
+
+  <!-- TIKTOK -->
+  <div class="platform">
+    <div class="platform-header">
+      <span class="platform-icon">🎵</span>
+      <span class="platform-name">TikTok</span>
+      <span class="platform-handle">@tikitaka.vip</span>
+    </div>
+    <ol class="steps">
+      <li>Create account with username <strong>tikitakavip</strong> (TikTok doesn't allow dots)</li>
+      <li>Upload <strong>profile-800.png</strong> as profile picture</li>
+      <li>Set display name to: <strong>TikiTaka.vip 🐒⚽</strong></li>
+      <li>Set bio (80 char limit): use the English short bio</li>
+      <li>Add website link: <strong>https://tikitaka.vip</strong> (requires 1000 followers or Business account)</li>
+      <li>Switch to Business account to get the link immediately</li>
+    </ol>
+    <div class="field" style="margin-top:12px">
+      <div class="field-label">TikTok Bio (fits 80 chars)</div>
+      <div class="field-value" onclick="copyText(this)">Beat a real monkey at predicting World Cup 2026 🐒⚽ Free game → tikitaka.vip</div>
+      <div class="char-count">78 chars</div>
+    </div>
+  </div>
+
+  <!-- X / TWITTER -->
+  <div class="platform">
+    <div class="platform-header">
+      <span class="platform-icon">𝕏</span>
+      <span class="platform-name">X (Twitter)</span>
+      <span class="platform-handle">@tikitakavip</span>
+    </div>
+    <ol class="steps">
+      <li>Create account with handle <strong>@tikitakavip</strong></li>
+      <li>Upload <strong>profile-400.png</strong> as profile picture</li>
+      <li>Upload <strong>banner-1500x500.png</strong> as header image</li>
+      <li>Set display name to: <strong>TikiTaka.vip 🐒⚽</strong></li>
+      <li>Set bio (160 char limit): use the English short bio</li>
+      <li>Set website to: <strong>https://tikitaka.vip</strong></li>
+      <li>Set location to: <strong>USA / Canada / Mexico 🏟️</strong></li>
+      <li>Pin the first tweet</li>
+    </ol>
+    <div class="field" style="margin-top:12px">
+      <div class="field-label">X Bio (160 chars)</div>
+      <div class="field-value" onclick="copyText(this)">A real zoo monkey predicts all 104 World Cup 2026 matches. Can you beat it? 🐒⚽ Surprise picks = 8x points. Free to play!</div>
+      <div class="char-count">123 chars</div>
+    </div>
+    <div class="field">
+      <div class="field-label">First tweet</div>
+      <div class="field-value" onclick="copyText(this)">🐒 Meet the world's first monkey World Cup predictor.
+
+He picks all 104 matches. You try to beat him. Surprise picks = 8x points.
+
+Free. No app download. Just play.
+
+→ tikitaka.vip
+
+#WorldCup2026 #FIFA2026 #BeatTheMonkey</div>
+    </div>
+  </div>
+
+  <!-- FACEBOOK -->
+  <div class="platform">
+    <div class="platform-header">
+      <span class="platform-icon">📘</span>
+      <span class="platform-name">Facebook Page</span>
+      <span class="platform-handle">TikiTaka.vip</span>
+    </div>
+    <ol class="steps">
+      <li>Create a <strong>Page</strong> (not profile) — category: "Gaming" or "Sports & Recreation"</li>
+      <li>Page name: <strong>TikiTaka.vip</strong></li>
+      <li>Upload <strong>profile-400.png</strong> as profile picture</li>
+      <li>Upload <strong>banner-820x312.png</strong> as cover photo</li>
+      <li>Set "About" → Short description using the English long bio</li>
+      <li>Set website to: <strong>https://tikitaka.vip</strong></li>
+      <li>Add a CTA button: <strong>Play Game → https://tikitaka.vip</strong></li>
+      <li>Post <strong>banner-1200x630.png</strong> as the first post with caption</li>
+    </ol>
+  </div>
+
+  <!-- TELEGRAM -->
+  <div class="platform">
+    <div class="platform-header">
+      <span class="platform-icon">✈️</span>
+      <span class="platform-name">Telegram Channel</span>
+      <span class="platform-handle">@tikitakavip</span>
+    </div>
+    <ol class="steps">
+      <li>Create a <strong>Channel</strong> (not group) named <strong>TikiTaka.vip 🐒⚽</strong></li>
+      <li>Set username to <strong>@tikitakavip</strong></li>
+      <li>Upload <strong>profile-400.png</strong> as channel photo</li>
+      <li>Set description using the Hebrew long bio</li>
+      <li>Pin a welcome message with the link</li>
+    </ol>
+    <div class="field" style="margin-top:12px">
+      <div class="field-label">Channel description</div>
+      <div class="field-value rtl" onclick="copyText(this)">🐒⚽ ניחושי מונדיאל 2026 — קוף אמיתי מגן החיות מנחש את כל 104 המשחקים. תוכלו לנצח אותו?
+
+ניחוש הפתעה = ×8 נקודות!
+חינם → tikitaka.vip</div>
+    </div>
+  </div>
+
+  <!-- THREADS -->
+  <div class="platform">
+    <div class="platform-header">
+      <span class="platform-icon">🧵</span>
+      <span class="platform-name">Threads</span>
+      <span class="platform-handle">@tikitaka.vip</span>
+    </div>
+    <div class="note"><strong>Note:</strong> Threads uses your Instagram account. Set up Instagram first, then Threads will auto-inherit your profile pic and username.</div>
+    <ol class="steps">
+      <li>Open Threads app and sign in with your Instagram account</li>
+      <li>Profile pic and name sync from Instagram</li>
+      <li>Set bio to the English short bio</li>
+      <li>Post the first thread (same as Twitter first post)</li>
+    </ol>
+  </div>
+
+  <!-- YOUTUBE -->
+  <div class="platform">
+    <div class="platform-header">
+      <span class="platform-icon">▶️</span>
+      <span class="platform-name">YouTube</span>
+      <span class="platform-handle">@tikitakavip</span>
+    </div>
+    <ol class="steps">
+      <li>Create a <strong>Brand account</strong> channel named <strong>TikiTaka.vip</strong></li>
+      <li>Set handle to <strong>@tikitakavip</strong></li>
+      <li>Upload <strong>profile-800.png</strong> as profile picture</li>
+      <li>Upload <strong>banner-2560x1440.png</strong> as banner image</li>
+      <li>Set description using the English long bio</li>
+      <li>Add website link: <strong>https://tikitaka.vip</strong></li>
+      <li>Add social links (Instagram, X, Telegram)</li>
+    </ol>
+  </div>
+
+  <!-- WHATSAPP -->
+  <div class="platform">
+    <div class="platform-header">
+      <span class="platform-icon">💬</span>
+      <span class="platform-name">WhatsApp Channel</span>
+      <span class="platform-handle">TikiTaka.vip</span>
+    </div>
+    <ol class="steps">
+      <li>Open WhatsApp → Updates → Create Channel</li>
+      <li>Name: <strong>TikiTaka.vip 🐒⚽</strong></li>
+      <li>Upload <strong>profile-320.png</strong> as channel icon</li>
+      <li>Set description using the Hebrew long bio</li>
+      <li>Post the first update with <strong>banner-1200x630.png</strong></li>
+    </ol>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- ============ FIRST WEEK CONTENT ============ -->
+  <h2>First Week Content Plan</h2>
+  <div class="note"><strong>World Cup starts June 11.</strong> Get accounts up ASAP so they have some history before kickoff.</div>
+
+  <div class="field">
+    <div class="field-label">Day 1 — Launch post (all platforms)</div>
+    <div class="field-value" onclick="copyText(this)">🐒⚽ INTRODUCING TikiTaka.vip
+
+A real monkey from the zoo predicts every World Cup 2026 match.
+
+Your job? Beat him.
+
+✓ 104 matches
+✓ Surprise picks = 8x points
+✓ 100% free
+✓ No app needed
+
+→ tikitaka.vip
+
+#WorldCup2026 #BeatTheMonkey</div>
+  </div>
+
+  <div class="field">
+    <div class="field-label">Day 2 — How it works</div>
+    <div class="field-value" onclick="copyText(this)">How TikiTaka.vip works:
+
+1️⃣ Sign up (free, takes 10 seconds)
+2️⃣ Predict match scores
+3️⃣ Earn points — exact score = 5pts, right result = 3pts
+4️⃣ SURPRISE BONUS: go against the odds = 8x multiplier! 🤯
+
+The monkey already made his picks. Can you do better?
+
+→ tikitaka.vip</div>
+  </div>
+
+  <div class="field">
+    <div class="field-label">Day 3 — The monkey angle</div>
+    <div class="field-value" onclick="copyText(this)">Fun fact: our monkey predictor doesn't care about FIFA rankings, form, or injuries.
+
+He just... picks.
+
+And historically, random picks beat ~40% of human predictors.
+
+Are you in the other 60%? Prove it.
+
+🐒 → tikitaka.vip</div>
+  </div>
+
+  <div class="field">
+    <div class="field-label">Day 4 — Share/invite CTA</div>
+    <div class="field-value" onclick="copyText(this)">World Cup is better with friends arguing about scores.
+
+Create a group on TikiTaka.vip, invite your crew, and see who actually knows football vs. who's just lucky.
+
+Private leaderboards. Bragging rights. Zero cost.
+
+🐒⚽ tikitaka.vip</div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- ============ CHECKLIST ============ -->
+  <h2>Setup Checklist</h2>
+  <ul class="checklist">
+    <li>Instagram account created + first post up</li>
+    <li>TikTok account created (Business for link in bio)</li>
+    <li>X/Twitter account created + header + pinned tweet</li>
+    <li>Facebook Page created + cover photo + CTA button</li>
+    <li>Telegram Channel created + description + pinned message</li>
+    <li>Threads profile set up (after Instagram)</li>
+    <li>YouTube Brand channel created + banner</li>
+    <li>WhatsApp Channel created + first update</li>
+    <li>All profiles link to https://tikitaka.vip</li>
+    <li>Cross-link all platforms in each bio/about section</li>
+  </ul>
+
+</div>
+
+<script>
+function copyText(el) {
+  const text = el.innerText.replace('📋', '').replace('✓', '').trim();
+  navigator.clipboard.writeText(text).then(() => {
+    el.classList.add('copied');
+    setTimeout(() => el.classList.remove('copied'), 1500);
+  });
+}
+function copyTag(el) {
+  navigator.clipboard.writeText(el.innerText).then(() => {
+    el.style.borderColor = '#27ae60';
+    setTimeout(() => el.style.borderColor = '', 1000);
+  });
+}
+</script>
+</body>
+</html>
