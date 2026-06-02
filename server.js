@@ -5,6 +5,8 @@ const fs = require('fs');
 const https = require('https');
 const http = require('http');
 
+const { sendWelcomeEmail, sendResetEmail, sendVerifyEmail, hashPassword, verifyPassword } = require('./email');
+const { setupNotificationRoutes, startNotificationScheduler, notifyResult, setTgBotToken } = require('./notifications');
 const app = express();
 const db = new Database(path.join(__dirname, 'worldcup.db'));
 
@@ -166,6 +168,39 @@ db.exec(`
     group_id INTEGER NOT NULL REFERENCES groups(id),
     player_id INTEGER NOT NULL REFERENCES players(id),
     PRIMARY KEY (group_id, player_id)
+  );
+`);
+
+// Migrate: add auth + notification columns
+const cols = new Set(db.prepare("PRAGMA table_info(players)").all().map(c => c.name));
+const migrations = [
+  ['lang', "ALTER TABLE players ADD COLUMN lang TEXT DEFAULT 'he'"],
+  ['password_hash', "ALTER TABLE players ADD COLUMN password_hash TEXT"],
+  ['email_verified', "ALTER TABLE players ADD COLUMN email_verified INTEGER DEFAULT 0"],
+  ['verify_token', "ALTER TABLE players ADD COLUMN verify_token TEXT"],
+  ['reset_token', "ALTER TABLE players ADD COLUMN reset_token TEXT"],
+  ['reset_expires', "ALTER TABLE players ADD COLUMN reset_expires TEXT"],
+  ['telegram_chat_id', "ALTER TABLE players ADD COLUMN telegram_chat_id TEXT"],
+  ['tg_link_token', "ALTER TABLE players ADD COLUMN tg_link_token TEXT"],
+];
+for (const [col, sql] of migrations) {
+  if (!cols.has(col)) db.exec(sql);
+}
+
+// Create notification tables
+db.exec(`
+  CREATE TABLE IF NOT EXISTS push_subscriptions (
+    player_id INTEGER NOT NULL REFERENCES players(id),
+    endpoint TEXT NOT NULL UNIQUE,
+    keys_p256dh TEXT NOT NULL,
+    keys_auth TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  );
+  CREATE TABLE IF NOT EXISTS notification_log (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    match_id INTEGER,
+    type TEXT NOT NULL,
+    sent_at DATETIME DEFAULT CURRENT_TIMESTAMP
   );
 `);
 
@@ -410,7 +445,7 @@ function generateToken() {
 function authPlayer(req) {
   const token = req.headers['x-session-token'] || req.query.token;
   if (!token) return null;
-  return db.prepare('SELECT id, name, email, avatar_url FROM players WHERE session_token = ?').get(token) || null;
+  return db.prepare('SELECT id, name, email, avatar_url, telegram_chat_id FROM players WHERE session_token = ?').get(token) || null;
 }
 
 function verifyPlayer(playerId, pinOrToken) {
@@ -422,7 +457,7 @@ function verifyPlayer(playerId, pinOrToken) {
 
 // Google Sign-In
 app.post('/api/auth/google', async (req, res) => {
-  const { credential } = req.body;
+  const { credential, lang } = req.body;
   if (!credential) return res.status(400).json({ error: 'Missing credential' });
 
   const clientId = db.prepare("SELECT value FROM settings WHERE key = 'google_client_id'").get()?.value;
@@ -441,13 +476,17 @@ app.post('/api/auth/google', async (req, res) => {
 
     // Find or create player
     let player = db.prepare('SELECT * FROM players WHERE google_id = ? OR email = ?').get(googleId, email);
+    const playerLang = lang || 'he';
     if (player) {
-      db.prepare('UPDATE players SET session_token = ?, google_id = ?, avatar_url = ?, name = ? WHERE id = ?')
-        .run(token, googleId, picture || '', name || player.name, player.id);
+      db.prepare('UPDATE players SET session_token = ?, google_id = ?, avatar_url = ?, name = ?, lang = ?, email_verified = 1 WHERE id = ?')
+        .run(token, googleId, picture || '', name || player.name, playerLang, player.id);
     } else {
-      const result = db.prepare('INSERT INTO players (name, email, google_id, avatar_url, pin, session_token) VALUES (?, ?, ?, ?, ?, ?)')
-        .run(name || email.split('@')[0], email, googleId, picture || '', 'google-auth', token);
-      player = { id: result.lastInsertRowid, name: name || email.split('@')[0] };
+      const playerName = name || email.split('@')[0];
+      const result = db.prepare('INSERT INTO players (name, email, google_id, avatar_url, pin, session_token, lang, email_verified) VALUES (?, ?, ?, ?, ?, ?, ?, 1)')
+        .run(playerName, email, googleId, picture || '', 'google-auth', token, playerLang);
+      player = { id: result.lastInsertRowid, name: playerName };
+      const inviteCode = createAutoGroup(player.id, playerName, playerLang);
+      sendWelcomeEmail(email, playerName, playerLang, player.id, inviteCode).catch(e => console.error('Welcome email failed:', e.message));
     }
 
     track(req, 'login_google', { player_id: player.id, name: player.name || name });
@@ -489,6 +528,115 @@ app.get('/api/auth/me', (req, res) => {
   const player = authPlayer(req);
   if (!player) return res.status(401).json({ error: 'not logged in' });
   res.json(player);
+});
+
+// Email + password signup
+app.post('/api/auth/signup', async (req, res) => {
+  const { email, password, name, lang } = req.body;
+  if (!email?.trim()) return res.status(400).json({ error: 'Email required' });
+  if (!password || password.length < 6) return res.status(400).json({ error: 'Password must be at least 6 characters' });
+  const playerName = (name || email.split('@')[0]).trim();
+  const playerLang = lang || 'he';
+
+  const existing = db.prepare('SELECT id FROM players WHERE email = ?').get(email.toLowerCase().trim());
+  if (existing) return res.status(409).json({ error: 'Email already registered' });
+
+  const token = generateToken();
+  const verifyToken = generateToken();
+  const pwHash = hashPassword(password);
+
+  try {
+    const result = db.prepare(
+      'INSERT INTO players (name, email, password_hash, pin, session_token, lang, email_verified, verify_token) VALUES (?, ?, ?, ?, ?, ?, 0, ?)'
+    ).run(playerName, email.toLowerCase().trim(), pwHash, 'email-auth', token, playerLang, verifyToken);
+
+    const inviteCode = createAutoGroup(result.lastInsertRowid, playerName, playerLang);
+    const verifyUrl = `https://tikitaka.vip/api/auth/verify-email?token=${verifyToken}`;
+    sendVerifyEmail(email, playerName, verifyUrl, playerLang).catch(e => console.error('Verify email failed:', e.message));
+    sendWelcomeEmail(email, playerName, playerLang, result.lastInsertRowid, inviteCode).catch(e => console.error('Welcome email failed:', e.message));
+
+    track(req, 'signup_email', { player_id: result.lastInsertRowid, name: playerName });
+    res.json({ id: result.lastInsertRowid, name: playerName, email, token });
+  } catch (e) {
+    if (e.message.includes('UNIQUE')) return res.status(409).json({ error: 'Email or name already taken' });
+    throw e;
+  }
+});
+
+// Email + password login
+app.post('/api/auth/login', (req, res) => {
+  const { email, password, lang } = req.body;
+  if (!email || !password) return res.status(400).json({ error: 'Email and password required' });
+
+  const player = db.prepare('SELECT * FROM players WHERE email = ?').get(email.toLowerCase().trim());
+  if (!player || !player.password_hash) return res.status(401).json({ error: 'Invalid email or password' });
+
+  try {
+    if (!verifyPassword(password, player.password_hash)) {
+      return res.status(401).json({ error: 'Invalid email or password' });
+    }
+  } catch {
+    return res.status(401).json({ error: 'Invalid email or password' });
+  }
+
+  const token = generateToken();
+  const updates = lang ? 'session_token = ?, lang = ?' : 'session_token = ?';
+  const params = lang ? [token, lang, player.id] : [token, player.id];
+  db.prepare(`UPDATE players SET ${updates} WHERE id = ?`).run(...params);
+
+  track(req, 'login_email', { player_id: player.id });
+  res.json({ id: player.id, name: player.name, email: player.email, avatar_url: player.avatar_url, token });
+});
+
+// Email verification
+app.get('/api/auth/verify-email', (req, res) => {
+  const { token } = req.query;
+  if (!token) return res.status(400).send('Missing token');
+
+  const player = db.prepare('SELECT id, lang FROM players WHERE verify_token = ?').get(token);
+  if (!player) return res.status(400).send('Invalid or expired token');
+
+  db.prepare('UPDATE players SET email_verified = 1, verify_token = NULL WHERE id = ?').run(player.id);
+  res.redirect('/?verified=1');
+});
+
+// Request password reset
+app.post('/api/auth/forgot-password', async (req, res) => {
+  const { email, lang } = req.body;
+  if (!email) return res.status(400).json({ error: 'Email required' });
+
+  const player = db.prepare('SELECT id, name, lang, password_hash FROM players WHERE email = ?').get(email.toLowerCase().trim());
+  if (!player || !player.password_hash) {
+    return res.json({ ok: true });
+  }
+
+  const resetToken = generateToken();
+  const expires = new Date(Date.now() + 3600000).toISOString();
+  db.prepare('UPDATE players SET reset_token = ?, reset_expires = ? WHERE id = ?').run(resetToken, expires, player.id);
+
+  const playerLang = lang || player.lang || 'he';
+  const resetUrl = `https://tikitaka.vip/?reset=${resetToken}`;
+  sendResetEmail(email, player.name, resetUrl, playerLang).catch(e => console.error('Reset email failed:', e.message));
+
+  res.json({ ok: true });
+});
+
+// Confirm password reset
+app.post('/api/auth/reset-password', (req, res) => {
+  const { token, password } = req.body;
+  if (!token || !password) return res.status(400).json({ error: 'Token and password required' });
+  if (password.length < 6) return res.status(400).json({ error: 'Password must be at least 6 characters' });
+
+  const player = db.prepare('SELECT id, reset_expires FROM players WHERE reset_token = ?').get(token);
+  if (!player) return res.status(400).json({ error: 'Invalid or expired token' });
+  if (new Date(player.reset_expires) < new Date()) return res.status(400).json({ error: 'Token expired' });
+
+  const pwHash = hashPassword(password);
+  const sessionToken = generateToken();
+  db.prepare('UPDATE players SET password_hash = ?, reset_token = NULL, reset_expires = NULL, session_token = ? WHERE id = ?')
+    .run(pwHash, sessionToken, player.id);
+
+  res.json({ ok: true, token: sessionToken });
 });
 
 app.get('/api/auth/google-client-id', (req, res) => {
@@ -700,6 +848,22 @@ function generateInviteCode() {
   let code = '';
   for (let i = 0; i < 6; i++) code += chars[Math.floor(Math.random() * chars.length)];
   return code;
+}
+
+const GROUP_NAME_SUFFIX = {
+  he: 'והחברים', en: 'and friends', es: 'y amigos', fr: 'et amis',
+  pt: 'e amigos', ar: 'والأصدقاء', ru: 'и друзья', de: 'und Freunde', ja: 'と仲間'
+};
+
+function createAutoGroup(playerId, playerName, lang) {
+  const suffix = GROUP_NAME_SUFFIX[lang] || GROUP_NAME_SUFFIX.en;
+  const groupName = `${playerName} ${suffix}`;
+  const inviteCode = generateInviteCode();
+  const result = db.prepare('INSERT INTO groups (name, invite_code, manager_id, scoring_config) VALUES (?, ?, ?, ?)')
+    .run(groupName, inviteCode, playerId, JSON.stringify(DEFAULT_SCORING));
+  db.prepare('INSERT INTO group_members (group_id, player_id) VALUES (?, ?)').run(result.lastInsertRowid, playerId);
+  ensureMonkeyExists(result.lastInsertRowid);
+  return inviteCode;
 }
 
 function getGroupScoring(group) {
@@ -1248,6 +1412,12 @@ app.get('/join/:code', (req, res) => {
     <meta http-equiv="refresh" content="0;url=/?join=${encodeURIComponent(req.params.code)}">
   </head><body></body></html>`);
 });
+
+// Notifications — Web Push + Telegram
+setTgBotToken('8959296229:AAElcVWPberJ3UT0RmrSxfSDWvHpQkNS9MY');
+db.prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('tg_bot_username', 'TikiTakaVipBot')").run();
+setupNotificationRoutes(app, db);
+startNotificationScheduler(db);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => console.log(`World Cup predictor running on port ${PORT}`));
