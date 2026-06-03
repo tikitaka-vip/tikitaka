@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="/icon-192.png">
 <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
-<script src="/i18n.js?v=4"></script>
+<script src="/i18n.js?v=5"></script>
 <meta property="og:title" content="TikiTaka.vip — ?אתם יכולים לנחש טוב יותר מקוף">
 <meta property="og:description" content="World Cup 2026 prediction game. A real shelter monkey picks all 104 matches — beat him and win. Surprise picks = 8x points. Free to play!">
 <meta property="og:image" content="https://tikitaka.vip/og-image.png">
@@ -563,7 +563,7 @@
             onfocus="openDropdown('winner')" oninput="filterDropdown('winner')">
           <div class="dropdown" id="dd-winner"></div>
         </div>
-        <span class="tp-saved" id="saved-winner">&#10003; נשמר</span>
+        <span class="tp-saved" id="saved-winner"></span>
       </div>
 
       <div class="tp-card">
@@ -574,7 +574,7 @@
             onfocus="openDropdown('runner_up')" oninput="filterDropdown('runner_up')">
           <div class="dropdown" id="dd-runner_up"></div>
         </div>
-        <span class="tp-saved" id="saved-runner_up">&#10003; נשמר</span>
+        <span class="tp-saved" id="saved-runner_up"></span>
       </div>
 
       <div class="tp-card">
@@ -585,7 +585,7 @@
             onfocus="openDropdown('top_scorer')" oninput="filterDropdown('top_scorer')">
           <div class="dropdown" id="dd-top_scorer"></div>
         </div>
-        <span class="tp-saved" id="saved-top_scorer">&#10003; נשמר</span>
+        <span class="tp-saved" id="saved-top_scorer"></span>
       </div>
     </div>
 
@@ -765,7 +765,7 @@
 
 </div>
 
-<div class="saved-toast" id="toast">נשמר!</div>
+<div class="saved-toast" id="toast"></div>
 
 <div class="install-banner" id="installBanner">
   <span id="installText">&#9917;</span>
@@ -851,7 +851,7 @@ document.querySelectorAll('.tab').forEach(tab => {
 
 function toast(msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg || 'נשמר!';
+  t.textContent = msg || (typeof currentLang !== 'undefined' ? (T[currentLang]?.saved || T.en?.saved || 'Saved!') : 'Saved!');
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 1200);
 }
@@ -1479,7 +1479,7 @@ function renderPredictions() {
       <div class="match-card ${res ? 'has-result' : ''} ${m.locked && !res ? 'locked' : ''}">
         <div class="match-top">
           <span>${m.match_date || ''} ${m.match_time || ''} ${m.locked && !res ? `<span class="lock-icon">&#128274; ${t('locked')}</span>` : ''}</span>
-          <span>${m.venue || ''}</span>
+          <span>${tVenue(m.venue)}</span>
         </div>
         <div class="match-body">
           <div class="match-team right">${tTeam(m.team_a)}</div>
@@ -1531,6 +1531,7 @@ async function saveTournamentPred(type) {
   if (r.error) return alert(r.error);
   tournamentPreds[type] = value;
   const saved = document.getElementById(`saved-${type}`);
+  saved.textContent = '✓ ' + (t('saved') || 'Saved!');
   saved.classList.add('show');
   setTimeout(() => saved.classList.remove('show'), 2000);
 }

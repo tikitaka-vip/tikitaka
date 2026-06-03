@@ -331,6 +331,35 @@ const T = {
     scoring_base: 'Pontos base', scoring_exact: 'Placar exato', scoring_diff: 'Resultado + diferença certa', scoring_result_only: 'Só resultado certo', scoring_wrong: 'Errou', scoring_stage: 'Multiplicador de fase', scoring_surprise: 'Multiplicador surpresa', scoring_fav: 'Grande favorito', scoring_even: 'Jogo equilibrado', scoring_upset_label: 'Surpresa', scoring_big_upset: 'Surpresa grande (máx)', scoring_bonus: 'Bônus torneio', scoring_example: 'Exemplo',
     days: 'dias', hours: 'horas', minutes: 'minutos', seconds: 'segundos', tournament_started: 'A Copa começou! ⚽',
     predictions_label: 'Palpites:', login_name: 'Nome', login_pin: 'Código', login_enter: 'Entrar', login_register: 'Cadastrar',
+    login_email_toggle: 'Entrar com email',
+    forgot_password: 'Esqueci a senha',
+    email_required: 'Email obrigatório',
+    password_min: 'A senha deve ter pelo menos 6 caracteres',
+    enter_email: 'Digite seu email:',
+    reset_sent: 'Verifique seu email para o link de redefinição',
+    enter_new_password: 'Digite sua nova senha (mín. 6 caracteres):',
+    password_reset_ok: 'Senha redefinida! Entrando...',
+    email_verified: 'Email verificado!',
+    welcome_toast: 'Bem-vindo {name}!',
+    enable_push: 'Receba notificações para não esquecer de apostar ⚽',
+    enable_push_btn: 'Ativar notificações',
+    connect_tg: 'Conecte o Telegram para lembretes',
+    connect_tg_btn: '🔗 Conectar Telegram',
+    notifications_enabled: 'Notificações ativadas! ✅',
+    tg_opened: 'Telegram aberto — clique em Start no bot!',
+    nudge_title: 'Apostou! Agora compartilhe com amigos',
+    nudge_desc: 'Envie pro grupo do WhatsApp — um macaco de verdade já deu seus palpites. Você consegue vencer?',
+    nudge_dismiss: 'Depois →',
+    nudge_wa: 'Enviar no WhatsApp',
+    nudge_tg: 'Telegram',
+    nudge_copy: 'Copiar',
+    nudge_create_group: 'Criar grupo e compartilhar',
+    nudge_share_msg: "⚽ Venha apostar comigo na Copa 2026!\n\n{link}\n\n🐒 Um macaco de verdade deu palpites em todos os jogos\n🤫 Secreto até o apito\n🍺 Perder pro macaco = pagar as cervejas",
+    tg_login_waiting: 'Aguardando Telegram... Clique em Start no bot ➜',
+    tg_login_expired: 'Expirado. Tente novamente.',
+    share_invite_title: '🎉 Agora convide seus amigos!',
+    share_invite_sub: 'Envie isso para o grupo do WhatsApp ou amigos:',
+    share_later: 'Depois',
   },
   ar: {
     title: 'توقعات كأس العالم 2026',
@@ -500,6 +529,31 @@ function tTeam(hebrewName) {
   if (currentLang === 'he') return hebrewName;
   const map = TEAM_NAMES[currentLang] || TEAM_EN;
   return map[hebrewName] || TEAM_EN[hebrewName] || hebrewName;
+}
+
+const VENUE_EN = {
+  'אצטדיון אצטקה, מקסיקו סיטי': 'Estadio Azteca, Mexico City',
+  'אצטדיון אקרון, גוודלחרה': 'Estadio Akron, Guadalajara',
+  'BBVA סטדיום, מונטריי': 'BBVA Stadium, Monterrey',
+  'מטלייף סטדיום, ניו ג\'רזי': 'MetLife Stadium, New Jersey',
+  'סופי סטדיום, לוס אנג\'לס': 'SoFi Stadium, Los Angeles',
+  'הארד רוק סטדיום, מיאמי': 'Hard Rock Stadium, Miami',
+  'AT&T סטדיום, דאלאס': 'AT&T Stadium, Dallas',
+  'NRG סטדיום, יוסטון': 'NRG Stadium, Houston',
+  'מרצדס-בנץ סטדיום, אטלנטה': 'Mercedes-Benz Stadium, Atlanta',
+  'ליוויס סטדיום, סנטה קלרה': "Levi's Stadium, Santa Clara",
+  'לינקולן פילד, פילדלפיה': 'Lincoln Financial Field, Philadelphia',
+  'ג\'ילט סטדיום, בוסטון': 'Gillette Stadium, Boston',
+  'לומן פילד, סיאטל': 'Lumen Field, Seattle',
+  'אָרוֹהד סטדיום, קנזס סיטי': 'Arrowhead Stadium, Kansas City',
+  'BMO פילד, טורונטו': 'BMO Field, Toronto',
+  'BC פלייס, ונקובר': 'BC Place, Vancouver',
+};
+
+function tVenue(hebrewVenue) {
+  if (!hebrewVenue) return '';
+  if (currentLang === 'he') return hebrewVenue;
+  return VENUE_EN[hebrewVenue] || hebrewVenue;
 }
 
 function tSection(section) {
