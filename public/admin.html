@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TikiTaka Admin Dashboard</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+  :root {
+    --bg: #0a0e14;
+    --card: #12171f;
+    --border: #1e2530;
+    --text: #e0e0e0;
+    --muted: #8a8f98;
+    --accent: #c9a227;
+    --green: #22c55e;
+    --red: #ef4444;
+    --blue: #3b82f6;
+    --purple: #a855f7;
+    --orange: #f97316;
+    --pink: #ec4899;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 20px;
+    line-height: 1.5;
+  }
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .header h1 { font-size: 1.5rem; color: var(--accent); }
+  .header a { color: var(--accent); text-decoration: none; font-size: 0.85rem; }
+  .header .meta { color: var(--muted); font-size: 0.8rem; }
+
+  .grid { display: grid; gap: 16px; margin-bottom: 24px; }
+  .grid-4 { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+  .grid-2 { grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); }
+  .grid-1 { grid-template-columns: 1fr; }
+
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+  }
+  .stat-card .label { color: var(--muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .stat-card .value { font-size: 1.8rem; font-weight: 800; color: var(--accent); }
+  .stat-card .sub { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+
+  .panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .panel h2 { font-size: 1rem; color: var(--accent); margin-bottom: 14px; font-weight: 700; }
+  .panel h3 { font-size: 0.85rem; color: var(--text); margin: 14px 0 8px; font-weight: 600; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+  th { text-align: left; color: var(--muted); font-weight: 600; padding: 8px 10px; border-bottom: 1px solid var(--border); font-size: 0.7rem; text-transform: uppercase; }
+  td { padding: 7px 10px; border-bottom: 1px solid var(--border); }
+  tr:hover td { background: rgba(201, 162, 39, 0.05); }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    font-size: 0.7rem;
+    font-weight: 600;
+  }
+  .badge-google { background: rgba(59,130,246,0.15); color: var(--blue); }
+  .badge-email { background: rgba(34,197,94,0.15); color: var(--green); }
+  .badge-telegram { background: rgba(168,85,247,0.15); color: var(--purple); }
+  .badge-pin { background: rgba(138,143,152,0.15); color: var(--muted); }
+
+  .bar-chart { display: flex; align-items: flex-end; gap: 3px; height: 120px; margin-top: 8px; }
+  .bar-col { display: flex; flex-direction: column; align-items: center; flex: 1; min-width: 0; }
+  .bar {
+    width: 100%;
+    min-height: 2px;
+    background: var(--accent);
+    border-radius: 3px 3px 0 0;
+    transition: height 0.3s;
+    position: relative;
+  }
+  .bar:hover { opacity: 0.8; }
+  .bar-label { font-size: 0.55rem; color: var(--muted); margin-top: 4px; writing-mode: vertical-rl; transform: rotate(180deg); max-height: 50px; overflow: hidden; }
+  .bar-val { font-size: 0.6rem; color: var(--text); margin-bottom: 2px; }
+
+  .lang-bar { display: flex; gap: 2px; height: 28px; border-radius: 6px; overflow: hidden; margin-bottom: 8px; }
+  .lang-seg { display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 700; color: #000; min-width: 20px; }
+
+  .event-row { display: flex; gap: 8px; padding: 5px 0; border-bottom: 1px solid var(--border); font-size: 0.8rem; align-items: center; }
+  .event-row .time { color: var(--muted); font-size: 0.7rem; min-width: 130px; }
+  .event-row .evt { font-weight: 600; min-width: 100px; }
+
+  .donut-container { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+  .donut-legend { font-size: 0.8rem; }
+  .donut-legend div { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+  .posthog-frame { width: 100%; border: none; border-radius: 8px; min-height: 400px; background: #111; }
+  .posthog-link { display: inline-flex; align-items: center; gap: 6px; background: #1d4ed8; color: #fff; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-size: 0.85rem; font-weight: 600; }
+  .posthog-link:hover { background: #2563eb; }
+  #posthogSection .note { color: var(--muted); font-size: 0.8rem; margin-bottom: 12px; }
+
+  .refresh-btn {
+    background: var(--accent);
+    color: #000;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 0.8rem;
+    cursor: pointer;
+  }
+  .refresh-btn:hover { opacity: 0.85; }
+
+  #loading { text-align: center; padding: 60px; color: var(--muted); font-size: 1.1rem; }
+  #authWall { text-align: center; padding: 80px 20px; }
+  #authWall h2 { color: var(--accent); margin-bottom: 12px; }
+  #authWall p { color: var(--muted); }
+  #dashboard { display: none; }
+
+  @media (max-width: 600px) {
+    .grid-2 { grid-template-columns: 1fr; }
+    .bar-chart { height: 80px; }
+    body { padding: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="loading">Loading dashboard...</div>
+
+<div id="authWall" style="display:none">
+  <h2>⚽ TikiTaka Admin</h2>
+  <p>You must be logged in as admin on <a href="/" style="color:var(--accent)">tikitaka.vip</a> first.</p>
+</div>
+
+<div id="dashboard">
+  <div class="header">
+    <div>
+      <h1>⚽ TikiTaka Admin Dashboard</h1>
+      <div class="meta">Last refreshed: <span id="refreshTime">-</span></div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button class="refresh-btn" onclick="loadDashboard()">↻ Refresh</button>
+      <a href="/" style="color:var(--accent);font-size:0.8rem">← Back to app</a>
+    </div>
+  </div>
+
+  <!-- KPI Cards -->
+  <div class="grid grid-4" id="kpiCards"></div>
+
+  <!-- Charts Row -->
+  <div class="grid grid-2">
+    <div class="panel">
+      <h2>📈 Signups (Last 30 Days)</h2>
+      <div class="bar-chart" id="signupChart"></div>
+    </div>
+    <div class="panel">
+      <h2>🎯 Predictions (Last 30 Days)</h2>
+      <div class="bar-chart" id="predChart"></div>
+    </div>
+  </div>
+
+  <!-- Auth + Language Breakdown -->
+  <div class="grid grid-2">
+    <div class="panel">
+      <h2>🔑 Auth Methods</h2>
+      <div class="donut-container" id="authBreakdown"></div>
+    </div>
+    <div class="panel">
+      <h2>🌍 Languages</h2>
+      <div class="lang-bar" id="langBar"></div>
+      <div id="langLegend" class="donut-legend"></div>
+    </div>
+  </div>
+
+  <!-- Signup Heatmap by Hour -->
+  <div class="grid grid-1">
+    <div class="panel">
+      <h2>🕐 Signups by Hour (UTC)</h2>
+      <div class="bar-chart" id="hourChart" style="height:80px"></div>
+    </div>
+  </div>
+
+  <!-- Notifications -->
+  <div class="grid grid-2">
+    <div class="panel">
+      <h2>🔔 Notification Channels</h2>
+      <div id="notifChannels"></div>
+    </div>
+    <div class="panel">
+      <h2>📊 Event Counts</h2>
+      <div id="eventCounts"></div>
+    </div>
+  </div>
+
+  <!-- PostHog Section -->
+  <div class="grid grid-1">
+    <div class="panel" id="posthogSection">
+      <h2>📊 PostHog Analytics</h2>
+      <div id="posthogContent">
+        <p class="note">Tracking events: $pageview, login, signup, prediction_saved, push_enabled, share. Filter by host = tikitaka.vip in PostHog.</p>
+        <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+          <a href="https://us.posthog.com/project/309249" target="_blank" class="posthog-link">📊 PostHog Dashboard →</a>
+          <a href="https://us.posthog.com/project/309249/events?properties=%5B%7B%22key%22%3A%22%24host%22%2C%22value%22%3A%5B%22tikitaka.vip%22%5D%2C%22operator%22%3A%22exact%22%2C%22type%22%3A%22event%22%7D%5D" target="_blank" class="posthog-link" style="background:var(--purple)">📋 TikiTaka Events →</a>
+          <a href="https://us.posthog.com/project/309249/web" target="_blank" class="posthog-link" style="background:var(--green)">🌐 Web Analytics →</a>
+        </div>
+        <div id="phDashboard"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tables -->
+  <div class="grid grid-1">
+    <div class="panel">
+      <h2>👥 Recent Signups</h2>
+      <div style="overflow-x:auto">
+        <table id="signupsTable">
+          <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Auth</th><th>Lang</th><th>Verified</th><th>TG</th><th>Push</th><th>Signed Up</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="panel">
+      <h2>🏆 Top Predictors</h2>
+      <div style="overflow-x:auto">
+        <table id="predictorsTable">
+          <thead><tr><th>Name</th><th>Email</th><th>Predictions</th><th>Last Active</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>👥 Top Groups</h2>
+      <div style="overflow-x:auto">
+        <table id="groupsTable">
+          <thead><tr><th>Group</th><th>Members</th><th>Created</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-1">
+    <div class="panel">
+      <h2>📋 Recent Events</h2>
+      <div id="recentEvents" style="max-height:400px;overflow-y:auto"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const LANG_COLORS = {
+  he: '#3b82f6', en: '#22c55e', es: '#f97316', fr: '#ec4899',
+  pt: '#a855f7', ar: '#ef4444', ru: '#06b6d4', de: '#eab308', ja: '#f43f5e'
+};
+const LANG_NAMES = {
+  he: 'Hebrew', en: 'English', es: 'Spanish', fr: 'French',
+  pt: 'Portuguese', ar: 'Arabic', ru: 'Russian', de: 'German', ja: 'Japanese'
+};
+
+async function api(path) {
+  const r = await fetch(path, { credentials: 'include' });
+  if (r.status === 403) throw new Error('not-admin');
+  return r.json();
+}
+
+function fmtDate(d) {
+  if (!d) return '-';
+  const dt = new Date(d);
+  return dt.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }) + ' ' +
+         dt.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+}
+
+function shortDate(d) {
+  if (!d) return '';
+  return d.slice(5);
+}
+
+function renderKPIs(o) {
+  const cards = [
+    { label: 'Total Players', value: o.totalPlayers, color: 'var(--accent)' },
+    { label: 'Predictions', value: o.totalPredictions, color: 'var(--green)' },
+    { label: 'Groups', value: o.totalGroups, sub: `Avg ${o.avgGroupSize} members`, color: 'var(--blue)' },
+    { label: 'Email Verified', value: o.emailVerified, sub: `of ${o.emailSignups} email signups`, color: 'var(--green)' },
+    { label: 'Push Subscribers', value: o.pushSubscribers, color: 'var(--purple)' },
+    { label: 'TG Connected', value: o.tgConnected, color: 'var(--blue)' },
+    { label: 'Notifications Sent', value: o.notifsSent, color: 'var(--orange)' },
+    { label: 'Group Members', value: o.totalGroupMembers, color: 'var(--pink)' },
+  ];
+  document.getElementById('kpiCards').innerHTML = cards.map(c => `
+    <div class="stat-card">
+      <div class="label">${c.label}</div>
+      <div class="value" style="color:${c.color}">${c.value}</div>
+      ${c.sub ? `<div class="sub">${c.sub}</div>` : ''}
+    </div>
+  `).join('');
+}
+
+function renderBarChart(el, data, labelKey, valKey, color) {
+  if (!data.length) { el.innerHTML = '<span style="color:var(--muted)">No data</span>'; return; }
+  const max = Math.max(...data.map(d => d[valKey]), 1);
+  el.innerHTML = data.map(d => {
+    const h = Math.max(2, (d[valKey] / max) * 100);
+    return `<div class="bar-col">
+      <div class="bar-val">${d[valKey]}</div>
+      <div class="bar" style="height:${h}%;background:${color || 'var(--accent)'}"></div>
+      <div class="bar-label">${shortDate(d[labelKey])}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderAuthBreakdown(o) {
+  const methods = [
+    { label: 'Google', count: o.googleSignups, color: 'var(--blue)', cls: 'badge-google' },
+    { label: 'Email', count: o.emailSignups, color: 'var(--green)', cls: 'badge-email' },
+    { label: 'Telegram', count: o.tgSignups, color: 'var(--purple)', cls: 'badge-telegram' },
+    { label: 'PIN only', count: o.pinOnly, color: 'var(--muted)', cls: 'badge-pin' },
+  ];
+  const total = o.totalPlayers || 1;
+  document.getElementById('authBreakdown').innerHTML = `
+    <div style="display:flex;gap:2px;height:28px;border-radius:6px;overflow:hidden;width:100%;margin-bottom:12px">
+      ${methods.filter(m => m.count > 0).map(m =>
+        `<div style="flex:${m.count};background:${m.color};display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:700;color:#000;min-width:20px">${m.count}</div>`
+      ).join('')}
+    </div>
+    <div class="donut-legend">
+      ${methods.map(m => `<div><div class="legend-dot" style="background:${m.color}"></div>${m.label}: ${m.count} (${Math.round(m.count/total*100)}%)</div>`).join('')}
+    </div>
+  `;
+}
+
+function renderLangBreakdown(langs) {
+  const total = langs.reduce((s, l) => s + l.count, 0) || 1;
+  document.getElementById('langBar').innerHTML = langs.map(l =>
+    `<div class="lang-seg" style="flex:${l.count};background:${LANG_COLORS[l.lang] || '#666'}">${l.count}</div>`
+  ).join('');
+  document.getElementById('langLegend').innerHTML = langs.map(l =>
+    `<div><div class="legend-dot" style="background:${LANG_COLORS[l.lang] || '#666'}"></div>${LANG_NAMES[l.lang] || l.lang}: ${l.count} (${Math.round(l.count/total*100)}%)</div>`
+  ).join('');
+}
+
+function renderSignupsTable(signups) {
+  document.querySelector('#signupsTable tbody').innerHTML = signups.map(s => `
+    <tr>
+      <td>${s.id}</td>
+      <td>${s.name}</td>
+      <td>${s.email || '-'}</td>
+      <td><span class="badge badge-${s.auth_method}">${s.auth_method}</span></td>
+      <td>${s.lang || 'he'}</td>
+      <td>${s.email_verified ? '✅' : (s.auth_method === 'email' ? '❌' : '-')}</td>
+      <td>${s.telegram_chat_id ? '✅' : '-'}</td>
+      <td>-</td>
+      <td style="font-size:0.75rem;color:var(--muted)">${fmtDate(s.created_at)}</td>
+    </tr>
+  `).join('');
+}
+
+function renderPredictorsTable(preds) {
+  document.querySelector('#predictorsTable tbody').innerHTML = preds.map(p => `
+    <tr>
+      <td>${p.name}</td>
+      <td>${p.email || '-'}</td>
+      <td style="font-weight:700;color:var(--accent)">${p.pred_count}</td>
+      <td style="font-size:0.75rem;color:var(--muted)">${fmtDate(p.last_pred)}</td>
+    </tr>
+  `).join('');
+}
+
+function renderGroupsTable(groups) {
+  document.querySelector('#groupsTable tbody').innerHTML = groups.map(g => `
+    <tr>
+      <td>${g.name}</td>
+      <td style="font-weight:700;color:var(--accent)">${g.members}</td>
+      <td style="font-size:0.75rem;color:var(--muted)">${fmtDate(g.created_at)}</td>
+    </tr>
+  `).join('');
+}
+
+function renderEventCounts(events) {
+  const max = events[0]?.count || 1;
+  document.getElementById('eventCounts').innerHTML = events.slice(0, 12).map(e => `
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+      <div style="width:120px;font-size:0.8rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${e.event}</div>
+      <div style="flex:1;height:16px;background:var(--bg);border-radius:4px;overflow:hidden">
+        <div style="height:100%;width:${(e.count/max)*100}%;background:var(--accent);border-radius:4px;display:flex;align-items:center;padding-left:6px;font-size:0.65rem;font-weight:700;color:#000">${e.count}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderNotifChannels(o, notifTypes) {
+  document.getElementById('notifChannels').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+      <div class="stat-card" style="padding:12px">
+        <div class="label">Push Subscribers</div>
+        <div class="value" style="font-size:1.4rem">${o.pushSubscribers}</div>
+      </div>
+      <div class="stat-card" style="padding:12px">
+        <div class="label">Telegram Connected</div>
+        <div class="value" style="font-size:1.4rem">${o.tgConnected}</div>
+      </div>
+    </div>
+    <h3>Notification Types Sent</h3>
+    ${notifTypes.length ? notifTypes.map(n => `
+      <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:0.8rem;border-bottom:1px solid var(--border)">
+        <span>${n.type}</span><span style="font-weight:700;color:var(--accent)">${n.count}</span>
+      </div>
+    `).join('') : '<div style="color:var(--muted);font-size:0.8rem">No notifications sent yet</div>'}
+  `;
+}
+
+function renderRecentEvents(events) {
+  document.getElementById('recentEvents').innerHTML = events.map(e => {
+    let data = '';
+    try { const d = JSON.parse(e.data); data = Object.entries(d).map(([k,v]) => `${k}=${v}`).join(', '); } catch {}
+    return `<div class="event-row">
+      <span class="time">${fmtDate(e.created_at)}</span>
+      <span class="evt">${e.event}</span>
+      <span style="color:var(--muted);font-size:0.75rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${data}</span>
+    </div>`;
+  }).join('');
+}
+
+function renderHourChart(data) {
+  const hours = Array.from({length: 24}, (_, i) => ({ hour: String(i).padStart(2, '0'), count: 0 }));
+  data.forEach(d => { const h = hours.find(h => h.hour === d.hour); if (h) h.count = d.count; });
+  renderBarChart(document.getElementById('hourChart'), hours, 'hour', 'count', 'var(--blue)');
+}
+
+async function loadPosthog() {
+  const phDash = document.getElementById('phDashboard');
+  try {
+    const data = await api('/api/admin/posthog-events');
+    const events = data.events || [];
+
+    if (!events.length) { phDash.innerHTML = '<div style="color:var(--muted)">No PostHog events yet for tikitaka.vip. Events will appear after the first visitor.</div>'; return; }
+
+    phDash.innerHTML = `
+      <h3 style="color:var(--accent);margin-bottom:8px">Recent PostHog Events (tikitaka.vip)</h3>
+      <div style="max-height:300px;overflow-y:auto">
+        ${events.map(e => `
+          <div class="event-row">
+            <span class="time">${fmtDate(e.timestamp)}</span>
+            <span class="evt" style="color:${e.event === '$pageview' ? 'var(--blue)' : e.event.startsWith('$') ? 'var(--muted)' : 'var(--green)'}">${e.event}</span>
+            <span style="color:var(--muted);font-size:0.75rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${e.url || ''}</span>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  } catch (err) {
+    phDash.innerHTML = `<div style="color:var(--red)">PostHog error: ${err.message}</div>`;
+  }
+}
+
+async function loadDashboard() {
+  try {
+    const data = await api('/api/admin/dashboard');
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    document.getElementById('refreshTime').textContent = new Date().toLocaleTimeString('en-GB');
+
+    const o = data.overview;
+    renderKPIs(o);
+    renderBarChart(document.getElementById('signupChart'), data.signupsByDay, 'day', 'count', 'var(--accent)');
+    renderBarChart(document.getElementById('predChart'), data.predictionsByDay, 'day', 'count', 'var(--green)');
+    renderAuthBreakdown(o);
+    renderLangBreakdown(data.langBreakdown);
+    renderHourChart(data.signupsByHour);
+    renderNotifChannels(o, data.notifTypes);
+    renderEventCounts(data.eventCounts);
+    renderSignupsTable(data.recentSignups);
+    renderPredictorsTable(data.activePredicters);
+    renderGroupsTable(data.topGroups);
+    renderRecentEvents(data.recentEvents);
+    loadPosthog();
+  } catch (err) {
+    if (err.message === 'not-admin') {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('authWall').style.display = 'block';
+    } else {
+      document.getElementById('loading').innerHTML = `<span style="color:var(--red)">Error: ${err.message}</span>`;
+    }
+  }
+}
+
+loadDashboard();
+setInterval(loadDashboard, 60000);
+</script>
+</body>
+</html>

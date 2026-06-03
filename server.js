@@ -1383,6 +1383,127 @@ app.get('/api/analytics', (req, res) => {
   res.json(summary);
 });
 
+app.get('/api/admin/dashboard', (req, res) => {
+  if (!isAdmin(req)) return res.status(403).json({ error: 'אין הרשאה' });
+
+  const totalPlayers = db.prepare('SELECT COUNT(*) as c FROM players').get().c;
+  const emailSignups = db.prepare("SELECT COUNT(*) as c FROM players WHERE password_hash IS NOT NULL").get().c;
+  const googleSignups = db.prepare("SELECT COUNT(*) as c FROM players WHERE google_id IS NOT NULL").get().c;
+  const tgSignups = db.prepare("SELECT COUNT(*) as c FROM players WHERE telegram_chat_id IS NOT NULL AND google_id IS NULL AND password_hash IS NULL").get().c;
+  const pinOnly = totalPlayers - emailSignups - googleSignups - tgSignups;
+  const emailVerified = db.prepare("SELECT COUNT(*) as c FROM players WHERE email_verified = 1").get().c;
+  const tgConnected = db.prepare("SELECT COUNT(*) as c FROM players WHERE telegram_chat_id IS NOT NULL").get().c;
+  const pushSubscribers = db.prepare("SELECT COUNT(DISTINCT player_id) as c FROM push_subscriptions").get().c;
+
+  const langBreakdown = db.prepare("SELECT COALESCE(lang, 'he') as lang, COUNT(*) as count FROM players GROUP BY lang ORDER BY count DESC").all();
+
+  const signupsByDay = db.prepare(`
+    SELECT DATE(created_at) as day, COUNT(*) as count
+    FROM players
+    GROUP BY DATE(created_at)
+    ORDER BY day DESC
+    LIMIT 30
+  `).all().reverse();
+
+  const signupsByHour = db.prepare(`
+    SELECT strftime('%H', created_at) as hour, COUNT(*) as count
+    FROM players
+    GROUP BY hour
+    ORDER BY hour
+  `).all();
+
+  const predictionsByDay = db.prepare(`
+    SELECT DATE(created_at) as day, COUNT(*) as count
+    FROM predictions
+    GROUP BY DATE(created_at)
+    ORDER BY day DESC
+    LIMIT 30
+  `).all().reverse();
+
+  const totalPredictions = db.prepare('SELECT COUNT(*) as c FROM predictions').get().c;
+  const totalGroups = db.prepare('SELECT COUNT(*) as c FROM groups').get().c;
+  const totalGroupMembers = db.prepare('SELECT COUNT(*) as c FROM group_members').get().c;
+  const avgGroupSize = totalGroups > 0 ? (totalGroupMembers / totalGroups).toFixed(1) : 0;
+
+  const topGroups = db.prepare(`
+    SELECT g.name, g.created_at, COUNT(gm.player_id) as members
+    FROM groups g
+    LEFT JOIN group_members gm ON g.id = gm.group_id
+    GROUP BY g.id
+    ORDER BY members DESC
+    LIMIT 10
+  `).all();
+
+  const activePredicters = db.prepare(`
+    SELECT p.name, p.email, COUNT(pr.id) as pred_count, MAX(pr.created_at) as last_pred
+    FROM players p
+    JOIN predictions pr ON p.id = pr.player_id
+    GROUP BY p.id
+    ORDER BY pred_count DESC
+    LIMIT 20
+  `).all();
+
+  const recentSignups = db.prepare(`
+    SELECT id, name, email, google_id, telegram_chat_id, password_hash, lang, email_verified, created_at
+    FROM players
+    ORDER BY id DESC
+    LIMIT 30
+  `).all().map(p => ({
+    ...p,
+    auth_method: p.google_id ? 'google' : p.password_hash ? 'email' : p.telegram_chat_id ? 'telegram' : 'pin',
+    password_hash: undefined,
+  }));
+
+  const recentEvents = db.prepare(`
+    SELECT event, data, created_at FROM analytics ORDER BY id DESC LIMIT 50
+  `).all();
+
+  const eventCounts = db.prepare(`
+    SELECT event, COUNT(*) as count FROM analytics GROUP BY event ORDER BY count DESC
+  `).all();
+
+  const notifsSent = db.prepare('SELECT COUNT(*) as c FROM notification_log').get().c;
+  const notifTypes = db.prepare('SELECT type, COUNT(*) as count FROM notification_log GROUP BY type ORDER BY count DESC').all();
+
+  res.json({
+    overview: {
+      totalPlayers, emailSignups, googleSignups, tgSignups, pinOnly,
+      emailVerified, tgConnected, pushSubscribers,
+      totalPredictions, totalGroups, totalGroupMembers, avgGroupSize,
+      notifsSent,
+    },
+    langBreakdown,
+    signupsByDay,
+    signupsByHour,
+    predictionsByDay,
+    topGroups,
+    activePredicters,
+    recentSignups,
+    recentEvents,
+    eventCounts,
+    notifTypes,
+  });
+});
+
+app.get('/api/admin/posthog-events', async (req, res) => {
+  if (!isAdmin(req)) return res.status(403).json({ error: 'אין הרשאה' });
+  const phKey = process.env.POSTHOG_KEY;
+  if (!phKey) return res.json({ events: [], error: 'POSTHOG_KEY not set' });
+  try {
+    const url = `https://us.i.posthog.com/api/projects/309249/events/?limit=30&orderBy=-timestamp&properties=${encodeURIComponent(JSON.stringify([{"key":"$host","value":["tikitaka.vip"],"operator":"exact","type":"event"}]))}`;
+    const r = await fetch(url, { headers: { 'Authorization': `Bearer ${phKey}` } });
+    const data = await r.json();
+    const events = (data.results || []).map(e => ({
+      event: e.event,
+      timestamp: e.timestamp,
+      url: e.properties?.$current_url || e.properties?.$pathname || '',
+    }));
+    res.json({ events });
+  } catch (e) {
+    res.json({ events: [], error: e.message });
+  }
+});
+
 app.get('/api/outright-odds', (req, res) => {
   res.json(db.prepare('SELECT * FROM outright_odds ORDER BY odds_winner ASC').all());
 });
