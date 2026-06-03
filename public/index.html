@@ -1215,10 +1215,17 @@ async function restoreSession() {
   if (!saved) return;
   try {
     const { id, name, token, avatarUrl } = JSON.parse(saved);
-    const r = await api(`/api/auth/me?token=${encodeURIComponent(token)}`);
+    if (!token) { localStorage.removeItem('wc_session'); return; }
+    const resp = await fetch(`/api/auth/me?token=${encodeURIComponent(token)}`);
+    if (resp.status === 401 || resp.status === 403) { localStorage.removeItem('wc_session'); return; }
+    if (!resp.ok) { setLoggedIn(id, name, token, avatarUrl); return; }
+    const r = await resp.json();
     if (r.error) { localStorage.removeItem('wc_session'); return; }
     setLoggedIn(r.id, r.name, token, r.avatar_url || avatarUrl);
-  } catch { localStorage.removeItem('wc_session'); }
+  } catch {
+    const { id, name, token, avatarUrl } = JSON.parse(saved);
+    if (id && token) setLoggedIn(id, name, token, avatarUrl);
+  }
 }
 
 // Init Google Sign-In

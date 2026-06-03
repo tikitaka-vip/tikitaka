@@ -99,7 +99,9 @@ Status: `[ ]` todo · `[~]` in progress · `[x]` done · `[!]` blocked · `[-]` 
 - [x] **9.3** Dynamic OG for invite links (/join/CODE shows group name + member count)
 - [x] **9.4** robots.txt + sitemap.xml
 - [x] **9.5** Google Search Console verification
-- [x] **9.6** Short link (spoo.me/wc26il)
+- [ ] **9.6** Submit sitemap to Google Search Console
+- [ ] **9.7** Bing Webmaster Tools — verify + submit sitemap
+- [x] **9.8** Short link (spoo.me/wc26il)
 
 ## Phase 10 — Monitoring & Reliability
 - [ ] **10.1** Uptime monitoring (UptimeRobot or BetterStack → TG alert)

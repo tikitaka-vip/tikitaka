@@ -274,8 +274,19 @@ const LANG_NAMES = {
   pt: 'Portuguese', ar: 'Arabic', ru: 'Russian', de: 'German', ja: 'Japanese'
 };
 
+function getSessionToken() {
+  try {
+    const saved = localStorage.getItem('wc_session');
+    if (!saved) return null;
+    return JSON.parse(saved).token;
+  } catch { return null; }
+}
+
 async function api(path) {
-  const r = await fetch(path, { credentials: 'include' });
+  const token = getSessionToken();
+  if (!token) throw new Error('not-admin');
+  const sep = path.includes('?') ? '&' : '?';
+  const r = await fetch(path + sep + 'token=' + encodeURIComponent(token));
   if (r.status === 403) throw new Error('not-admin');
   return r.json();
 }
