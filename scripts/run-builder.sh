@@ -1,51 +1,59 @@
 #!/bin/bash
-# TikiTaka Builder Agent — runs as the `agent` user on VPS
-# Called by cron, skips during Shabbat.
-
+# TikiTaka Builder Agent — implements features from the board
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 WORKDIR="/home/agent/worldcup"
 LOG="/home/agent/builder-$(date +%Y%m%d-%H%M).log"
+BOARD="http://127.0.0.1:3001"
+KEY="69ebbaa2edee338e7e08f3d83d48e38a"
 
-# Shabbat check
-if ! "$SCRIPT_DIR/shabbat-guard.sh"; then
-  exit 0
-fi
+if ! "$SCRIPT_DIR/shabbat-guard.sh"; then exit 0; fi
 
 cd "$WORKDIR"
-
-# Pull latest
 git pull origin main --ff-only 2>/dev/null || true
 
-# Load TG credentials for notification on failure
 source /home/agent/.agent-factory/credentials.env
 
-notify_tg() {
-  curl -s "https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage" \
-    -d "chat_id=${TG_CHAT_ID}" \
-    -d "text=$1" > /dev/null 2>&1
-}
+TASKS=$(curl -s "$BOARD/api/tasks?role=builder&status=ready" -H "Authorization: Bearer $KEY" -H "Accept: text/markdown")
+ORDERS=$(curl -s "$BOARD/api/tasks?role=builder" -H "Authorization: Bearer $KEY" | python3 -c "
+import sys,json
+tasks = json.loads(sys.stdin.read())
+for t in tasks:
+    if t['status'] in ('ready','in_progress'):
+        print(f\"Task #{t['id']}: {t['title']} [{t['priority']}]\")
+" 2>/dev/null || echo "Could not parse tasks")
 
-# Run Claude in non-interactive mode with the builder prompt
 timeout 1800 claude -p \
   --allowedTools 'Bash,Read,Write,Edit' \
-  "You are the Builder agent for tikitaka.vip.
+  "You are the Builder agent for tikitaka.vip — a World Cup 2026 prediction game.
+Working directory: $WORKDIR (git clone, NOT production)
+Production: /opt/worldcup/ (DO NOT modify directly)
 
-Read /home/agent/worldcup/.claude/roles/builder.md for your full role definition.
-Then read SPRINT.md for your task queue and STANDUP.md for context from previous sessions.
+## Your tasks (pick the highest P0 first)
+$TASKS
 
-Pick the highest-priority uncompleted B-* task, implement it, test it, and mark it done.
-Update STANDUP.md with what you did.
+## Instructions
+1. Pick the top P0 task. If no P0s remain, pick top P1.
+2. Set it to in_progress: curl -s '$BOARD/api/tasks/TASK_ID' -X PATCH -H 'Authorization: Bearer $KEY' -H 'Content-Type: application/json' -d '{\"status\":\"in_progress\"}'
+3. Send heartbeats every ~10 minutes: curl -s '$BOARD/api/tasks/TASK_ID/heartbeat' -X POST -H 'Authorization: Bearer $KEY'
+4. Implement the feature in $WORKDIR
+5. Test locally (node server.js, check it works)
+6. Add progress comment: curl -s '$BOARD/api/tasks/TASK_ID/comments' -X POST -H 'Authorization: Bearer $KEY' -H 'Content-Type: application/json' -d '{\"type\":\"progress\",\"content\":\"WHAT YOU DID\"}'
+7. Set to review: curl -s '$BOARD/api/tasks/TASK_ID' -X PATCH -H 'Authorization: Bearer $KEY' -H 'Content-Type: application/json' -d '{\"status\":\"review\"}'
+8. Git commit and push
+9. If time remains, pick the next task
 
-After finishing, send a Telegram notification using:
-  curl -s \"https://api.telegram.org/bot\${TG_BOT_TOKEN}/sendMessage\" -d \"chat_id=\${TG_CHAT_ID}\" -d \"text=YOUR_MESSAGE\"
-where TG_BOT_TOKEN=${TG_BOT_TOKEN} and TG_CHAT_ID=${TG_CHAT_ID}
+## If blocked
+Add a blocker comment and set status to blocked:
+curl -s '$BOARD/api/tasks/TASK_ID/comments' -X POST -H 'Authorization: Bearer $KEY' -H 'Content-Type: application/json' -d '{\"type\":\"blocker\",\"content\":\"WHAT IS BLOCKING\"}'
 
-Git push your changes when done." \
+## Notify when done
+curl -s 'https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage' -d 'chat_id=${TG_CHAT_ID}' -d 'text=Builder done: SUMMARY'
+
+## Quality
+- Ship working code, not perfect code (6-day sprint)
+- Hebrew RTL must not break
+- Mobile-first
+- Test before marking review" \
   >> "$LOG" 2>&1
-
-EXIT_CODE=$?
-if [ $EXIT_CODE -ne 0 ]; then
-  notify_tg "⚠️ Builder agent failed (exit $EXIT_CODE). Check $LOG"
-fi

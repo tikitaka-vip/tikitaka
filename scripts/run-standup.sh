@@ -1,43 +1,38 @@
 #!/bin/bash
-# TikiTaka Standup Digest — morning summary via Telegram
-# Called by cron, skips during Shabbat.
-
+# TikiTaka Standup Digest — morning TG summary from board
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-WORKDIR="/home/agent/worldcup"
+BOARD="http://127.0.0.1:3001"
+KEY="3845b31f77fe61488d954ee991941b4e"
 
-# Shabbat check
-if ! "$SCRIPT_DIR/shabbat-guard.sh"; then
-  exit 0
-fi
-
-cd "$WORKDIR"
-git pull origin main --ff-only 2>/dev/null || true
+if ! "$SCRIPT_DIR/shabbat-guard.sh"; then exit 0; fi
 
 source /home/agent/.agent-factory/credentials.env
 
-# Count tasks
-BUILDER_DONE=$(grep -c '\[x\] \*\*B-' SPRINT.md 2>/dev/null || echo 0)
-BUILDER_TOTAL=$(grep -c '\*\*B-' SPRINT.md 2>/dev/null || echo 0)
-GROWTH_DONE=$(grep -c '\[x\] \*\*G-' SPRINT.md 2>/dev/null || echo 0)
-GROWTH_TOTAL=$(grep -c '\*\*G-' SPRINT.md 2>/dev/null || echo 0)
+SUMMARY=$(curl -s "$BOARD/api/summary" -H "Authorization: Bearer $KEY")
 
-# Next uncompleted tasks
-BUILDER_NEXT=$(grep '\[ \] \*\*B-' SPRINT.md | head -1 | sed 's/.*\*\*B-[0-9]*\*\* //' || echo "all done")
-GROWTH_NEXT=$(grep '\[ \] \*\*G-' SPRINT.md | head -1 | sed 's/.*\*\*G-[0-9]*\*\* //' || echo "all done")
+READY=$(echo "$SUMMARY" | python3 -c "import sys,json; d=json.load(sys.stdin); print(sum(r['count'] for r in d['byStatus'] if r['status']=='ready'))" 2>/dev/null || echo "?")
+IN_PROGRESS=$(echo "$SUMMARY" | python3 -c "import sys,json; d=json.load(sys.stdin); print(sum(r['count'] for r in d['byStatus'] if r['status']=='in_progress'))" 2>/dev/null || echo "?")
+REVIEW=$(echo "$SUMMARY" | python3 -c "import sys,json; d=json.load(sys.stdin); print(sum(r['count'] for r in d['byStatus'] if r['status']=='review'))" 2>/dev/null || echo "?")
+DONE=$(echo "$SUMMARY" | python3 -c "import sys,json; d=json.load(sys.stdin); print(sum(r['count'] for r in d['byStatus'] if r['status']=='done'))" 2>/dev/null || echo "?")
+BLOCKED=$(echo "$SUMMARY" | python3 -c "import sys,json; d=json.load(sys.stdin); print(sum(r['count'] for r in d['byStatus'] if r['status']=='blocked'))" 2>/dev/null || echo "?")
+STALE=$(echo "$SUMMARY" | python3 -c "import sys,json; d=json.load(sys.stdin); print(sum(r['count'] for r in d['byStatus'] if r['status']=='stale'))" 2>/dev/null || echo "0")
 
-# Days to World Cup
 WC_START=$(date -d "2026-06-11" +%s)
 NOW=$(date +%s)
 DAYS_LEFT=$(( (WC_START - NOW) / 86400 ))
 
-# Last standup entries
-LAST_STANDUP=$(tail -20 STANDUP.md 2>/dev/null || echo "No entries yet")
+STALE_WARNING=""
+if [ "$STALE" != "0" ] && [ "$STALE" != "?" ]; then
+  STALE_WARNING="⚠️ $STALE stale task(s) — possible crash"
+fi
 
 MSG="⚽ TikiTaka Sprint — ${DAYS_LEFT} days to World Cup
-Builder: ${BUILDER_DONE}/${BUILDER_TOTAL} done (next: ${BUILDER_NEXT})
-Growth: ${GROWTH_DONE}/${GROWTH_TOTAL} done (next: ${GROWTH_NEXT})"
+✅ Done: $DONE | 🔄 In progress: $IN_PROGRESS | 📋 Ready: $READY
+🔍 Review: $REVIEW | 🚫 Blocked: $BLOCKED
+${STALE_WARNING}
+Board: https://tikitaka.vip/board/?key=de54399319f86db3d46869562479f042"
 
 curl -s "https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage" \
   -d "chat_id=${TG_CHAT_ID}" \
