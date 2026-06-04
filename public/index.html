@@ -872,6 +872,7 @@ let predictions = {};
 let tournamentPreds = {};
 let activeFilter = 'all';
 let compareFilter = 'all';
+let confettiArmed = false;
 
 document.querySelectorAll('.tab').forEach(tab => {
   tab.addEventListener('click', () => {
@@ -1121,6 +1122,48 @@ function maybeShowHowToPlay() {
   if (!localStorage.getItem('wc_howto_seen')) {
     setTimeout(showHowToPlay, 400);
   }
+}
+
+// --- Confetti celebration (B-12), dependency-free canvas ---
+function fireConfetti() {
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const canvas = document.createElement('canvas');
+  canvas.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:10000';
+  canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+  document.body.appendChild(canvas);
+  const ctx = canvas.getContext('2d');
+  const colors = ['#c9a227', '#34d399', '#60a5fa', '#f87171', '#f5f5f5', '#fbbf24'];
+  const N = Math.min(160, Math.round(window.innerWidth / 8));
+  const parts = [];
+  for (let i = 0; i < N; i++) {
+    parts.push({
+      x: Math.random() * canvas.width,
+      y: -20 - Math.random() * canvas.height * 0.3,
+      r: 4 + Math.random() * 5,
+      c: colors[i % colors.length],
+      vx: -2 + Math.random() * 4,
+      vy: 2 + Math.random() * 4,
+      rot: Math.random() * Math.PI,
+      vrot: -0.2 + Math.random() * 0.4,
+    });
+  }
+  const start = Date.now();
+  const DURATION = 2600;
+  (function frame() {
+    const elapsed = Date.now() - start;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (const p of parts) {
+      p.x += p.vx; p.y += p.vy; p.vy += 0.06; p.rot += p.vrot;
+      ctx.save();
+      ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+      ctx.globalAlpha = Math.max(0, 1 - elapsed / DURATION);
+      ctx.fillStyle = p.c;
+      ctx.fillRect(-p.r / 2, -p.r / 2, p.r, p.r * 1.6);
+      ctx.restore();
+    }
+    if (elapsed < DURATION) requestAnimationFrame(frame);
+    else canvas.remove();
+  })();
 }
 
 // --- Unpredicted-matches notification badge (B-5) ---
@@ -1627,6 +1670,7 @@ function renderPredictions() {
 
   const stageBase = {'בתים':1,'שמינית גמר':2,'שמונה אחרונות':3,'רבע גמר':4,'חצי גמר':5,'משחק על מקום 3':4,'גמר':6};
 
+  const exactMatchIds = [];
   for (const m of matches) {
     const section = m.group_name ? `בית ${m.group_name}` : m.stage;
     if (activeFilter !== 'all' && section !== activeFilter) continue;
@@ -1656,6 +1700,7 @@ function renderPredictions() {
       if (pred.score_a === res.score_a && pred.score_b === res.score_b) {
         statusClass = 'exact'; statusText = t('exact');
         earnedPts = Math.round(5 * mult * oddsVal);
+        exactMatchIds.push(m.id);
       } else if (pOut === rOut && (pred.score_a - pred.score_b === res.score_a - res.score_b)) {
         statusClass = 'close'; statusText = t('correct_diff');
         earnedPts = Math.round(3 * mult * oddsVal);
@@ -1703,6 +1748,16 @@ function renderPredictions() {
         </div>
       </div>`;
   }
+
+  // Confetti on a newly-revealed exact prediction (B-12)
+  const seenExact = new Set(JSON.parse(localStorage.getItem('wc_seen_exacts') || '[]'));
+  const freshExact = exactMatchIds.filter(id => !seenExact.has(id));
+  if (freshExact.length) {
+    if (confettiArmed && currentPlayer) fireConfetti();
+    freshExact.forEach(id => seenExact.add(id));
+    localStorage.setItem('wc_seen_exacts', JSON.stringify([...seenExact]));
+  }
+  confettiArmed = true;
 }
 
 async function savePred(matchId) {
