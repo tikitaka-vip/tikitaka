@@ -546,6 +546,7 @@
         <div id="socialProof" style="display:none"></div>
         <div id="ob-deadline" style="background:var(--red-bg);border:1px solid var(--red);color:var(--red);padding:10px;border-radius:8px;font-weight:700;font-size:0.88rem;margin-bottom:14px"></div>
         <p id="ob-cta" style="color:var(--muted);font-size:0.82rem"></p>
+        <a href="#" id="ob-howto" onclick="showHowToPlay();return false" style="color:var(--accent,#ffd700);font-size:0.85rem;font-weight:700;display:inline-block;margin-top:6px"></a>
       </div>
     </div>
 
@@ -895,6 +896,7 @@ async function setLoggedIn(id, name, token, avatarUrl) {
   loadPredictions();
   handlePendingJoin();
   showNotifBanner(token);
+  maybeShowHowToPlay();
 }
 
 async function showNotifBanner(token) {
@@ -1052,6 +1054,50 @@ function shareVia(platform, inviteCode) {
   }
   const overlay = document.getElementById('shareOverlay');
   if (overlay) overlay.remove();
+}
+
+// --- How to play onboarding modal ---
+function showHowToPlay() {
+  const existing = document.getElementById('howtoOverlay');
+  if (existing) existing.remove();
+  const isRtl = LANGS[currentLang]?.dir === 'rtl';
+  const steps = [
+    { n: '1', t: t('howto_step1_t'), d: t('howto_step1_d') },
+    { n: '2', t: t('howto_step2_t'), d: t('howto_step2_d') },
+    { n: '3', t: t('howto_step3_t'), d: t('howto_step3_d') },
+  ];
+  const stepsHtml = steps.map(s => `
+    <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:16px">
+      <div style="flex:0 0 32px;width:32px;height:32px;border-radius:50%;background:var(--accent,#ffd700);color:#0a0a23;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:1rem">${s.n}</div>
+      <div>
+        <div style="font-weight:800;color:#fff;margin-bottom:2px">${s.t}</div>
+        <div style="color:#bbb;font-size:0.85rem;line-height:1.45">${s.d}</div>
+      </div>
+    </div>`).join('');
+  const overlay = document.createElement('div');
+  overlay.id = 'howtoOverlay';
+  overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.75);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px';
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) closeHowToPlay(); });
+  overlay.innerHTML = `
+    <div style="background:#1a1a3e;border-radius:16px;padding:24px;max-width:420px;width:100%;border:1px solid #444488;direction:${isRtl ? 'rtl' : 'ltr'};max-height:90vh;overflow-y:auto">
+      <div style="font-size:2rem;text-align:center;margin-bottom:4px">⚽🐒</div>
+      <h3 style="color:var(--accent,#ffd700);margin:0 0 18px;text-align:center">${t('howto_title')}</h3>
+      ${stepsHtml}
+      <button onclick="closeHowToPlay()" class="btn" style="background:var(--accent,#ffd700);color:#0a0a23;font-weight:800;width:100%;margin-top:6px">${t('howto_cta')}</button>
+    </div>`;
+  document.body.appendChild(overlay);
+}
+
+function closeHowToPlay() {
+  localStorage.setItem('wc_howto_seen', '1');
+  const overlay = document.getElementById('howtoOverlay');
+  if (overlay) overlay.remove();
+}
+
+function maybeShowHowToPlay() {
+  if (!localStorage.getItem('wc_howto_seen')) {
+    setTimeout(showHowToPlay, 400);
+  }
 }
 
 function urlBase64ToUint8Array(base64String) {
@@ -1407,6 +1453,8 @@ function renderPredictions() {
     if (obDeadline) obDeadline.textContent = t('ob_deadline');
     const obCta = document.getElementById('ob-cta');
     if (obCta) obCta.textContent = t('ob_cta');
+    const obHowto = document.getElementById('ob-howto');
+    if (obHowto) obHowto.textContent = t('howto_link');
     loadSocialProof();
   } else {
     onboarding.style.display = 'none';
@@ -2196,6 +2244,8 @@ function updateStaticText() {
   if (obDeadline) obDeadline.textContent = t('ob_deadline');
   const obCta = document.getElementById('ob-cta');
   if (obCta) obCta.textContent = t('ob_cta');
+  const obHowto = document.getElementById('ob-howto');
+  if (obHowto) obHowto.textContent = t('howto_link');
 
   // Invite nudge
   const nt = document.getElementById('nudgeTitle');
