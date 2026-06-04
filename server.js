@@ -1608,5 +1608,56 @@ db.prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('tg_bot_usernam
 setupNotificationRoutes(app, db);
 startNotificationScheduler(db);
 
+// --- Graceful error pages (B-9) ---
+function errorPage(code, heading, message) {
+  return `<!DOCTYPE html><html lang="he" dir="rtl"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>${code} — TikiTaka</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;
+    font-family:'Heebo',-apple-system,Segoe UI,Roboto,sans-serif;
+    background:#0a0e17;color:#e8e6e3;text-align:center}
+  .box{max-width:420px}
+  .emoji{font-size:4rem;margin-bottom:8px}
+  .code{font-size:3rem;font-weight:800;color:#c9a227;margin:0}
+  h1{font-size:1.25rem;margin:10px 0 6px}
+  p{color:#7a8ba7;font-size:0.95rem;line-height:1.6;margin:0 0 22px}
+  a.btn{display:inline-block;background:#c9a227;color:#0a0e17;font-weight:800;
+    text-decoration:none;padding:12px 24px;border-radius:10px}
+</style></head>
+<body><div class="box">
+  <div class="emoji">🐒⚽</div>
+  <p class="code">${code}</p>
+  <h1>${heading}</h1>
+  <p>${message}</p>
+  <a class="btn" href="/">חזרה לדף הבית</a>
+</div></body></html>`;
+}
+
+// 404 — unmatched routes (static files & API routes are handled above)
+app.use((req, res) => {
+  if (req.path.startsWith('/api') || req.path.startsWith('/health')) {
+    return res.status(404).json({ error: 'Not found' });
+  }
+  res.status(404).type('html').send(
+    errorPage(404, 'הדף לא נמצא', 'הקישור שגוי או שהדף הוסר. בואו נחזור למשחק 🏆')
+  );
+});
+
+// 500 — uncaught errors in handlers
+app.use((err, req, res, next) => {
+  logError(`Unhandled error on ${req.method} ${req.path}: ${err.stack || err.message}`);
+  if (res.headersSent) return next(err);
+  if (req.path.startsWith('/api') || req.path.startsWith('/health')) {
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+  res.status(500).type('html').send(
+    errorPage(500, 'משהו השתבש', 'השרת נתקל בתקלה. ניסינו לתעד אותה — נסו לרענן בעוד רגע.')
+  );
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => console.log(`World Cup predictor running on port ${PORT}`));
