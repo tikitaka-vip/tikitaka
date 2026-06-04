@@ -1170,6 +1170,21 @@ app.get('/api/stats', (req, res) => {
   res.json({ players: humanPlayers, predictions: preds, results, totalMatches, groups });
 });
 
+// Lightweight health check for external uptime monitors (UptimeRobot etc.).
+// Not under /api, so it bypasses rate limiting. Returns 200 + "ok" when the
+// DB responds, 503 otherwise — monitors can keyword-match on "ok".
+const SERVER_STARTED = Date.now();
+app.get(['/health', '/healthz'], (req, res) => {
+  res.setHeader('Cache-Control', 'no-store');
+  try {
+    db.prepare('SELECT 1').get();
+    res.status(200).json({ status: 'ok', db: 'ok', uptime_s: Math.round((Date.now() - SERVER_STARTED) / 1000) });
+  } catch (e) {
+    logError('health check failed: ' + e.message);
+    res.status(503).json({ status: 'error', db: 'down' });
+  }
+});
+
 // --- Shared fetch logic ---
 
 async function doFetchOdds() {
