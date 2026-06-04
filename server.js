@@ -1234,6 +1234,7 @@ async function doFetchOdds() {
     console.error('Outright odds fetch failed:', e.message);
   }
 
+  db.prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('last_odds_fetch', ?)").run(new Date().toISOString());
   return { updated, total: data.length };
 }
 
@@ -1342,6 +1343,36 @@ function startAutoFetch() {
 }
 
 startAutoFetch();
+
+// Auto-fetch odds daily (B-7). Scores are fetched every 5 min above; odds
+// change far more slowly, so a daily refresh keeps multipliers current without
+// burning the limited Odds API quota. Also runs once shortly after boot if the
+// last fetch is stale (>20h), so a restart doesn't leave odds outdated.
+let oddsAutoFetchInterval = null;
+
+function startOddsAutoFetch() {
+  if (oddsAutoFetchInterval) return;
+  const DAY = 24 * 60 * 60 * 1000;
+
+  const runIfDue = async (force) => {
+    const apiKey = db.prepare("SELECT value FROM settings WHERE key = 'odds_api_key'").get()?.value;
+    if (!apiKey) return;
+    const last = db.prepare("SELECT value FROM settings WHERE key = 'last_odds_fetch'").get()?.value;
+    const stale = !last || (Date.now() - new Date(last).getTime()) > 20 * 60 * 60 * 1000;
+    if (!force && !stale) return;
+    try {
+      const r = await doFetchOdds();
+      console.log(`Auto-fetch odds: updated ${r.updated}/${r.total} matches`);
+    } catch (e) {
+      console.error('Auto-fetch odds failed:', e.message);
+    }
+  };
+
+  setTimeout(() => runIfDue(false), 60 * 1000);   // post-boot catch-up if stale
+  oddsAutoFetchInterval = setInterval(() => runIfDue(true), DAY);  // daily
+}
+
+startOddsAutoFetch();
 
 const ADMIN_EMAIL = 'evyatar.kaplan@gmail.com';
 

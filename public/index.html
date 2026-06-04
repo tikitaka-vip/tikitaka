@@ -2089,7 +2089,7 @@ function updateAutoFetchStatus() {
   const el = document.getElementById('autoFetchStatus');
   const hasKey = document.getElementById('oddsApiKey').value.trim().length > 0;
   if (hasKey) {
-    el.innerHTML = '&#9989; תוצאות נשלפות אוטומטית כל 5 דקות מהשרת. הדף מתרענן כל 2 דקות.';
+    el.innerHTML = '&#9989; תוצאות נשלפות אוטומטית כל 5 דקות, והיחסים (אודדס) נשלפים אוטומטית פעם ביום. הדף מתרענן כל 2 דקות.';
     el.style.color = 'var(--green)';
   } else {
     el.innerHTML = '&#9888; הזינו מפתח API כדי להפעיל שליפה אוטומטית';
