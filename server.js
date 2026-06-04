@@ -758,7 +758,7 @@ app.get('/api/actual-results', (req, res) => {
   res.json(db.prepare('SELECT * FROM actual_results').all());
 });
 
-app.get('/api/leaderboard', (req, res) => {
+function computeBoard() {
   const players = db.prepare('SELECT id, name FROM players').all();
   const results = db.prepare('SELECT * FROM match_results').all();
   const resultMap = {};
@@ -830,7 +830,76 @@ app.get('/api/leaderboard', (req, res) => {
   });
 
   board.sort((a, b) => b.points - a.points || b.exact - a.exact);
-  res.json(board);
+  return board;
+}
+
+app.get('/api/leaderboard', (req, res) => {
+  res.json(computeBoard());
+});
+
+// Shareable prediction card (B-31 / supports G-8).
+// GET /api/card/:playerId        -> SVG image (1200x630, OG-sized)
+// GET /api/card/:playerId?format=json -> raw stats for client-side generators
+function xmlEscape(s) {
+  return String(s == null ? '' : s).replace(/[<>&'"]/g, c =>
+    ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', "'": '&apos;', '"': '&quot;' }[c]));
+}
+
+function getCardStats(playerId) {
+  const player = db.prepare('SELECT id, name FROM players WHERE id = ?').get(playerId);
+  if (!player) return null;
+  const board = computeBoard();
+  const isMonkey = (n) => /קוף/.test(n);
+  const humans = board.filter(p => !isMonkey(p.name));
+  const rank = humans.findIndex(p => p.id === playerId) + 1;
+  const me = board.find(p => p.id === playerId);
+  const monkeys = board.filter(p => isMonkey(p.name));
+  const monkeyPoints = monkeys.length ? Math.max(...monkeys.map(m => m.points)) : 0;
+  return {
+    id: player.id,
+    name: player.name,
+    points: me ? me.points : 0,
+    exact: me ? me.exact : 0,
+    rank: rank > 0 ? rank : null,
+    total_humans: humans.length,
+    monkey_points: monkeyPoints,
+    beating_monkey: (me ? me.points : 0) >= monkeyPoints,
+  };
+}
+
+function renderCardSvg(s) {
+  const beat = s.beating_monkey;
+  const monkeyLine = beat
+    ? `מנצח/ת את הקוף 🐒 (${s.monkey_points})`
+    : `הקוף 🐒 מוביל ב-${s.monkey_points} — תורכם!`;
+  const rankLine = s.rank ? `מקום ${s.rank} מתוך ${s.total_humans}` : 'מצטרפים למשחק';
+  const accent = beat ? '#34d399' : '#c9a227';
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0a0e17"/>
+      <stop offset="1" stop-color="#141b2d"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect x="0" y="0" width="1200" height="10" fill="${accent}"/>
+  <text x="600" y="92" text-anchor="middle" fill="#c9a227" font-family="Arial, sans-serif" font-size="40" font-weight="bold">TikiTaka · ניחושי מונדיאל 2026</text>
+  <text x="600" y="170" text-anchor="middle" fill="#e8e6e3" font-family="Arial, sans-serif" font-size="64" font-weight="bold">${xmlEscape(s.name)}</text>
+  <text x="600" y="330" text-anchor="middle" fill="${accent}" font-family="Arial, sans-serif" font-size="200" font-weight="bold">${s.points}</text>
+  <text x="600" y="395" text-anchor="middle" fill="#7a8ba7" font-family="Arial, sans-serif" font-size="42">נקודות · ${s.exact} בול</text>
+  <text x="600" y="478" text-anchor="middle" fill="#e8e6e3" font-family="Arial, sans-serif" font-size="46" font-weight="bold">${rankLine}</text>
+  <text x="600" y="540" text-anchor="middle" fill="${accent}" font-family="Arial, sans-serif" font-size="40" font-weight="bold">${monkeyLine}</text>
+  <text x="600" y="600" text-anchor="middle" fill="#7a8ba7" font-family="Arial, sans-serif" font-size="34">tikitaka.vip · נחשו, נצחו את הקוף, הביאו בירות 🍺</text>
+</svg>`;
+}
+
+app.get('/api/card/:playerId', (req, res) => {
+  const stats = getCardStats(parseInt(req.params.playerId));
+  if (!stats) return res.status(404).json({ error: 'שחקן לא נמצא' });
+  if (req.query.format === 'json') return res.json(stats);
+  res.setHeader('Content-Type', 'image/svg+xml; charset=utf-8');
+  res.setHeader('Cache-Control', 'public, max-age=300');
+  res.send(renderCardSvg(stats));
 });
 
 app.get('/api/all-predictions', (req, res) => {
