@@ -85,6 +85,20 @@
   .tab:hover { color: var(--text); background: var(--accent-glow); }
   .tab.active { color: var(--accent); box-shadow: inset 0 -3px 0 var(--accent); }
   .tab { position: relative; }
+  /* Loading skeleton (B-6) */
+  @keyframes skel-shimmer { 0% { background-position: -400px 0; } 100% { background-position: 400px 0; } }
+  .skel {
+    background: linear-gradient(90deg, var(--card) 25%, var(--card2) 37%, var(--card) 63%);
+    background-size: 800px 100%; animation: skel-shimmer 1.3s infinite linear;
+    border-radius: 6px;
+  }
+  .skel-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 14px; margin-bottom: 8px; display: flex; align-items: center; gap: 12px;
+  }
+  .skel-card .skel-line { height: 14px; flex: 1; }
+  .skel-card .skel-score { width: 70px; height: 34px; flex: 0 0 70px; }
+  @media (prefers-reduced-motion: reduce) { .skel { animation: none; } }
   .tab-badge {
     display: inline-block; min-width: 18px; height: 18px; line-height: 18px;
     padding: 0 5px; margin: 0 5px; border-radius: 9px; background: var(--red, #e53935);
@@ -1389,7 +1403,22 @@ async function initGoogleAuth() {
 }
 
 // --- Data ---
+function renderSkeleton() {
+  const container = document.getElementById('matchPredictions');
+  if (!container || container.children.length) return; // don't clobber real content
+  let html = '';
+  for (let i = 0; i < 6; i++) {
+    html += `<div class="skel-card">
+      <div class="skel skel-line" style="max-width:90px"></div>
+      <div class="skel skel-score"></div>
+      <div class="skel skel-line" style="max-width:90px"></div>
+    </div>`;
+  }
+  container.innerHTML = html;
+}
+
 async function loadMatches() {
+  if (!matches.length) renderSkeleton();
   matches = await api('/api/matches');
   buildFilters();
   renderPredictions();
