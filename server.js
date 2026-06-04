@@ -684,8 +684,13 @@ app.get('/api/matches', (req, res) => {
 });
 
 app.post('/api/matches/:id/update-teams', (req, res) => {
+  if (!isAdmin(req)) return res.status(403).json({ error: 'אין הרשאה' });
   const { team_a, team_b } = req.body;
-  db.prepare('UPDATE matches SET team_a = ?, team_b = ? WHERE id = ?').run(team_a, team_b, req.params.id);
+  if (!team_a || !team_b || !String(team_a).trim() || !String(team_b).trim()) {
+    return res.status(400).json({ error: 'שמות קבוצות חסרים' });
+  }
+  db.prepare('UPDATE matches SET team_a = ?, team_b = ? WHERE id = ?')
+    .run(String(team_a).trim(), String(team_b).trim(), req.params.id);
   res.json({ ok: true });
 });
 
@@ -696,6 +701,7 @@ app.delete('/api/matches/:id/result', (req, res) => {
 });
 
 app.post('/api/matches/:id/odds', (req, res) => {
+  if (!isAdmin(req)) return res.status(403).json({ error: 'אין הרשאה' });
   const { odds_a, odds_draw, odds_b } = req.body;
   db.prepare('INSERT OR REPLACE INTO match_odds (match_id, odds_a, odds_draw, odds_b) VALUES (?, ?, ?, ?)').run(req.params.id, odds_a, odds_draw, odds_b);
   res.json({ ok: true });
