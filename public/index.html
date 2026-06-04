@@ -183,6 +183,14 @@
     font-weight: 800; font-size: 0.95rem; color: var(--green);
     background: var(--green-bg); padding: 3px 10px; border-radius: 8px;
   }
+  /* Animated score reveal (B-11) */
+  @keyframes score-reveal {
+    0% { transform: scale(0.3); opacity: 0; }
+    55% { transform: scale(1.25); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .actual-score.reveal { animation: score-reveal 0.55s cubic-bezier(.18,.89,.32,1.28); }
+  @media (prefers-reduced-motion: reduce) { .actual-score.reveal { animation: none; } }
 
   .match-bottom {
     display: flex; align-items: center; justify-content: space-between;
@@ -873,6 +881,7 @@ let tournamentPreds = {};
 let activeFilter = 'all';
 let compareFilter = 'all';
 let confettiArmed = false;
+let revealedResults = null; // null until first render; then a Set of result match ids already shown
 
 document.querySelectorAll('.tab').forEach(tab => {
   tab.addEventListener('click', () => {
@@ -1737,7 +1746,7 @@ function renderPredictions() {
               onchange="savePred(${m.id})" placeholder="-" ${m.locked ? 'disabled' : ''}>
           </div>
           <div class="match-team left">${tTeam(m.team_b)}</div>
-          ${res ? `<div class="actual-score">${res.score_a} : ${res.score_b}</div>` : ''}
+          ${res ? `<div class="actual-score${revealedResults && !revealedResults.has(m.id) ? ' reveal' : ''}">${res.score_a} : ${res.score_b}</div>` : ''}
         </div>
         <div class="match-bottom">
           ${oddsHtml}
@@ -1748,6 +1757,10 @@ function renderPredictions() {
         </div>
       </div>`;
   }
+
+  // Track which results have been shown so the reveal animation (B-11) only
+  // plays once per result per session (first load arms silently, no replay on polls).
+  revealedResults = new Set(matches.filter(m => m.result).map(m => m.id));
 
   // Confetti on a newly-revealed exact prediction (B-12)
   const seenExact = new Set(JSON.parse(localStorage.getItem('wc_seen_exacts') || '[]'));
