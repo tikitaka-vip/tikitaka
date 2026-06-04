@@ -1100,6 +1100,74 @@ function maybeShowHowToPlay() {
   }
 }
 
+// --- Points breakdown per match ---
+const BD_STAGE_BASE = {'בתים':1,'שמינית גמר':2,'שמונה אחרונות':3,'רבע גמר':4,'חצי גמר':5,'משחק על מקום 3':4,'גמר':6};
+
+function showPointsBreakdown(matchId) {
+  const m = matches.find(x => x.id === matchId);
+  const pred = predictions[matchId];
+  if (!m || !m.result || !pred) return;
+  const res = m.result;
+  const odds = m.odds;
+  const isRtl = LANGS[currentLang]?.dir === 'rtl';
+
+  const pOut = pred.score_a > pred.score_b ? 'a' : pred.score_a < pred.score_b ? 'b' : 'd';
+  const rOut = res.score_a > res.score_b ? 'a' : res.score_a < res.score_b ? 'b' : 'd';
+  const stageMult = BD_STAGE_BASE[m.stage] || 1;
+
+  let rawOdds = 1, oddsVal = 1, capped = false;
+  if (odds) {
+    rawOdds = rOut === 'a' ? odds.odds_a : rOut === 'b' ? odds.odds_b : odds.odds_draw;
+    oddsVal = Math.min(rawOdds, 8);
+    capped = rawOdds > 8;
+  }
+
+  let base = 0, baseLabel = '';
+  if (pOut !== rOut) {
+    base = 0;
+  } else if (pred.score_a === res.score_a && pred.score_b === res.score_b) {
+    base = 5; baseLabel = t('bd_exact');
+  } else if (pred.score_a - pred.score_b === res.score_a - res.score_b) {
+    base = 3; baseLabel = t('bd_diff');
+  } else {
+    base = 2; baseLabel = t('bd_result');
+  }
+  const total = base === 0 ? 0 : Math.round(base * stageMult * oddsVal);
+
+  const row = (label, val) => `<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #2a2a4a"><span style="color:#bbb">${label}</span><span style="color:#fff;font-weight:700">${val}</span></div>`;
+
+  let body;
+  if (base === 0) {
+    body = `<div style="color:var(--red,#ff6b6b);text-align:center;padding:10px 0;font-weight:700">${t('bd_wrong')}</div>`;
+  } else {
+    const oddsValStr = odds ? `×${oddsVal.toFixed(2)}${capped ? ` (${t('bd_capped')})` : ''}` : t('bd_no_odds');
+    body =
+      row(`${t('bd_base')} — ${baseLabel}`, `${base}`) +
+      row(t('bd_stage') + ` (${tSection(m.stage)})`, `×${stageMult}`) +
+      row(t('bd_odds'), oddsValStr) +
+      `<div style="display:flex;justify-content:space-between;padding:11px 0 2px;font-size:1.05rem"><span style="color:var(--accent,#ffd700);font-weight:800">${t('bd_total')}</span><span style="color:var(--accent,#ffd700);font-weight:800">${base} × ${stageMult} × ${odds ? oddsVal.toFixed(2) : 1} = ${total}</span></div>`;
+  }
+
+  const existing = document.getElementById('bdOverlay');
+  if (existing) existing.remove();
+  const overlay = document.createElement('div');
+  overlay.id = 'bdOverlay';
+  overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.75);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px';
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+  overlay.innerHTML = `
+    <div style="background:#1a1a3e;border-radius:16px;padding:22px;max-width:400px;width:100%;border:1px solid #444488;direction:${isRtl ? 'rtl' : 'ltr'}">
+      <h3 style="color:var(--accent,#ffd700);margin:0 0 14px;text-align:center">${t('bd_title')}</h3>
+      <div style="text-align:center;font-weight:700;color:#fff;margin-bottom:4px">${tTeam(m.team_a)} ${tTeam(m.team_b)}</div>
+      <div style="display:flex;justify-content:center;gap:18px;font-size:0.85rem;margin-bottom:14px">
+        <span style="color:#bbb">${t('bd_your_pred')}: <b style="color:#fff">${pred.score_a}-${pred.score_b}</b></span>
+        <span style="color:#bbb">${t('bd_actual')}: <b style="color:var(--green,#4caf50)">${res.score_a}-${res.score_b}</b></span>
+      </div>
+      ${body}
+      <button onclick="document.getElementById('bdOverlay').remove()" class="btn" style="background:#444;color:#fff;width:100%;margin-top:16px">OK</button>
+    </div>`;
+  document.body.appendChild(overlay);
+}
+
 function urlBase64ToUint8Array(base64String) {
   const padding = '='.repeat((4 - base64String.length % 4) % 4);
   const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
@@ -1570,8 +1638,8 @@ function renderPredictions() {
         <div class="match-bottom">
           ${oddsHtml}
           <div>
-            ${statusText ? `<span class="pred-status ${statusClass}">${statusText}</span>` : ''}
-            ${earnedPts > 0 ? `<span class="pts-earned">+${earnedPts}</span>` : ''}
+            ${statusText ? `<span class="pred-status ${statusClass}" ${res && pred ? `onclick="showPointsBreakdown(${m.id})" style="cursor:pointer"` : ''}>${statusText}</span>` : ''}
+            ${earnedPts > 0 ? `<span class="pts-earned" onclick="showPointsBreakdown(${m.id})" style="cursor:pointer" title="${t('bd_title')}">+${earnedPts} ⓘ</span>` : ''}
           </div>
         </div>
       </div>`;
