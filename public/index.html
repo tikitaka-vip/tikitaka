@@ -84,6 +84,15 @@
   }
   .tab:hover { color: var(--text); background: var(--accent-glow); }
   .tab.active { color: var(--accent); box-shadow: inset 0 -3px 0 var(--accent); }
+  .tab { position: relative; }
+  .tab-badge {
+    display: inline-block; min-width: 18px; height: 18px; line-height: 18px;
+    padding: 0 5px; margin: 0 5px; border-radius: 9px; background: var(--red, #e53935);
+    color: #fff; font-size: 0.7rem; font-weight: 800; text-align: center;
+    vertical-align: middle; box-shadow: 0 0 0 2px var(--bg, #0a0a23);
+  }
+  @keyframes badgePulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.18); } }
+  .tab-badge.pulse { animation: badgePulse 1.4s ease-in-out 3; }
 
   .container { max-width: 920px; margin: 0 auto; padding: 16px; }
   .panel { display: none; }
@@ -526,7 +535,7 @@
 </div>
 
 <div class="tabs">
-  <div class="tab active" data-tab="predict">ניחושים</div>
+  <div class="tab active" data-tab="predict">ניחושים<span class="tab-badge" id="predictBadge" style="display:none"></span></div>
   <div class="tab" data-tab="groups">הקבוצות שלי</div>
   <div class="tab" data-tab="admin" id="adminTab" style="display:none">ניהול</div>
   <div class="tab" data-tab="scoring">ניקוד</div>
@@ -1100,6 +1109,24 @@ function maybeShowHowToPlay() {
   }
 }
 
+// --- Unpredicted-matches notification badge (B-5) ---
+function updatePredictBadge(count) {
+  const badge = document.getElementById('predictBadge');
+  if (!badge) return;
+  if (count > 0) {
+    badge.textContent = count > 99 ? '99+' : count;
+    badge.style.display = 'inline-block';
+    // Pulse once per session when there are pending predictions, to nudge.
+    if (!sessionStorage.getItem('wc_badge_pulsed')) {
+      badge.classList.add('pulse');
+      sessionStorage.setItem('wc_badge_pulsed', '1');
+    }
+  } else {
+    badge.style.display = 'none';
+    badge.classList.remove('pulse');
+  }
+}
+
 // --- Points breakdown per match ---
 const BD_STAGE_BASE = {'בתים':1,'שמינית גמר':2,'שמונה אחרונות':3,'רבע גמר':4,'חצי גמר':5,'משחק על מקום 3':4,'גמר':6};
 
@@ -1544,6 +1571,9 @@ function renderPredictions() {
   const predicted = upcoming.filter(m => predictions[m.id]);
   const missing = upcoming.length - predicted.length;
   const pArea = document.getElementById('progressArea');
+
+  // Notification badge on the Predictions tab — drives completion (B-5)
+  updatePredictBadge(currentPlayer ? missing : 0);
 
   if (currentPlayer && upcoming.length > 0) {
     const pct = Math.round((predicted.length / upcoming.length) * 100);
