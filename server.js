@@ -31,7 +31,13 @@ function rateLimit(windowMs, max) {
     if (now > entry.reset) { entry.count = 0; entry.reset = now + windowMs; }
     entry.count++;
     rateMap.set(key, entry);
-    if (entry.count > max) return res.status(429).json({ error: 'יותר מדי בקשות, נסו שוב בעוד דקה' });
+    res.setHeader('X-RateLimit-Limit', max);
+    res.setHeader('X-RateLimit-Remaining', Math.max(0, max - entry.count));
+    if (entry.count > max) {
+      const retryAfter = Math.max(1, Math.ceil((entry.reset - now) / 1000));
+      res.setHeader('Retry-After', retryAfter);
+      return res.status(429).json({ error: 'יותר מדי בקשות, נסו שוב בעוד דקה' });
+    }
     next();
   };
 }
