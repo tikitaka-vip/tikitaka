@@ -14,6 +14,16 @@
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
 <script src="/i18n.js?v=5"></script>
 <script>
+  // Apply saved theme ASAP to avoid a flash (B-13)
+  (function(){
+    try {
+      var saved = localStorage.getItem('wc_theme');
+      if (!saved && window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) saved = 'light';
+      if (saved === 'light') document.documentElement.setAttribute('data-theme', 'light');
+    } catch(e) {}
+  })();
+</script>
+<script>
   !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey getNextSurveyStep identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug getPageViewId".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
   posthog.init('phc_UvqckJ5pXgijFlvJCLdX8C4pQbzyJ5lgObxEGbsE4An', {
     api_host: 'https://us.i.posthog.com',
@@ -47,8 +57,26 @@
     --orange: #e67e22; --orange-bg: rgba(230,126,34,0.15);
     --text: #e8e6e3; --muted: #7a8ba7; --dimmed: #4a5568;
   }
+  /* Light theme (B-13) — overrides the variables; core UI uses var(--*) */
+  html[data-theme="light"] {
+    --bg: #f3f5fa; --card: #ffffff; --card2: #eaeef6; --border: #d6deec;
+    --accent: #a8801a; --accent-glow: rgba(168,128,26,0.18);
+    --green: #1e8e4f; --green-bg: rgba(30,142,79,0.12);
+    --red: #c0392b; --red-bg: rgba(192,57,43,0.10);
+    --blue: #2471a3; --blue-bg: rgba(36,113,163,0.10);
+    --orange: #c96a17; --orange-bg: rgba(201,106,23,0.12);
+    --text: #16213e; --muted: #5a6b87; --dimmed: #8a96a8;
+  }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: 'Heebo', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+  body { font-family: 'Heebo', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh;
+    transition: background 0.25s ease, color 0.25s ease; }
+  .theme-toggle {
+    position: absolute; top: 10px; right: 10px; z-index: 100;
+    background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.25);
+    color: #fff; width: 34px; height: 34px; border-radius: 50%; cursor: pointer;
+    font-size: 1rem; line-height: 1; display: flex; align-items: center; justify-content: center;
+  }
+  .theme-toggle:hover { background: rgba(0,0,0,0.4); }
 
   .header {
     background: linear-gradient(135deg, #1a1a2e, #16213e 50%, #0f3460);
@@ -512,6 +540,7 @@
   <p>ארה״ב / קנדה / מקסיקו &middot; 11 ביוני &ndash; 19 ביולי</p>
   <div id="countdown" style="color:var(--accent);font-weight:800;font-size:1.1rem;margin-top:6px;position:relative"></div>
   <div id="langPicker" style="position:absolute;top:10px;left:10px;z-index:100"></div>
+  <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle theme" title="Toggle light/dark">🌙</button>
 </div>
 
 <div class="auth-bar">
@@ -1131,6 +1160,28 @@ function maybeShowHowToPlay() {
   if (!localStorage.getItem('wc_howto_seen')) {
     setTimeout(showHowToPlay, 400);
   }
+}
+
+// --- Dark/light theme toggle (B-13) ---
+function applyThemeIcon() {
+  const btn = document.getElementById('themeToggle');
+  if (!btn) return;
+  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+  btn.textContent = isLight ? '☀️' : '🌙';
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', isLight ? '#ffffff' : '#c9a227');
+}
+function toggleTheme() {
+  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+  if (isLight) {
+    document.documentElement.removeAttribute('data-theme');
+    localStorage.setItem('wc_theme', 'dark');
+  } else {
+    document.documentElement.setAttribute('data-theme', 'light');
+    localStorage.setItem('wc_theme', 'light');
+  }
+  applyThemeIcon();
+  if (window.posthog) posthog.capture('theme_toggle', { theme: isLight ? 'dark' : 'light' });
 }
 
 // --- Confetti celebration (B-12), dependency-free canvas ---
@@ -2497,6 +2548,7 @@ setInterval(updateCountdown, 1000);
 // Init — each independent, no single failure blocks the rest
 checkResetToken();
 checkVerified();
+applyThemeIcon();
 restoreSession().catch(() => {});
 initGoogleAuth().catch(() => {});
 loadOutrightOdds().catch(() => {});
