@@ -57,9 +57,32 @@ app.use('/api/login', rateLimit(60000, 10));
 app.use('/api/players', rateLimit(60000, 10));
 app.use('/api/predictions', rateLimit(60000, 60));
 app.use('/api', rateLimit(60000, 120));
+// Source tracking redirect routes (WhatsApp strips UTM params, so we use vanity paths)
+const SOURCE_REDIRECTS = { '/wa': 'whatsapp', '/tg': 'telegram', '/fb': 'facebook', '/rd': 'reddit', '/ig': 'instagram', '/tw': 'twitter' };
+for (const [route, source] of Object.entries(SOURCE_REDIRECTS)) {
+  app.get(route, (req, res) => {
+    res.redirect(`/?ref=${source}`);
+  });
+}
+
 app.use('/socials', express.static(path.join(__dirname, 'socials'), {
   maxAge: '1h'
 }));
+app.get('/sitemap.xml', (req, res) => {
+  const today = new Date().toISOString().split('T')[0];
+  const groups = db.prepare('SELECT invite_code, created_at FROM groups ORDER BY id').all();
+  let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
+  xml += `  <url>\n    <loc>https://tikitaka.vip/</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>1.0</priority>\n  </url>\n`;
+  for (const g of groups) {
+    const mod = g.created_at ? g.created_at.split(' ')[0] || g.created_at.split('T')[0] : today;
+    xml += `  <url>\n    <loc>https://tikitaka.vip/join/${g.invite_code}</loc>\n    <lastmod>${mod}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.6</priority>\n  </url>\n`;
+  }
+  xml += `</urlset>`;
+  res.set('Content-Type', 'application/xml; charset=utf-8');
+  res.set('Cache-Control', 'public, max-age=3600');
+  res.send(xml);
+});
+
 app.use('/brand', express.static(path.join(__dirname, 'brand'), {
   maxAge: '1h',
   setHeaders: (res, filePath) => {
@@ -80,6 +103,7 @@ app.use(express.static(path.join(__dirname, 'public'), {
 }));
 
 db.pragma('journal_mode = WAL');
+try { db.exec("ALTER TABLE players ADD COLUMN ref_source TEXT DEFAULT NULL"); } catch(e) {}
 db.exec(`
   CREATE TABLE IF NOT EXISTS analytics (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -97,6 +121,7 @@ db.exec(`
     avatar_url TEXT DEFAULT '',
     pin TEXT NOT NULL DEFAULT '',
     session_token TEXT,
+    ref_source TEXT DEFAULT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   );
 
@@ -495,8 +520,8 @@ app.post('/api/auth/google', async (req, res) => {
         .run(token, googleId, picture || '', name || player.name, playerLang, player.id);
     } else {
       const playerName = name || email.split('@')[0];
-      const result = db.prepare('INSERT INTO players (name, email, google_id, avatar_url, pin, session_token, lang, email_verified) VALUES (?, ?, ?, ?, ?, ?, ?, 1)')
-        .run(playerName, email, googleId, picture || '', 'google-auth', token, playerLang);
+      const result = db.prepare('INSERT INTO players (name, email, google_id, avatar_url, pin, session_token, lang, email_verified, ref_source) VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?)')
+        .run(playerName, email, googleId, picture || '', 'google-auth', token, playerLang, req.body.ref_source || null);
       player = { id: result.lastInsertRowid, name: playerName };
       const inviteCode = createAutoGroup(player.id, playerName, playerLang);
       sendWelcomeEmail(email, playerName, playerLang, player.id, inviteCode).catch(e => console.error('Welcome email failed:', e.message));
@@ -517,7 +542,7 @@ app.post('/api/players', (req, res) => {
   if (!pin || pin.length < 4) return res.status(400).json({ error: 'צריך קוד בן 4 ספרות לפחות' });
   const token = generateToken();
   try {
-    const result = db.prepare('INSERT INTO players (name, pin, session_token) VALUES (?, ?, ?)').run(name.trim(), pin, token);
+    const result = db.prepare('INSERT INTO players (name, pin, session_token, ref_source) VALUES (?, ?, ?, ?)').run(name.trim(), pin, token, req.body.ref_source || null);
     res.json({ id: result.lastInsertRowid, name: name.trim(), token });
   } catch (e) {
     if (e.message.includes('UNIQUE')) return res.status(409).json({ error: 'השם או האימייל כבר תפוסים' });
@@ -569,8 +594,8 @@ app.post('/api/auth/signup', async (req, res) => {
 
   try {
     const result = db.prepare(
-      'INSERT INTO players (name, email, password_hash, pin, session_token, lang, email_verified, verify_token) VALUES (?, ?, ?, ?, ?, ?, 0, ?)'
-    ).run(playerName, email.toLowerCase().trim(), pwHash, 'email-auth', token, playerLang, verifyToken);
+      'INSERT INTO players (name, email, password_hash, pin, session_token, lang, email_verified, verify_token, ref_source) VALUES (?, ?, ?, ?, ?, ?, 0, ?, ?)'
+    ).run(playerName, email.toLowerCase().trim(), pwHash, 'email-auth', token, playerLang, verifyToken, req.body.ref_source || null);
 
     const inviteCode = createAutoGroup(result.lastInsertRowid, playerName, playerLang);
     const verifyUrl = `https://tikitaka.vip/api/auth/verify-email?token=${verifyToken}`;

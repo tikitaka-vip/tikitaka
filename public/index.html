@@ -929,6 +929,13 @@ function toast(msg) {
   setTimeout(() => t.classList.remove('show'), 1200);
 }
 
+// Capture ref source from URL params (e.g., ?ref=whatsapp from /wa redirect)
+(function() {
+  const ref = new URLSearchParams(location.search).get('ref');
+  if (ref) localStorage.setItem('wc_ref', ref);
+})();
+function getRefSource() { return localStorage.getItem('wc_ref') || null; }
+
 async function api(path, opts) {
   const headers = { 'Content-Type': 'application/json' };
   if (currentPin) headers['X-Session-Token'] = currentPin;
@@ -1338,7 +1345,7 @@ function register() {
   const pin = document.getElementById('authPin').value;
   if (!name) return alert('הכניסו שם');
   if (!pin || pin.length < 4) return alert('קוד חייב להיות לפחות 4 ספרות');
-  api('/api/players', { method: 'POST', body: JSON.stringify({ name, pin }) })
+  api('/api/players', { method: 'POST', body: JSON.stringify({ name, pin, ref_source: getRefSource() }) })
     .then(r => {
       if (r.error) return alert(r.error);
       setLoggedIn(r.id, r.name, r.token);
@@ -1399,7 +1406,7 @@ function emailSignup() {
   const password = document.getElementById('authPassword').value;
   if (!email) return alert(t('email_required') || 'Email required');
   if (!password || password.length < 6) return alert(t('password_min') || 'Password must be at least 6 characters');
-  api('/api/auth/signup', { method: 'POST', body: JSON.stringify({ email, password, lang: currentLang }) })
+  api('/api/auth/signup', { method: 'POST', body: JSON.stringify({ email, password, lang: currentLang, ref_source: getRefSource() }) })
     .then(r => {
       if (r.error) return alert(r.error);
       if (window.posthog) posthog.capture('signup', { method: 'email' });
@@ -1458,7 +1465,7 @@ function logout() {
 
 // Google Sign-In callback
 function handleGoogleCredential(response) {
-  api('/api/auth/google', { method: 'POST', body: JSON.stringify({ credential: response.credential, lang: currentLang }) })
+  api('/api/auth/google', { method: 'POST', body: JSON.stringify({ credential: response.credential, lang: currentLang, ref_source: getRefSource() }) })
     .then(r => {
       if (r.error) return alert(r.error);
       if (window.posthog) posthog.capture('login', { method: 'google' });
@@ -1791,10 +1798,10 @@ function renderPredictions() {
           <div class="match-team right">${tTeam(m.team_a)}</div>
           <div class="score-input-group ${inputClass}">
             <input type="number" min="0" max="20" id="sa-${m.id}" value="${pred ? pred.score_a : ''}"
-              onchange="savePred(${m.id})" placeholder="-" ${m.locked ? 'disabled' : ''}>
+              oninput="onScoreInput(${m.id},'a')" placeholder="-" inputmode="numeric" ${m.locked ? 'disabled' : ''}>
             <span class="score-sep">:</span>
             <input type="number" min="0" max="20" id="sb-${m.id}" value="${pred ? pred.score_b : ''}"
-              onchange="savePred(${m.id})" placeholder="-" ${m.locked ? 'disabled' : ''}>
+              oninput="onScoreInput(${m.id},'b')" placeholder="-" inputmode="numeric" ${m.locked ? 'disabled' : ''}>
           </div>
           <div class="match-team left">${tTeam(m.team_b)}</div>
           ${res ? `<div class="actual-score${revealedResults && !revealedResults.has(m.id) ? ' reveal' : ''}">${res.score_a} : ${res.score_b}</div>` : ''}
@@ -1826,8 +1833,10 @@ function renderPredictions() {
 
 async function savePred(matchId) {
   if (!currentPlayer) { alert('התחברו קודם!'); return; }
-  const sa = document.getElementById(`sa-${matchId}`).value;
-  const sb = document.getElementById(`sb-${matchId}`).value;
+  const saEl = document.getElementById(`sa-${matchId}`);
+  const sbEl = document.getElementById(`sb-${matchId}`);
+  const sa = saEl.value;
+  const sb = sbEl.value;
   if (sa === '' || sb === '') return;
   const r = await api(`/api/predictions/${currentPlayer}/match`, {
     method: 'POST',
@@ -1836,8 +1845,36 @@ async function savePred(matchId) {
   if (r.error) return alert(r.error);
   predictions[matchId] = { score_a: parseInt(sa), score_b: parseInt(sb) };
   if (window.posthog) posthog.capture('prediction_saved', { match_id: matchId });
-  renderPredictions();
-  toast();
+  const group = saEl.closest('.score-input-group');
+  if (group) group.classList.add('predicted');
+  focusNextMatch(matchId);
+}
+
+function onScoreInput(matchId, side) {
+  const sa = document.getElementById(`sa-${matchId}`);
+  const sb = document.getElementById(`sb-${matchId}`);
+  if (side === 'a' && sa.value !== '') {
+    sb.focus();
+    return;
+  }
+  if (side === 'b' && sb.value !== '' && sa.value !== '') {
+    sb.blur();
+    savePred(matchId);
+  }
+}
+
+function focusNextMatch(currentMatchId) {
+  const allCards = Array.from(document.querySelectorAll('.match-card:not(.locked):not(.has-result)'));
+  const currentCard = document.getElementById(`sa-${currentMatchId}`)?.closest('.match-card');
+  const idx = allCards.indexOf(currentCard);
+  for (let i = idx + 1; i < allCards.length; i++) {
+    const firstEmpty = allCards[i].querySelector('input[type="number"]:not([disabled])');
+    if (firstEmpty && firstEmpty.value === '') {
+      firstEmpty.focus();
+      allCards[i].scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+  }
 }
 
 async function saveTournamentPred(type) {
