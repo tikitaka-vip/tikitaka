@@ -2152,6 +2152,63 @@ function shareGroup(method, code) {
   }
 }
 
+// Shareable prediction card (#21). Backend: GET /api/card/:id (SVG) +
+// ?format=json (stats). Must run from a user gesture so navigator.share has
+// transient activation. Tries to share the rendered card as a PNG, then falls
+// back to text + link, then clipboard.
+async function cardImageFile() {
+  if (!currentPlayer) return null;
+  const svgText = await fetch(`/api/card/${currentPlayer}`).then(r => r.text());
+  const blobUrl = URL.createObjectURL(new Blob([svgText], { type: 'image/svg+xml;charset=utf-8' }));
+  try {
+    const img = await new Promise((resolve, reject) => {
+      const i = new Image();
+      i.onload = () => resolve(i);
+      i.onerror = reject;
+      i.src = blobUrl;
+    });
+    const canvas = document.createElement('canvas');
+    canvas.width = 1200; canvas.height = 630;
+    canvas.getContext('2d').drawImage(img, 0, 0, 1200, 630);
+    const png = await new Promise(r => canvas.toBlob(r, 'image/png'));
+    return png ? new File([png], 'tikitaka-card.png', { type: 'image/png' }) : null;
+  } finally {
+    URL.revokeObjectURL(blobUrl);
+  }
+}
+
+async function shareCard() {
+  if (!currentPlayer) { alert('התחברו קודם!'); return; }
+  const url = `${location.origin}/?ref=card`;
+  let text = '⚽ הניחושים שלי למונדיאל 2026 ב-TikiTaka — תנצחו אותי ואת הקוף? 🐒';
+  try {
+    const s = await fetch(`/api/card/${currentPlayer}?format=json`).then(r => r.json());
+    if (s && !s.error) {
+      const rankLine = s.rank ? ` · מקום ${s.rank} מתוך ${s.total_humans}` : '';
+      const monkeyLine = s.beating_monkey ? ' · מנצח/ת את הקוף 🐒' : ' · הקוף 🐒 עוד מוביל — תורכם!';
+      text = `⚽ ${s.points} נק' בניחושי מונדיאל 2026${rankLine}${monkeyLine}\n${url}`;
+    }
+  } catch (e) {}
+
+  // Best: share the rendered card image.
+  try {
+    const file = await cardImageFile();
+    if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({ files: [file], text, title: 'TikiTaka · ניחושי מונדיאל 2026' });
+      return;
+    }
+  } catch (e) { if (e && e.name === 'AbortError') return; }
+
+  // Fallback: share text + link, or copy to clipboard.
+  if (navigator.share) {
+    try { await navigator.share({ title: 'TikiTaka · ניחושי מונדיאל 2026', text, url }); } catch (e) {}
+  } else if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => toast(t('copied') || 'הועתק!'));
+  } else {
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+  }
+}
+
 async function saveGroupScoring() {
   if (!currentGroupId || !currentPlayer) return;
   const scoring = {};
@@ -2383,6 +2440,7 @@ async function loadNudgeButtons() {
       el.innerHTML = `
         <a class="btn btn-sm" style="background:#25D366;color:#fff;text-decoration:none;font-size:0.9rem;padding:10px 20px" href="https://wa.me/?text=${text}" target="_blank">💬 ${t('nudge_wa')}</a>
         <a class="btn btn-sm" style="background:#0088cc;color:#fff;text-decoration:none" href="https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(shareMsg)}" target="_blank">✈️ ${t('nudge_tg')}</a>
+        <button class="btn btn-sm" style="background:var(--accent);color:#0a0e17;font-weight:700" onclick="shareCard()">📤 ${t('nudge_share_card') || 'שתפו את הכרטיס שלי'}</button>
         <button class="btn btn-sm" style="background:var(--border);color:var(--text)" onclick="navigator.clipboard.writeText('${link}');toast(t('copied') || 'Copied!')">📋 ${t('nudge_copy')}</button>
       `;
     } else {

@@ -61,6 +61,9 @@ app.use('/api', rateLimit(60000, 120));
 const SOURCE_REDIRECTS = { '/wa': 'whatsapp', '/tg': 'telegram', '/fb': 'facebook', '/rd': 'reddit', '/ig': 'instagram', '/tw': 'twitter' };
 for (const [route, source] of Object.entries(SOURCE_REDIRECTS)) {
   app.get(route, (req, res) => {
+    // Log the click immediately (#32) — captures channel reach even for
+    // visitors who never sign up, complementing players.ref_source (#33).
+    track(req, 'ref_visit', { source, route });
     res.redirect(`/?ref=${source}`);
   });
 }
@@ -473,6 +476,13 @@ function track(req, event, data) {
   } catch(e) {}
 }
 
+// Normalise a client-supplied ?ref= value before storing it on a player (#33):
+// it is user-controlled, so guard the type and cap the length.
+function cleanRef(ref) {
+  if (typeof ref !== 'string') return null;
+  return ref.trim().slice(0, 64) || null;
+}
+
 function generateToken() {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let token = '';
@@ -521,7 +531,7 @@ app.post('/api/auth/google', async (req, res) => {
     } else {
       const playerName = name || email.split('@')[0];
       const result = db.prepare('INSERT INTO players (name, email, google_id, avatar_url, pin, session_token, lang, email_verified, ref_source) VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?)')
-        .run(playerName, email, googleId, picture || '', 'google-auth', token, playerLang, req.body.ref_source || null);
+        .run(playerName, email, googleId, picture || '', 'google-auth', token, playerLang, cleanRef(req.body.ref_source));
       player = { id: result.lastInsertRowid, name: playerName };
       const inviteCode = createAutoGroup(player.id, playerName, playerLang);
       sendWelcomeEmail(email, playerName, playerLang, player.id, inviteCode).catch(e => console.error('Welcome email failed:', e.message));
@@ -542,7 +552,7 @@ app.post('/api/players', (req, res) => {
   if (!pin || pin.length < 4) return res.status(400).json({ error: 'צריך קוד בן 4 ספרות לפחות' });
   const token = generateToken();
   try {
-    const result = db.prepare('INSERT INTO players (name, pin, session_token, ref_source) VALUES (?, ?, ?, ?)').run(name.trim(), pin, token, req.body.ref_source || null);
+    const result = db.prepare('INSERT INTO players (name, pin, session_token, ref_source) VALUES (?, ?, ?, ?)').run(name.trim(), pin, token, cleanRef(req.body.ref_source));
     res.json({ id: result.lastInsertRowid, name: name.trim(), token });
   } catch (e) {
     if (e.message.includes('UNIQUE')) return res.status(409).json({ error: 'השם או האימייל כבר תפוסים' });
@@ -595,7 +605,7 @@ app.post('/api/auth/signup', async (req, res) => {
   try {
     const result = db.prepare(
       'INSERT INTO players (name, email, password_hash, pin, session_token, lang, email_verified, verify_token, ref_source) VALUES (?, ?, ?, ?, ?, ?, 0, ?, ?)'
-    ).run(playerName, email.toLowerCase().trim(), pwHash, 'email-auth', token, playerLang, verifyToken, req.body.ref_source || null);
+    ).run(playerName, email.toLowerCase().trim(), pwHash, 'email-auth', token, playerLang, verifyToken, cleanRef(req.body.ref_source));
 
     const inviteCode = createAutoGroup(result.lastInsertRowid, playerName, playerLang);
     const verifyUrl = `https://tikitaka.vip/api/auth/verify-email?token=${verifyToken}`;
