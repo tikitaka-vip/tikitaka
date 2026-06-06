@@ -1798,10 +1798,10 @@ function renderPredictions() {
           <div class="match-team right">${tTeam(m.team_a)}</div>
           <div class="score-input-group ${inputClass}">
             <input type="number" min="0" max="20" id="sa-${m.id}" value="${pred ? pred.score_a : ''}"
-              oninput="onScoreInput(${m.id},'a')" placeholder="-" inputmode="numeric" ${m.locked ? 'disabled' : ''}>
+              onchange="onScoreChange(${m.id},'a')" placeholder="-" inputmode="numeric" ${m.locked ? 'disabled' : ''}>
             <span class="score-sep">:</span>
             <input type="number" min="0" max="20" id="sb-${m.id}" value="${pred ? pred.score_b : ''}"
-              oninput="onScoreInput(${m.id},'b')" placeholder="-" inputmode="numeric" ${m.locked ? 'disabled' : ''}>
+              onchange="onScoreChange(${m.id},'b')" placeholder="-" inputmode="numeric" ${m.locked ? 'disabled' : ''}>
           </div>
           <div class="match-team left">${tTeam(m.team_b)}</div>
           ${res ? `<div class="actual-score${revealedResults && !revealedResults.has(m.id) ? ' reveal' : ''}">${res.score_a} : ${res.score_b}</div>` : ''}
@@ -1850,16 +1850,13 @@ async function savePred(matchId) {
   focusNextMatch(matchId);
 }
 
-function onScoreInput(matchId, side) {
+function onScoreChange(matchId, side) {
   const sa = document.getElementById(`sa-${matchId}`);
   const sb = document.getElementById(`sb-${matchId}`);
-  if (side === 'a' && sa.value !== '') {
-    sb.focus();
-    return;
-  }
-  if (side === 'b' && sb.value !== '' && sa.value !== '') {
-    sb.blur();
+  if (sa.value !== '' && sb.value !== '') {
     savePred(matchId);
+  } else if (side === 'a' && sa.value !== '') {
+    sb.focus();
   }
 }
 
