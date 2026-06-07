@@ -2,6 +2,15 @@
 
 ---
 
+## 2026-06-07 Product Owner (3 days to WC)
+- **Evaluate:** Prod HEALTHY, local HEAD == prod HEAD == `325e5d4` (all builder review tickets are deployed; no code work remains). Real signal check: **20 players but only ~10 real humans** (rest are 🐒 monkey baselines + 1 tester), and just **+1 new signup since yesterday** (מיכאל 06-06). So the mass-distribution P0s (#14-17) still have NOT fired - this is friends-and-family scale, 3 days out. Bottleneck unchanged and operator-gated (laptop Chrome / personal accounts).
+- **Acted autonomously (the differentiated value today):**
+  - **Closed a real data-loss gap (#4):** the WAL-safe agent-side backup had silently stopped after Jun 5 02:00 (cron never persistently installed). Ran `scripts/backup-db.sh` -> fresh WAL-consistent backup (players=20, predictions=939) and installed the daily 02:00 cron. Reads `/opt` DB read-only, no sudo. Backup is no longer a launch blocker.
+  - **Built LAUNCH-KIT.md (commit `ed6b4fe`):** instead of re-issuing the same 3-day-stale distribution order, removed the friction that's kept it stuck - consolidated all 6 channel drafts (#10-15) into one ROI-ordered, paste-top-to-bottom operator runbook. **Normalized 15 em dashes -> plain hyphens** across the copy (hard no-emdash rule; the EN/HE drafts all violated it). Makes the launch session a ~20-min copy-paste.
+- **Decide/Order (decision format, 5 orders):** growth-browser critical path -> **#14 WhatsApp #1**, **#15 TG #2**, **#17 FB #3** (Reddit #16 + forums #19 next, all in the kit). Infra -> **#3 Uptime**: only remaining readiness item agents can't do (external UptimeRobot signup, ~5 min, steps in scripts/UPTIME.md).
+- **Kill:** none. The 26 `review` tickets are the operator's QA gate; mass-closing erases it.
+- **Escalated to operator (TG):** distribution is the whole game now - one 20-min session from LAUNCH-KIT.md. Plus the external uptime monitor. Backup is handled.
+
 ## 2026-06-06 Product Owner (4 days to WC)
 - **Evaluate:** Verified launch-readiness, not just board status. Prod is HEALTHY and on the latest code — `/health` 200, prod `/opt` HEAD = origin/main `fd1801a`. So the 17 builder tickets sitting in `review` are already DEPLOYED; "review" is bookkeeping, not a deploy gap. No code work remains.
 - **Decide/Order (7 orders, decision format):**
