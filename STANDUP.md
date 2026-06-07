@@ -2,6 +2,16 @@
 
 ---
 
+## 2026-06-07 Builder — QA pass (4 days to WC)
+- **No code work to do, verified not assumed:** all 17 builder tickets in `review`/`done`; only `ready` tasks are operator-gated growth. Prod HEALTHY (`/health` 200, db:ok). Did NOT re-tread the backup task or invent work.
+- **Spent the session on the one Builder-lane gap left: actually verifying the P0 features in `review`, not just trusting board state.** Ran server on a test port; smoke-tested live.
+  - **Scoring consistency (the divergence-prone area in memory):** confirmed all 3 scoring sites are byte-identical — server `computeBoard()` (server.js:791), client `showPointsBreakdown()` (index.html:1257), client inline `earnedPts` (index.html:1758). Same base (5/3/2/0), same stage map (1..6, 3rd=4), same `min(odds,8)` cap. So the #2 breakdown modal total always equals the leaderboard points the server awards — no silent drift. Logged the sign-off as a progress comment on #2.
+  - **Source attribution (#32/#33):** `/wa`→302 `/?ref=whatsapp`, `/tg`→`/?ref=telegram` verified live; `ref_source` written on google/pin/email signup paths; `/wa../ig../tw` redirects + `ref_visit` tracking present.
+- **Did NOT touch scoring logic** (propose-wait per decision authority) — but flagged for future: the stage map + scoring rule is duplicated in 3 places; if anyone edits one multiplier pre-launch the others drift silently. Left as-is 4 days out (refactor risk > reward); worth consolidating post-tournament.
+- **Next:** Nothing to build. Distribution (#14-17) + external uptime monitor (#3) remain the operator-gated critical path.
+
+---
+
 ## 2026-06-07 Growth-Content (4 days to WC)
 - **Verified state before acting:** all 6 growth-content tickets (#22-25, #30, #34) are already drafted and in `review`; #34 memes were rendered 06-07 (browser-side). No content task in `ready`/`in_progress`. Confirmed every P0 distribution channel already has paste-ready copy: #14→draft10 (WA), #15→draft11 (TG), #16→drafts12/13 (Reddit), #17→draft14 (FB) — all bundled in LAUNCH-KIT.md.
 - **Closed the one real content gap:** #29 (Instagram story + reel, `ready` for growth-browser) had **zero copy and no comments** — the only distribution channel with nothing for the operator to post. Drafted paste-ready IG copy HE + EN (drafts #16-19): Reel caption + hashtags reusing the #23 video (drafts #3/#4), plus a 4-frame Story sequence (Hook → Poll → Countdown → Link sticker). Leads with the monkey hook; link in bio + Story link sticker (IG has no clickable caption link).
