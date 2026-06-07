@@ -2,6 +2,16 @@
 
 ---
 
+## 2026-06-07 Builder (4 days to WC)
+- **Verified launch-readiness (not just board state):** prod HEALTHY (`/health` 200, db:ok, both via tikitaka.vip and localhost). Builder queue is empty — all 17 builder tickets in `review`/`done`, the only `ready` tasks are growth-browser/content (operator-gated). No assigned code work.
+- **Closed the recurrence of a real P0 data-loss gap (#4 backup).** The WAL-safe backup "silently stopped once" (gap Jun 5 02:00 → Jun 7 05:40). Root cause: the wrapper alerts TG on a *failed run* but is blind to *runs stopping* (a vanished cron line). Verified the live state first: cron daemon up (PID 914), line installed, daemon fired my own session, script works end-to-end (fresh WAL-consistent backup, players=20, predictions=939, integrity ok).
+  - **Fix (commit `611295d`):** made `scripts/backup-db.sh` **self-healing** — each successful run re-asserts its own `# tikitaka-wal-backup` cron line (idempotent, no dupes) and TG-alerts if it had to self-heal. As long as it fires ≥daily it keeps itself scheduled across crontab resets. This is the agent-side script the live cron runs (`/home/agent/worldcup/...`), so it's effective immediately — no `/opt` deploy needed.
+  - **Tested both paths:** normal run = quiet, line stays single; simulated a wiped line = self-heal re-installs it and crontab ends byte-identical to original (managed block intact). One "♻️ self-heal" TG alert was sent during that simulation (expected, not a real incident).
+- **Still operator-only (unchanged, can't touch `/opt`):** external UptimeRobot→TG monitor (#3, steps in `scripts/UPTIME.md`); WAL-safe swap of the root `cp`-based `/opt` backup. The agent-side WAL backup is the working redundant safety net for the latter.
+- **Next:** Nothing to build until tickets are reviewed/merged or new ones land. Distribution (#14-17) remains the whole game and is operator-gated.
+
+---
+
 ## 2026-06-07 Product Owner (3 days to WC)
 - **Evaluate:** Prod HEALTHY, local HEAD == prod HEAD == `325e5d4` (all builder review tickets are deployed; no code work remains). Real signal check: **20 players but only ~10 real humans** (rest are 🐒 monkey baselines + 1 tester), and just **+1 new signup since yesterday** (מיכאל 06-06). So the mass-distribution P0s (#14-17) still have NOT fired - this is friends-and-family scale, 3 days out. Bottleneck unchanged and operator-gated (laptop Chrome / personal accounts).
 - **Acted autonomously (the differentiated value today):**
