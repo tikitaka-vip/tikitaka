@@ -9,9 +9,10 @@ kickoff we have ~10 real signups. Distribution is the only thing between done-co
 and players. Every task below needs the operator's personal accounts or laptop
 Chrome (agents cannot post these). Ordered by ROI: warm owned channels first.
 
-**Track what works:** use the vanity links so clicks are logged per channel:
-tikitaka.vip/wa (WhatsApp), /tg (Telegram), /fb (Facebook), /rd (Reddit),
-/ig (Instagram), /tw (X). Or just use tikitaka.vip and check signups after.
+**Track what works:** the per-channel vanity links are now LIVE and already baked
+into every paste block below (tikitaka.vip/wa, /tg, /fb, /rd, /ig). Each one
+redirects to the site and tags the signup with its source, so after launch you can
+see exactly which channel drove players. Just paste as-is, nothing to change.
 
 ---
 
@@ -29,7 +30,7 @@ convert far better than cold forums, zero approval latency.
 🎯 ככל שהניחוש יותר מפתיע - ככה צוברים יותר נקודות.
 
 המונדיאל מתחיל ב-11.6, אז תיכנסו לפני המשחק הראשון:
-https://tikitaka.vip
+https://tikitaka.vip/wa
 
 חינם, בעברית, 30 שניות להירשם. תעיפו את זה לקבוצה 👇
 ```
@@ -51,7 +52,7 @@ one-two punch.
 • בסוף כל סבב רואים אם ניצחתם את הקוף
 
 המונדיאל יורה ב-11.6. תפסו מקום בליגה לפני השריקה:
-👉 https://tikitaka.vip
+👉 https://tikitaka.vip/tg
 ```
 
 ---
@@ -69,7 +70,7 @@ Each group has its own admin rules - the courtesy line at the bottom covers it.
 • ניחוש מפתיע שווה יותר נקודות - מי שמעז על אנדרדוג ומצליח, קופץ למעלה
 • חינם, בלי פרסומות, נרשמים ב-30 שניות
 
-👉 https://tikitaka.vip
+👉 https://tikitaka.vip/fb
 
 (אדמינים - אם לא מתאים לקבוצה תכתבו ואסיר, תודה 🙏)
 ```
@@ -89,7 +90,7 @@ Title: בניתי משחק ניחושים חינמי למונדיאל - הירי
 
 הטוויסט בניקוד: ככל שהניחוש יותר מפתיע (אנדרדוג מנצח), ככה מקבלים יותר נקודות - אז לא משתלם ללכת על הפייבוריט תמיד.
 
-לינק: https://tikitaka.vip
+לינק: https://tikitaka.vip/rd
 שמח לקבל פידבק, זה עדיין פרויקט אחד-איש 🙏
 
 (אם זה לא מתאים לסאב, מוזמנים להגיד ואסיר.)
@@ -104,7 +105,7 @@ It's a free, no-ads prediction game. The gimmick: there's a "monkey oracle" that
 
 The scoring rewards upsets: the bigger the surprise you call correctly, the more points you get (odds-based multiplier), so blindly picking favourites won't win you the league.
 
-Link: https://tikitaka.vip - would love feedback, it's a one-person project.
+Link: https://tikitaka.vip/rd - would love feedback, it's a one-person project.
 
 (Mods - happy to remove if this isn't allowed.)
 ```
@@ -135,7 +136,8 @@ Set up a forum league and let's see who actually knows their football. Mods - re
 
 ## 6. Instagram - story + reel  (task #29, P1)
 Where: IG story with countdown sticker + the monkey hook, link sticker to
-tikitaka.vip. Reel can reuse the screen-recording from content tasks #22/#23.
+tikitaka.vip/ig (and put tikitaka.vip/ig in bio). Reel can reuse the
+screen-recording from content tasks #22/#23.
 Lower priority than 1-5; do it if time allows after the owned channels.
 
 ---

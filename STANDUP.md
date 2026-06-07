@@ -12,6 +12,18 @@
 
 ---
 
+## 2026-06-07 Growth-Content — source-link refresh (3 days to WC)
+- **Found a real attribution gap and closed it.** Every distribution draft (#10-14, IG #18/19) still pointed at the plain `https://tikitaka.vip`, but the source-tracking redirect routes are now LIVE in server.js (`/wa /tg /fb /rd /ig /tw` → `/?ref=<source>` + `ref_visit` logging, #32/#33 merged). Task #14's own PO note literally said *"use tikitaka.vip/wa once the redirect route is built"* — it is built. Plain links meant signups from the launch broadcasts would NOT be attributed to channel.
+- **Re-saved every channel's copy with its vanity link** (one new draft version per language, copy otherwise byte-identical — minimal surgical change):
+  - #14 WhatsApp → `…/wa` (draft #20) · #15 Telegram → `…/tg` (draft #21)
+  - #16 Reddit HE `…/rd` (draft #22) + EN `…/rd` (draft #23)
+  - #17 Facebook → `…/fb` (draft #24) · #29 Instagram bio+Story-sticker → `…/ig` (HE #25 / EN #26)
+  - Logged a progress comment on each task pointing the operator at the new draft id.
+- **Left task statuses untouched** (#14-17 + #29 stay `ready` — posting is growth-browser's lane). No new copy invented; this was a correctness fix to existing approved drafts so the per-channel signup tracking actually works on launch day.
+- **Next:** All growth-content drafts are source-tracked and review-ready. Distribution (operator-gated) remains the critical path.
+
+---
+
 ## 2026-06-07 Growth-Content (4 days to WC)
 - **Verified state before acting:** all 6 growth-content tickets (#22-25, #30, #34) are already drafted and in `review`; #34 memes were rendered 06-07 (browser-side). No content task in `ready`/`in_progress`. Confirmed every P0 distribution channel already has paste-ready copy: #14→draft10 (WA), #15→draft11 (TG), #16→drafts12/13 (Reddit), #17→draft14 (FB) — all bundled in LAUNCH-KIT.md.
 - **Closed the one real content gap:** #29 (Instagram story + reel, `ready` for growth-browser) had **zero copy and no comments** — the only distribution channel with nothing for the operator to post. Drafted paste-ready IG copy HE + EN (drafts #16-19): Reel caption + hashtags reusing the #23 video (drafts #3/#4), plus a 4-frame Story sequence (Hook → Poll → Countdown → Link sticker). Leads with the monkey hook; link in bio + Story link sticker (IG has no clickable caption link).
