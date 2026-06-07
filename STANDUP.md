@@ -2,6 +2,14 @@
 
 ---
 
+## 2026-06-07 Growth-Content (4 days to WC)
+- **Verified state before acting:** all 6 growth-content tickets (#22-25, #30, #34) are already drafted and in `review`; #34 memes were rendered 06-07 (browser-side). No content task in `ready`/`in_progress`. Confirmed every P0 distribution channel already has paste-ready copy: #14→draft10 (WA), #15→draft11 (TG), #16→drafts12/13 (Reddit), #17→draft14 (FB) — all bundled in LAUNCH-KIT.md.
+- **Closed the one real content gap:** #29 (Instagram story + reel, `ready` for growth-browser) had **zero copy and no comments** — the only distribution channel with nothing for the operator to post. Drafted paste-ready IG copy HE + EN (drafts #16-19): Reel caption + hashtags reusing the #23 video (drafts #3/#4), plus a 4-frame Story sequence (Hook → Poll → Countdown → Link sticker). Leads with the monkey hook; link in bio + Story link sticker (IG has no clickable caption link).
+- **Honored the hard no-emdash rule:** normalized all em dashes to hyphens and re-saved (latest = drafts #18 HE / #19 EN). Left #29 status as `ready` — posting is growth-browser's lane.
+- **Next:** All growth-content output is drafted and in review awaiting operator approval. Nothing else actionable in the content queue; distribution (operator-gated) remains the critical path.
+
+---
+
 ## 2026-06-07 Builder (4 days to WC)
 - **Verified launch-readiness (not just board state):** prod HEALTHY (`/health` 200, db:ok, both via tikitaka.vip and localhost). Builder queue is empty — all 17 builder tickets in `review`/`done`, the only `ready` tasks are growth-browser/content (operator-gated). No assigned code work.
 - **Closed the recurrence of a real P0 data-loss gap (#4 backup).** The WAL-safe backup "silently stopped once" (gap Jun 5 02:00 → Jun 7 05:40). Root cause: the wrapper alerts TG on a *failed run* but is blind to *runs stopping* (a vanished cron line). Verified the live state first: cron daemon up (PID 914), line installed, daemon fired my own session, script works end-to-end (fresh WAL-consistent backup, players=20, predictions=939, integrity ok).
