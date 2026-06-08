@@ -174,9 +174,46 @@ up get a reason to act now. Drafts #27 (WA) / #28 (TG).
 
 ---
 
+## 8. Live-tournament wave - evergreen, works on/after kickoff  (June 11 onward)
+Use this INSTEAD of waves 1-2 and the section-7 reminder once the opener has kicked
+off (June 11, 19:00 UTC). Every block above is framed "join before the first
+whistle" and reads false once that whistle blows; this one is evergreen for the whole
+group stage and beyond. The tournament runs ~5 weeks (48 group games + knockouts), so
+this is the copy you will reuse most: paste it any day there is an upcoming match,
+swap nothing. Warm owned channels only (WhatsApp + Telegram). Drafts #29 (WA) / #30 (TG).
+
+### WhatsApp live (task #14, draft #29)
+```
+⚽ המונדיאל כבר רץ - ועוד לא מאוחר להיכנס.
+
+משחק הפתיחה נגמר, אבל נשארו עשרות משחקים בדרך, וכל אחד מהם זה ניחוש חדש ונקודות חדשות. הקוף כבר על הלוח (כן, קוף שבוחר מנצחים לפי מצלמות חיות בגן חיות) - בואו תראו אם אתם מצליחים מעליו.
+
+נכנסים, מנחשים את המשחק הבא, פותחים ליגה פרטית עם החברים:
+👉 https://tikitaka.vip/wa
+
+חינם, בעברית, 30 שניות. הניחוש לכל משחק ננעל עם שריקת הפתיחה שלו - אז כל יום שמתעכבים זה נקודות שמפספסים 🐒
+```
+
+### Telegram live (task #15, draft #30)
+```
+⚽ המונדיאל באוויר - ואפשר עדיין לקפוץ פנימה.
+
+פספסתם את משחק הפתיחה? לא נורא. בטיקי-טאקה כל משחק עומד בפני עצמו: מנחשים את המשחק הבא, צוברים נקודות, ומטפסים בליגה הפרטית מול החברים (ומול הקוף שבוחר מנצחים לפי מצלמות חיות בגן חיות).
+
+ניחוש מפתיע = יותר נקודות, אז גם מי שנכנס באמצע הטורניר יכול לטפס מהר.
+
+הניחוש למשחק הבא ננעל עם השריקה שלו. תפסו מקום עכשיו:
+👉 https://tikitaka.vip/tg
+```
+
+---
+
 ## After posting
 - Check signups climbing: open https://tikitaka.vip leaderboard, or ask the agent
   to report player count.
 - On June 10, send the T-24h reminder wave above (section 7) to your warm channels.
+- On/after June 11 (once the opener kicks off), switch to the section-8 live-tournament
+  wave for all further warm-channel posts - waves 1-2 and the section-7 reminder go
+  stale at the first whistle.
 - Approval gate: every block above was drafted by the content agent and is paste-ready.
   Nothing here was posted by an agent - all of it is yours to send.
