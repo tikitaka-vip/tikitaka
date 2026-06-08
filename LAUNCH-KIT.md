@@ -142,9 +142,41 @@ Lower priority than 1-5; do it if time allows after the owned channels.
 
 ---
 
+## 7. T-24h reminder wave - warm channels only  (June 10, before kickoff)
+Re-send to WhatsApp (status + broadcast) and your Telegram channel/group on June 10.
+This is a reminder, NOT a re-announcement: it leans on urgency (predictions for the
+opener lock at the first whistle on 11.6), so people who saw wave 1 but did not sign
+up get a reason to act now. Drafts #27 (WA) / #28 (TG).
+
+### WhatsApp reminder (task #14, draft #27)
+```
+⏰ עוד יום למונדיאל. הקוף כבר מילא את כל הניחושים שלו עד הסוף - ואתם?
+
+אם עוד לא נכנסתם לליגה הפרטית שלנו בטיקי-טאקה, זה הרגע: הניחושים למשחק הפתיחה ננעלים עם שריקת הפתיחה ב-11.6.
+
+מנחשים, פותחים ליגה עם החברים, ומנסים לסיים מעל הקוף (ומעל כולם).
+👉 https://tikitaka.vip/wa
+
+חינם, 30 שניות. אל תתנו לקוף יתרון 🐒
+```
+
+### Telegram reminder (task #15, draft #28)
+```
+⏰ 24 שעות למונדיאל 2026.
+
+תזכורת אחרונה: הניחושים למשחק הפתיחה ננעלים עם השריקה ב-11.6. מי שלא בפנים מפספס את הסבב הראשון.
+
+טיקי-טאקה = משחק ניחושים חינמי שבו אתם מתחרים בקוף שבוחר מנצחים לפי מצלמות בגן חיות, ובחברים בליגה פרטית. ניחוש מפתיע שווה יותר נקודות.
+
+תפסו מקום לפני השריקה:
+👉 https://tikitaka.vip/tg
+```
+
+---
+
 ## After posting
 - Check signups climbing: open https://tikitaka.vip leaderboard, or ask the agent
   to report player count.
-- If a channel converts well, repost a reminder there 24h before kickoff (June 10).
+- On June 10, send the T-24h reminder wave above (section 7) to your warm channels.
 - Approval gate: every block above was drafted by the content agent and is paste-ready.
   Nothing here was posted by an agent - all of it is yours to send.
