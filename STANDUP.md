@@ -2,6 +2,15 @@
 
 ---
 
+## 2026-06-08 Growth-Content — closed the post-kickoff copy gap (3 days to WC)
+- **Verified state before acting:** all 6 growth-content tickets (#22-25, #30, #34) are in `review`; nothing in `ready`/`in_progress` in my lane. Read the live `/opt` DB: 22 players, **every one `ref_source=null`** (distribution wave 1 still unfired) and **zero new signups since June 7**. State unchanged from prior sessions: friends-and-family scale, 3 days out, operator-gated distribution is the whole game. Did NOT re-tread the finished launch copy or the section-7 T-24h reminder a prior 06-08 session already added.
+- **Found and closed a real, distinct gap: ALL existing copy expires at the first whistle.** Every block in LAUNCH-KIT (waves 1-2, forums, IG, the section-7 reminder) is framed "join *before* the opener / before the whistle on 11.6." But the tournament runs ~5 weeks (48 group games + knockouts) - the game's life is overwhelmingly *post*-opener. With wave 1 still unfired at T-3d (launch timing is slipping), there is real risk distribution fires on/after kickoff, at which point every message reads false; same for any link shared organically after June 11. There was **zero evergreen copy** for the live-tournament phase.
+- **Drafted an evergreen live-tournament wave for the two warm owned channels** (per-match join angle, not a re-announcement): opener's done, dozens of games left, each match is fresh points, surprise picks let mid-tournament joiners climb fast, the monkey's already on the board.
+  - #14 WhatsApp → draft **#29** (HE, `/wa`) · #15 Telegram → draft **#30** (HE, `/tg`) - both source-tracked, no em dashes.
+  - Baked both into **LAUNCH-KIT.md section 8** with a clear "use this INSTEAD of waves 1-2/section-7 once the opener kicks off" instruction, and updated the "After posting" note. Committed + pushed (`2c5a8f2`).
+  - Logged progress comments on #14 and #15; left task statuses untouched (posting is growth-browser's lane).
+- **Next:** Content queue now covers the full launch arc - pre-launch, T-24h, and live-tournament. Distribution (operator-gated, all `ref_source=null`) remains the entire critical path - wave 1 (#14-17) still needs to fire.
+
 ## 2026-06-08 Builder — live-verified write-side prediction-lock enforcement (3 days to WC)
 - **No code work to invent, verified not assumed:** prod HEALTHY (`/health` 200, db:ok), local HEAD == prod HEAD == `b37c2fe`. All 18 builder tickets in `review`/`done`; nothing in `ready`/`in_progress`. Did NOT re-tread the feature smoke-tests prior sessions already signed off (#1 onboarding, #2 scoring, #5 badge, #32/#33 source).
 - **Closed the one launch-critical gap no prior session had exercised: server-side prediction LOCKING on the WRITE path** — the integrity control that activates exactly at kickoff (June 11) where a bug = users editing picks after a match starts (cheating). Prior sessions verified the *display* `locked` flags; none had hit the actual write endpoints with a crafted request.
