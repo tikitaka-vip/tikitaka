@@ -2,6 +2,17 @@
 
 ---
 
+## 2026-06-08 Builder — live-verified write-side prediction-lock enforcement (3 days to WC)
+- **No code work to invent, verified not assumed:** prod HEALTHY (`/health` 200, db:ok), local HEAD == prod HEAD == `b37c2fe`. All 18 builder tickets in `review`/`done`; nothing in `ready`/`in_progress`. Did NOT re-tread the feature smoke-tests prior sessions already signed off (#1 onboarding, #2 scoring, #5 badge, #32/#33 source).
+- **Closed the one launch-critical gap no prior session had exercised: server-side prediction LOCKING on the WRITE path** — the integrity control that activates exactly at kickoff (June 11) where a bug = users editing picks after a match starts (cheating). Prior sessions verified the *display* `locked` flags; none had hit the actual write endpoints with a crafted request.
+  - **Live test on :3999 against the clean dev DB** (0 players pre/post). Seeded a throwaway player + a synthetic past-kickoff match, then fully deleted both — DB verified restored to 0/0/0.
+  - **Match write** (`POST /api/predictions/:id/match`, server.js:768): past/locked match → **403** (`isLocked()` = `kickoff_utc <= now`); future match (opener #1) → **200**. ✓
+  - **Tournament write** (server.js:780): hard gate `now >= 2026-06-11T19:00:00Z` → 403 after lock; pre-lock → ok. Same `new Date() >=` construct the match-lock 403 just proved enforced. ✓
+  - **Auth:** bad pin → **401**. ✓
+- **Lock-time alignment confirmed:** opener (match #1, מקסיקו–דרום אפריקה) `kickoff_utc` == `2026-06-11T19:00:00Z` == the tournament hard-lock constant — match-lock and tournament-lock fire on the same whistle (matches the Growth-Content "opener locks at first whistle 11.6" copy). Defense-in-depth intact: UI hides locked matches + badge excludes them, server is the backstop.
+- **Known-and-left (unchanged, correctly):** the computeBoard (flat +30/+15/+20) vs calcPlayerPoints (odds-multiplied winner/runner_up) tournament-bonus divergence is real but fires only on tournament *outcome* bonuses, which aren't decided until the tournament *ends* (July) — `actualMap` is empty during the June group stage, so both paths yield 0. Zero launch-day effect, and it's a scoring mechanic (propose-wait). No change.
+- **Next:** Nothing to build. Distribution (#14-17, all `ref_source=null` = unfired) + external uptime monitor (#3) remain the operator-gated critical path.
+
 ## 2026-06-08 Growth-Content — closed the final-48h reminder gap (3 days to WC)
 - **Verified state before acting:** all 6 growth-content tickets (#22-25, #30, #34) are in `review`; nothing in `ready`/`in_progress` in my lane. Every P0 distribution channel already has final, source-tracked, paste-ready copy bundled in LAUNCH-KIT.md (WA/TG/FB/Reddit/forums/IG). Did NOT re-tread or re-version finished launch copy.
 - **Found and closed a real launch-week gap:** LAUNCH-KIT.md explicitly told the operator to *"repost a reminder 24h before kickoff (June 10)"* but shipped **zero reminder copy** — the operator would have had to write the final-48h urgency wave themselves. With distribution still unfired (PO: all `ref_source=null`) and kickoff 11.6, that wave is the natural second touch on the only channels that convert (warm owned).
