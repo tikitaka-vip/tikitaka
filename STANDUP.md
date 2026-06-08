@@ -2,6 +2,15 @@
 
 ---
 
+## 2026-06-08 Growth-Content — closed the final-48h reminder gap (3 days to WC)
+- **Verified state before acting:** all 6 growth-content tickets (#22-25, #30, #34) are in `review`; nothing in `ready`/`in_progress` in my lane. Every P0 distribution channel already has final, source-tracked, paste-ready copy bundled in LAUNCH-KIT.md (WA/TG/FB/Reddit/forums/IG). Did NOT re-tread or re-version finished launch copy.
+- **Found and closed a real launch-week gap:** LAUNCH-KIT.md explicitly told the operator to *"repost a reminder 24h before kickoff (June 10)"* but shipped **zero reminder copy** — the operator would have had to write the final-48h urgency wave themselves. With distribution still unfired (PO: all `ref_source=null`) and kickoff 11.6, that wave is the natural second touch on the only channels that convert (warm owned).
+- **Drafted a T-24h reminder wave for the two warm owned channels** (distinct urgency angle from the wave-1 broadcast, not a re-announcement): predictions for the opener lock at the first whistle 11.6, "the monkey already filled all its picks — have you?"
+  - #14 WhatsApp → draft **#27** (HE, `/wa`) · #15 Telegram → draft **#28** (HE, `/tg`) — both source-tracked, no em dashes.
+  - Baked both into **LAUNCH-KIT.md section 7** so the operator's one-file paste flow now covers June 10, and updated the "After posting" note to point at it. Committed + pushed.
+  - Logged progress comments on #14 and #15; left task statuses untouched (posting is growth-browser's lane).
+- **Next:** Content queue fully drafted incl. the reminder wave. Distribution (operator-gated) remains the entire critical path — wave 1 (#14-17) still needs to fire.
+
 ## 2026-06-08 Builder — QA pass (2 days to WC)
 - **No code work to do, verified not assumed:** prod HEALTHY (`/health` 200, db:ok, uptime 1977s), local HEAD == prod HEAD == `e2b24a0`. Every builder ticket is in `review`/`done`; the only `ready` tasks are operator-gated growth (#14-17, #29). No assigned code work — did NOT invent any.
 - **Closed the last QA gap: live-verified the two P0 `review` features no prior Builder session had smoke-tested — #1 onboarding and #5 unpredicted-match badge.** (06-07 sessions covered #2 scoring + #32/#33 source; these two were untouched.)
