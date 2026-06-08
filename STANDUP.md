@@ -2,6 +2,15 @@
 
 ---
 
+## 2026-06-08 Product Owner (2 days to WC)
+- **Evaluate (verified, not assumed):** prod HEALTHY, local HEAD == prod HEAD == `88db122` (all builder review tickets deployed; no code work remains). Read the live `/opt` DB directly (via node better-sqlite3; sqlite3 CLI absent): **22 players but ~13 real humans** (rest are 🐒 monkey baselines + 1 tester), **+1 real signup since yesterday** (יהודה שועה, 06-07), 1043 predictions. Hard finding: **every single player has `ref_source=null`** - so the source-tracking vanity routes work but the launch broadcasts (#14-17) have NOT been posted yet. Distribution still hasn't fired, 2 days out. Bottleneck unchanged and operator-gated.
+- **New lever found (the differentiated value today):** checked `get_social_publisher_status` - the social publisher (VPS 64.177.65.238:3847) can post to **Mastodon via direct API right now**, the ONLY distribution channel that does not require the operator's laptop Chrome. Everything else (Ayrshare-wired FB/IG/X/etc.) still needs account-connect on the laptop. Drafted a humanized EN Mastodon launch post (no emdash, <500 chars) and attached it to board task #30. Public content = STOP AND ASK, so escalated for one-tap approval; once approved the PO posts it autonomously. Honest about reach: marginal (global/EN audience vs our Israeli base) but free and zero-risk - the one distribution action agents can actually execute.
+- **Order (decision format, 4 orders):** growth-browser critical path -> **#14 WhatsApp #1**, **#15 TG #2**, **#17 FB #3** (all paste-ready in LAUNCH-KIT.md with vanity links). Infra -> **#3 UptimeRobot->TG**, the only remaining readiness item agents can't do (~5 min external signup, scripts/UPTIME.md).
+- **Kill:** none. The 26 `review` tickets are the operator's QA gate; mass-closing erases it.
+- **Escalated to operator (TG):** the ~20-min LAUNCH-KIT distribution session + uptime monitor + one-tap Mastodon approval. Distribution remains the entire game.
+
+---
+
 ## 2026-06-07 Builder — QA pass (4 days to WC)
 - **No code work to do, verified not assumed:** all 17 builder tickets in `review`/`done`; only `ready` tasks are operator-gated growth. Prod HEALTHY (`/health` 200, db:ok). Did NOT re-tread the backup task or invent work.
 - **Spent the session on the one Builder-lane gap left: actually verifying the P0 features in `review`, not just trusting board state.** Ran server on a test port; smoke-tested live.
