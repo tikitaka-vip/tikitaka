@@ -174,6 +174,47 @@ up get a reason to act now. Drafts #27 (WA) / #28 (TG).
 
 ---
 
+## 7.5 Kickoff-day final call - the day of, before the whistle  (June 11, daytime)
+The single highest-attention window of the whole campaign: everyone is already
+talking about tonight's opener. Send this to your warm channels (WhatsApp status +
+broadcast, Telegram channel/group) on the MORNING/AFTERNOON of June 11, before the
+22:00 (Israel) whistle. It names the real opener (Mexico vs South Africa) and leans
+on the odds hook: South Africa is a 9.1 outsider, so a correct upset pick rockets a
+new joiner to the top - the perfect last-minute reason to sign up. Do NOT use
+section 7 ("one day to go") on June 11 - it reads false. Switch to section 8 the
+moment the whistle blows. Drafts #32 (WA) / #33 (TG).
+
+### WhatsApp final call (task #14, draft #32)
+```
+🚨 היום זה קורה. מקסיקו נגד דרום אפריקה הערב ב-22:00, והמונדיאל יוצא לדרך.
+
+הקוף כבר ניחש מי לוקח את משחק הפתיחה 🐒. השאלה היחידה: אתם בפנים, או נותנים לו יתרון?
+
+⏳ הניחוש למשחק הפתיחה ננעל עם השריקה ב-22:00. אחרי זה כבר אי אפשר לשנות.
+🎯 דרום אפריקה אאוטסיידר ענק (יחס 9.1) - מי שמעז לנחש את ההפתעה וצודק, קופץ ישר לראש הליגה.
+
+30 שניות, חינם, ואתם בתוך הליגה הפרטית עם החברים:
+👉 https://tikitaka.vip/wa
+
+אל תהיו אלה שמצטרפים מחר ומגלים שפספסו את הסבב הראשון 🐒⚽
+```
+
+### Telegram final call (task #15, draft #33)
+```
+🚨 המונדיאל מתחיל היום. מקסיקו נגד דרום אפריקה, 22:00 שעון ישראל.
+
+הקוף כבר מילא את הניחוש שלו למשחק הפתיחה. ואתם?
+
+בטיקי-טאקה אתם מתחרים בקוף שבוחר מנצחים לפי מצלמות חיות בגן חיות, ובחברים שלכם בליגה פרטית. ניחוש מפתיע שווה יותר נקודות, ודרום אפריקה הערב היא בדיוק ההפתעה הזאת (יחס 9.1) - מי שמנחש אותה נכון קופץ למעלה.
+
+⏳ הניחוש למשחק הפתיחה ננעל ב-22:00 עם השריקה. תפסו מקום לפני:
+👉 https://tikitaka.vip/tg
+
+חינם, בעברית, 30 שניות. אל תתנו לקוף לפתוח בלעדיכם 🐒
+```
+
+---
+
 ## 8. Live-tournament wave - evergreen, works on/after kickoff  (June 11 onward)
 Use this INSTEAD of waves 1-2 and the section-7 reminder once the opener has kicked
 off (June 11, 19:00 UTC). Every block above is framed "join before the first
@@ -212,8 +253,10 @@ swap nothing. Warm owned channels only (WhatsApp + Telegram). Drafts #29 (WA) / 
 - Check signups climbing: open https://tikitaka.vip leaderboard, or ask the agent
   to report player count.
 - On June 10, send the T-24h reminder wave above (section 7) to your warm channels.
-- On/after June 11 (once the opener kicks off), switch to the section-8 live-tournament
-  wave for all further warm-channel posts - waves 1-2 and the section-7 reminder go
-  stale at the first whistle.
+- On June 11 daytime (before the 22:00 Israel whistle), send the section-7.5 kickoff-day
+  final call - it names tonight's opener and is the highest-attention send of the campaign.
+- On/after the 22:00 whistle (June 11, 19:00 UTC), switch to the section-8 live-tournament
+  wave for all further warm-channel posts - waves 1-2, the section-7 reminder, and the
+  section-7.5 final call all go stale once the opener kicks off.
 - Approval gate: every block above was drafted by the content agent and is paste-ready.
   Nothing here was posted by an agent - all of it is yours to send.
