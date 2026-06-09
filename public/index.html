@@ -2140,12 +2140,12 @@ function renderGroupCompare(allPreds, matchList) {
 
 function shareGroup(method, code) {
   const inviteLink = `${location.origin}/join/${code}`;
-  const text = `⚽ בואו לנחש איתי תוצאות מונדיאל 2026!\n\nלחצו על הלינק, נרשמים עם גוגל, ומתחילים לנחש:\n${inviteLink}\n\n🐒 קוף אמיתי ממקלט מנחש את כל המשחקים — אתם יכולים לנצח אותו?\n🤫 הניחושים חסויים עד שריקת הפתיחה\n🍺 מי שמפסיד לקוף מביא בירות`;
+  const text = t('share_text').replace('{link}', inviteLink);
 
   if (method === 'copy') {
-    navigator.clipboard.writeText(text).then(() => toast('הודעה הועתקה!'));
+    navigator.clipboard.writeText(text).then(() => toast(t('copied') || 'Copied!'));
   } else if (method === 'native' && navigator.share) {
-    navigator.share({ title: 'ניחושי מונדיאל 2026', text, url: inviteLink }).catch(() => {});
+    navigator.share({ title: t('title'), text, url: inviteLink }).catch(() => {});
   }
 }
 
@@ -2175,15 +2175,15 @@ async function cardImageFile() {
 }
 
 async function shareCard() {
-  if (!currentPlayer) { alert('התחברו קודם!'); return; }
+  if (!currentPlayer) { alert(t('login_required') || 'Please log in first!'); return; }
   const url = `${location.origin}/?ref=card`;
-  let text = '⚽ הניחושים שלי למונדיאל 2026 ב-TikiTaka — תנצחו אותי ואת הקוף? 🐒';
+  let text = t('card_share_fallback');
   try {
     const s = await fetch(`/api/card/${currentPlayer}?format=json`).then(r => r.json());
     if (s && !s.error) {
-      const rankLine = s.rank ? ` · מקום ${s.rank} מתוך ${s.total_humans}` : '';
-      const monkeyLine = s.beating_monkey ? ' · מנצח/ת את הקוף 🐒' : ' · הקוף 🐒 עוד מוביל — תורכם!';
-      text = `⚽ ${s.points} נק' בניחושי מונדיאל 2026${rankLine}${monkeyLine}\n${url}`;
+      const rankLine = s.rank ? t('card_share_rank').replace('{rank}', s.rank).replace('{total}', s.total_humans) : '';
+      const monkeyLine = s.beating_monkey ? t('card_share_beating') : t('card_share_behind');
+      text = t('card_share_main').replace('{points}', s.points).replace('{extra}', `${rankLine}${monkeyLine}`).replace('{url}', url);
     }
   } catch (e) {}
 
@@ -2191,14 +2191,14 @@ async function shareCard() {
   try {
     const file = await cardImageFile();
     if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
-      await navigator.share({ files: [file], text, title: 'TikiTaka · ניחושי מונדיאל 2026' });
+      await navigator.share({ files: [file], text, title: t('card_share_title') });
       return;
     }
   } catch (e) { if (e && e.name === 'AbortError') return; }
 
   // Fallback: share text + link, or copy to clipboard.
   if (navigator.share) {
-    try { await navigator.share({ title: 'TikiTaka · ניחושי מונדיאל 2026', text, url }); } catch (e) {}
+    try { await navigator.share({ title: t('card_share_title'), text, url }); } catch (e) {}
   } else if (navigator.clipboard) {
     navigator.clipboard.writeText(text).then(() => toast(t('copied') || 'הועתק!'));
   } else {
