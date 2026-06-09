@@ -1,0 +1,24 @@
+[Unit]
+# systemd unit for the growth-browser daemon (LAPTOP-SIDE, not the VPS).
+# Install: copy to ~/.config/systemd/user/ then:
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now growth-worker
+#   journalctl --user -u growth-worker -f
+# Adjust WorkingDirectory / ExecStart / Environment paths to the laptop layout.
+Description=TikiTaka growth-browser worker daemon
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/projects/worldcup/scripts
+ExecStart=%h/projects/worldcup/scripts/growth-worker.sh
+Restart=on-failure
+RestartSec=30
+# Point at the reachable board (SSH tunnel or public domain) and laptop paths:
+Environment=BOARD_URL=http://127.0.0.1:3001
+# Environment=ALLOW_LEGACY_CDP=0
+# Environment=REQUIRE_IP_ROTATION=0
+
+[Install]
+WantedBy=default.target

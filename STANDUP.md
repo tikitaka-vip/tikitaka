@@ -2,6 +2,15 @@
 
 ---
 
+## 2026-06-09 Builder — growth-worker daemon (#35, 1 day to WC)
+- **Done:** Built the laptop-side `growth-worker.sh` daemon (`scripts/`) + MCP config template (`growth-browser-mcp.json`), systemd unit (`growth-worker.service`), and setup doc (`GROWTH-WORKER.md`). Full spec loop: shabbat guard → poll board for ready `growth-browser` tasks (priority+id sort) → ADB airplane-mode IP rotation → persona Chrome via `launch-browser.ts` → CDP-script-first OR `claude -p` fallback → board status+comment → close Chrome → loop. TG notify on CAPTCHA/operator-block/timeout/error.
+- **Honors order #119:** defaults to the `claude -p` + human-behavior path (`ALLOW_LEGACY_CDP=0`); prompt mandates `browser_setup_guide` + `applyStealthProfile` + `createHumanBehavior` + `human.idle` and forbids raw CDP. Legacy raw-WS scripts are opt-in only.
+- **Safety:** `DRY_RUN`/`RUN_ONCE`/`--self-test` modes; no `set -e` so a bad task never kills the daemon; IP-rotation failure requeues the task when `REQUIRE_IP_ROTATION=1`.
+- **Verified on VPS (browser/ADB stubbed):** `bash -n`, `--self-test` (preflight + live board poll + routing), priority+id sort, legacy-CDP keyword routing, and a full `DRY_RUN`+`RUN_ONCE` pass against the live board (polled real task #29, processed, exited clean).
+- **Flagged / Next:** runs **laptop-side only — NOT deployable to VPS prod**, and the actual Chrome launch / ADB toggle / real `claude -p` execution are **NOT yet tested on the laptop**. Left at `review`; needs a laptop smoke test (`DRY_RUN` → `RUN_ONCE`) before unattended use — checklist in `scripts/GROWTH-WORKER.md`. Per PO note this is the durable 5-week fix, not tomorrow's launch-day path (manual LAUNCH-KIT paste is faster for kickoff).
+
+---
+
 ## 2026-06-09 Product Owner (1 day to WC)
 - **Evaluate (verified, not assumed):** prod HEALTHY (`/health` 200, db:ok, uptime ~16.8h), local HEAD == prod HEAD == `26bc128`. Read the live `/opt` DB directly: **22 players, every one `ref_source=null`, zero new signups since June 7.** State unchanged from every prior session: distribution has NOT fired despite all channel copy being final and paste-ready in LAUNCH-KIT.md. T-1 to kickoff and the entire critical path is still the operator-gated 20-min posting session. Builder lane fully verified/`review`; growth-content fully drafted (pre-launch + T-24h + live-tournament waves). The bottleneck is not content or code - it is a human at the laptop hitting publish.
 - **Dispatch checks:** capabilities + escalation rules + distribution/growth playbooks pulled. Confirmed the only autonomous distribution lever remains Mastodon via the social publisher (marginal EN/global reach, public content = STOP AND ASK; drafted + escalated 06-08, still pending operator approval). Everything else needs the laptop. Growth playbook reconfirms WhatsApp viral loop = top priority.

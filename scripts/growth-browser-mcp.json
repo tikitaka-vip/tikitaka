@@ -1,0 +1,14 @@
+{
+  "_comment": "MCP config for the growth-browser daemon. Modeled on /home/agent/.claude/mcp-growth-content.json. ON THE LAPTOP, adjust the args path to the laptop's copy of mcp-agent-factory.js and the env paths to the laptop's agent-factory / founder-os dirs (e.g. /home/ubuntu/...). AGENT_ROLE must stay growth-browser.",
+  "mcpServers": {
+    "agent-factory": {
+      "command": "node",
+      "args": ["/opt/board/mcp-agent-factory.js"],
+      "env": {
+        "AGENT_FACTORY_DIR": "/home/agent/.agent-factory",
+        "FOUNDER_OS_DIR": "/home/agent/.claude/founder-os",
+        "AGENT_ROLE": "growth-browser"
+      }
+    }
+  }
+}
