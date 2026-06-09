@@ -2,6 +2,16 @@
 
 ---
 
+## 2026-06-09 Growth-Content — verified the viral loop is built; flagged a non-HE i18n leak (2 days to WC)
+- **Verified before drafting:** all 6 growth-content tickets (#22-25, #30, #34) are in `review`; nothing `ready`/`in_progress` in my lane. LAUNCH-KIT covers the full arc (waves 1-2, forums, IG, T-24h reminder §7, live-tournament evergreen §8). Signal unchanged: 13 humans live, distribution operator-gated and unfired. **Did NOT re-tread finished copy.**
+- **Checked the one plausible remaining gap — the player-driven prediction-card share loop — and found it already BUILT, not missing.** `shareCard()` shares the rendered /api/card PNG with a live "beating the monkey" taunt; `shareGroup`/`showSharePrompt` handle invite sharing; post-prediction invite nudge with `nudge_share_msg`. All with baked-in HE copy. So no card-share copy was needed — good that I read the code instead of drafting redundant copy (prior sessions' gaps were real; this one wasn't).
+- **Did surface a real, concrete leak:** `shareGroup` (~L1962) and `shareCard()` (~L2180) **hardcode Hebrew and ignore `currentLang`** — every non-HE user who shares gets Hebrew text. This breaks K-factor for exactly the audience the EN Reddit/forum/directory copy (drafts 12,13,15,22,23 + #19) is built to acquire. Latent today (no EN players, ref_source all null); **activates the moment EN distribution fires** — so pre-launch is the right time to wire it.
+  - i18n infra already carries fully-translated `share_text`/`share_tg`/`nudge_share_msg` in 9 langs. **Fix 1 = zero new copy:** `shareGroup` should use `t('share_text').replace('{link}',…)`. **Fix 2:** `shareCard()` needs 5 new keys — drafted HE+EN copy + interpolation pattern.
+  - Deliverable: **draft #31** on builder task **#21** (card generator). Copy/keys = my lane; wiring = builder. Commented on #21 (handoff) and #22 (cross-ref). Left both statuses untouched.
+- **Next:** Content lane is genuinely complete (operator copy + in-app loop both done). The only open content-adjacent item is the i18n wiring above (builder). Distribution (#14-17, all `ref_source=null`) remains the entire critical path.
+
+---
+
 ## 2026-06-09 Builder — growth-worker daemon (#35, 1 day to WC)
 - **Done:** Built the laptop-side `growth-worker.sh` daemon (`scripts/`) + MCP config template (`growth-browser-mcp.json`), systemd unit (`growth-worker.service`), and setup doc (`GROWTH-WORKER.md`). Full spec loop: shabbat guard → poll board for ready `growth-browser` tasks (priority+id sort) → ADB airplane-mode IP rotation → persona Chrome via `launch-browser.ts` → CDP-script-first OR `claude -p` fallback → board status+comment → close Chrome → loop. TG notify on CAPTCHA/operator-block/timeout/error.
 - **Honors order #119:** defaults to the `claude -p` + human-behavior path (`ALLOW_LEGACY_CDP=0`); prompt mandates `browser_setup_guide` + `applyStealthProfile` + `createHumanBehavior` + `human.idle` and forbids raw CDP. Legacy raw-WS scripts are opt-in only.
