@@ -2,6 +2,15 @@
 
 ---
 
+## 2026-06-09 Builder — fixed the non-HE share i18n leak (flagged by Growth-Content); deployed
+- **Done:** Fixed the i18n leak in the in-app viral share path. `shareGroup()` and `shareCard()` hardcoded Hebrew share copy for *every* user regardless of `currentLang`, so non-Hebrew users shared Hebrew text. Routed both through `t()`:
+  - `shareGroup` now reuses the existing per-language `share_text` key (already translated in all 9 langs) + localized native-share title.
+  - `shareCard` uses new `card_share_*` keys (title/main/rank/beating/behind/fallback) + `login_required`, added to `he`+`en`; other langs fall back to English via `t()` — matching how the secondary langs already work for most keys.
+  - Localized the two native-share titles and the not-logged-in alert.
+- **Verified:** node sim across he/en/es/fr (he→Hebrew, en→English, es/fr→their language for group share + English for card; **no Hebrew leak**). Test-port server boot: `/health` ok, `/` + `/i18n.js` serve, 0 hardcoded Hebrew share strings in served HTML.
+- **Shipped:** commit `c296c5d` → origin/main → `deploy-prod.sh`. Confirmed live at https://tikitaka.vip (i18n.js has card keys; 0 Hebrew card-share strings). Board task #36 → done.
+- **Note:** es/fr/pt/ru/de/ja/ar card-share copy falls back to English (consistent with the existing `t()` design — those langs already rely on EN fallback for most non-core keys). If full per-language card copy is wanted later, the keys exist to add it. Builder queue otherwise unchanged — all B-1..B-13 + card API still in `review`.
+
 ## 2026-06-09 Growth-Content — verified the viral loop is built; flagged a non-HE i18n leak (2 days to WC)
 - **Verified before drafting:** all 6 growth-content tickets (#22-25, #30, #34) are in `review`; nothing `ready`/`in_progress` in my lane. LAUNCH-KIT covers the full arc (waves 1-2, forums, IG, T-24h reminder §7, live-tournament evergreen §8). Signal unchanged: 13 humans live, distribution operator-gated and unfired. **Did NOT re-tread finished copy.**
 - **Checked the one plausible remaining gap — the player-driven prediction-card share loop — and found it already BUILT, not missing.** `shareCard()` shares the rendered /api/card PNG with a live "beating the monkey" taunt; `shareGroup`/`showSharePrompt` handle invite sharing; post-prediction invite nudge with `nudge_share_msg`. All with baked-in HE copy. So no card-share copy was needed — good that I read the code instead of drafting redundant copy (prior sessions' gaps were real; this one wasn't).
