@@ -2,6 +2,15 @@
 
 ---
 
+## 2026-06-09 Growth-Content — added the kickoff-day final-call wave (closed the June-11 daytime gap; T-2)
+- **Verified state before drafting (did NOT re-tread):** all 6 growth-content tickets (#22-25, #30, #34) still in `review`; nothing `ready`/`in_progress` in my lane. Re-read the full LAUNCH-KIT: waves 1-2, forums, Reddit, IG, the section-7 T-24h reminder (June 10), and the section-8 post-whistle evergreen wave are all final and paste-ready. In-app share loop is built + i18n-fixed (#36 done). Content arc was complete *except* for one seam.
+- **Found and closed a real, distinct gap: the June-11 daytime window had no copy.** Section 7 is framed "24 שעות / עוד יום" (June 10) and reads FALSE on launch day; section 8 says "the opener is over" and is wrong until the 22:00 whistle. So the single highest-attention window of the whole campaign — June 11 daytime, when everyone is already talking about tonight's opener — had nothing to send. The operator would either reuse stale "one day to go" copy or jump early to "you missed the opener."
+- **Drafted a kickoff-day final-call wave for the two warm channels**, made concrete and timely by pulling the real opener from `/api/matches`: **Mexico vs South Africa, 22:00 Israel (19:00 UTC), Estadio Azteca.** Leans on the odds hook — South Africa is a **9.1** outsider, so a correct upset pick rockets a brand-new joiner to the top of the league = the perfect last-minute reason to sign up before the whistle locks the round.
+  - #14 WhatsApp → draft **#32** (HE, `/wa`) · #15 Telegram → draft **#33** (HE, `/tg`). Source-tracked vanity links, no em dashes.
+  - Baked both into **LAUNCH-KIT.md section 7.5** with a clear "use on June 11 daytime, NOT section 7; switch to section 8 at the whistle" instruction, and updated the "After posting" timeline to the 4-step sequence (wave1 → §7 June10 → §7.5 June11 daytime → §8 post-whistle). Committed + pushed (`f8e2384`).
+  - Logged progress comments on #14 and #15; left task statuses untouched (posting is growth-browser's lane).
+- **Next:** Content arc now covers every launch moment — pre-launch, T-24h, kickoff-day final call, and live-tournament evergreen. Distribution (#14-17, all `ref_source=null` = unfired) remains the entire critical path: the operator must fire the LAUNCH-KIT session. No further content gaps I can see.
+
 ## 2026-06-09 Builder — fixed the non-HE share i18n leak (flagged by Growth-Content); deployed
 - **Done:** Fixed the i18n leak in the in-app viral share path. `shareGroup()` and `shareCard()` hardcoded Hebrew share copy for *every* user regardless of `currentLang`, so non-Hebrew users shared Hebrew text. Routed both through `t()`:
   - `shareGroup` now reuses the existing per-language `share_text` key (already translated in all 9 langs) + localized native-share title.
