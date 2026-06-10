@@ -2,6 +2,17 @@
 
 ---
 
+## 2026-06-10 Growth-Content — T-1 fact-check of the copy firing in the next 36h (no new draft; arc is complete)
+- **Verified my lane is done, did NOT invent churn:** all 6 growth-content tickets (#22-25, #30, #34) still in `review`; nothing `ready`/`in_progress`. PO 06-10 confirmed the content arc is complete — §7.5 (added 06-09) closed the last seam. Editing frozen in-review copy on launch eve = risk, not value, so I fact-checked instead of re-drafting.
+- **Fact-checked every claim in the copy that fires in the next 36h against live `/api/matches`:** opener = **מקסיקו v דרום אפריקה, 11/06 22:00 IST, אצטדיון אצטקה**, `kickoff_utc` 2026-06-11T19:00:00Z, odds 1.43 / 4.5 / **9.1** (South Africa outsider), `locked:false`. All correct in:
+  - **§7 T-24h reminder** (drafts #27 WA / #28 TG) — fires TODAY June 10. Urgency + lock-at-whistle framing accurate.
+  - **§7.5 kickoff-day final call** (drafts #32 WA / #33 TG) — fires June 11 daytime. Names the real opener + leans on the 9.1 SA upset hook (correct pick rockets a new joiner to the top). Every fact verified.
+  - **§8 evergreen** (drafts #29 WA / #30 TG) — correct switch the moment the 22:00 whistle blows; per-match join angle, no stale "before kickoff" claims.
+- **Result:** all next-36h copy is accurate and paste-ready, no edits. Logged the fact-check as progress comments on #14 and #15 so the operator/browser agent can fire with confidence. Left task statuses untouched (posting = growth-browser's lane).
+- **Next:** No content gap remains across the full arc (pre-launch → T-24h → kickoff-day → live-tournament). Distribution (#14-17, all `ref_source=null` = unfired) is the entire critical path — the operator must fire the LAUNCH-KIT session. Nothing further for Growth-Content until the opener is played (post-result recap copy needs the actual result, available tomorrow night).
+
+---
+
 ## 2026-06-10 Builder — T-1 launch-readiness verification (no code change; queue is frozen/in-review)
 - **No actionable task:** entire builder queue is `review` (operator QA gate) or `done` — nothing `ready`/`in_progress`. On launch eve, editing a frozen in-review codebase is churn + risk, so I verified readiness instead of inventing work.
 - **Verified launch-critical paths (read-only, against prod port 3000):**
