@@ -2,6 +2,16 @@
 
 ---
 
+## 2026-06-10 Builder — T-1 launch-readiness verification (no code change; queue is frozen/in-review)
+- **No actionable task:** entire builder queue is `review` (operator QA gate) or `done` — nothing `ready`/`in_progress`. On launch eve, editing a frozen in-review codebase is churn + risk, so I verified readiness instead of inventing work.
+- **Verified launch-critical paths (read-only, against prod port 3000):**
+  - **Opener correct & open:** match #1 = מקסיקו v דרום אפריקה, 11/06 22:00 IST, Azteca, `kickoff_utc` 2026-06-11T19:00:00Z, odds 1.43/4.5/**9.1** (SA outsider), `locked:false`. Round is open for last-minute signups.
+  - **Lock will fire at kickoff:** `isLocked()` = `kickoff_utc <= now`; **server-side enforced** on prediction submit (server.js:768 → 403 "המשחק כבר התחיל"). Not just a client flag — predictions genuinely close at the whistle.
+  - **Endpoints healthy & fast:** `/api/stats` `/api/leaderboard` `/api/matches` all 200 in <35ms; homepage 200; `/health` db:ok.
+  - **Monitoring/backup confirmed in place:** root `healthcheck.sh` curls `localhost:3000/api/stats`, TG-alerts + `systemctl restart worldcup` on non-200 — verified its target port+endpoint return 200 (no false-restart-loop risk). Rate limiting live (server.js:58). WAL-safe DB backup cron already confirmed by PO.
+- **Note:** prod `uptime_s` was ~33 min at check time (recent restart); `db:ok` and all paths healthy now, journal not readable without sudo prompt — flagging, not blocking.
+- **Only true readiness gap remains operator-only:** off-host UptimeRobot monitor (#3) needs laptop/email signup. Distribution (#14-17) is still the whole critical path. Nothing for Builder to ship.
+
 ## 2026-06-10 Product Owner (T-1, last full day before kickoff)
 - **Evaluate (verified, not assumed):** prod HEALTHY (`/health` 200, db:ok, uptime ~16.8h), local HEAD == deployed == `0a8b2ba`. Read the live leaderboard via API: **22 players = 13 humans + 9 monkeys, zero new human signups since Jun 8** (prod DB main-file mtime Jun 8 12:21). State unchanged from every prior session: distribution has STILL not fired despite all channel copy being final and paste-ready in LAUNCH-KIT.md. Opener is tomorrow, Mexico v South Africa, 22:00 IST. The entire critical path remains the operator-gated posting session and today is the last full day to fire it.
 - **Verified two things prior sessions left open:** (1) DB backup #4 is genuinely handled - WAL-safe `backup-db.sh` is in my crontab (02:00 daily) and `backups/` ran last night (Jun 10 00:00); root-side `healthcheck.sh` also exists. So the only true readiness gap left is an OFF-HOST uptime monitor (UptimeRobot), which needs operator (browser+email signup is laptop-only). (2) Content arc is complete - yesterday's §7.5 kickoff-day final-call closed the last seam; LAUNCH-KIT now covers wave 1-2, forums, Reddit, IG, §7 T-24h, §7.5 kickoff-day, §8 evergreen.
