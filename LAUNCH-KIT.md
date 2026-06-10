@@ -179,7 +179,7 @@ The single highest-attention window of the whole campaign: everyone is already
 talking about tonight's opener. Send this to your warm channels (WhatsApp status +
 broadcast, Telegram channel/group) on the MORNING/AFTERNOON of June 11, before the
 22:00 (Israel) whistle. It names the real opener (Mexico vs South Africa) and leans
-on the odds hook: South Africa is a 9.1 outsider, so a correct upset pick rockets a
+on the odds hook: South Africa is a heavy outsider, so a correct upset pick rockets a
 new joiner to the top - the perfect last-minute reason to sign up. Do NOT use
 section 7 ("one day to go") on June 11 - it reads false. Switch to section 8 the
 moment the whistle blows. Drafts #32 (WA) / #33 (TG).
@@ -191,7 +191,7 @@ moment the whistle blows. Drafts #32 (WA) / #33 (TG).
 הקוף כבר ניחש מי לוקח את משחק הפתיחה 🐒. השאלה היחידה: אתם בפנים, או נותנים לו יתרון?
 
 ⏳ הניחוש למשחק הפתיחה ננעל עם השריקה ב-22:00. אחרי זה כבר אי אפשר לשנות.
-🎯 דרום אפריקה אאוטסיידר ענק (יחס 9.1) - מי שמעז לנחש את ההפתעה וצודק, קופץ ישר לראש הליגה.
+🎯 דרום אפריקה אאוטסיידר ענק - מי שמעז לנחש את ההפתעה וצודק, קופץ ישר לראש הליגה.
 
 30 שניות, חינם, ואתם בתוך הליגה הפרטית עם החברים:
 👉 https://tikitaka.vip/wa
@@ -205,7 +205,7 @@ moment the whistle blows. Drafts #32 (WA) / #33 (TG).
 
 הקוף כבר מילא את הניחוש שלו למשחק הפתיחה. ואתם?
 
-בטיקי-טאקה אתם מתחרים בקוף שבוחר מנצחים לפי מצלמות חיות בגן חיות, ובחברים שלכם בליגה פרטית. ניחוש מפתיע שווה יותר נקודות, ודרום אפריקה הערב היא בדיוק ההפתעה הזאת (יחס 9.1) - מי שמנחש אותה נכון קופץ למעלה.
+בטיקי-טאקה אתם מתחרים בקוף שבוחר מנצחים לפי מצלמות חיות בגן חיות, ובחברים שלכם בליגה פרטית. ניחוש מפתיע שווה יותר נקודות, ודרום אפריקה הערב היא בדיוק ההפתעה הזאת - מי שמנחש אותה נכון קופץ למעלה.
 
 ⏳ הניחוש למשחק הפתיחה ננעל ב-22:00 עם השריקה. תפסו מקום לפני:
 👉 https://tikitaka.vip/tg
