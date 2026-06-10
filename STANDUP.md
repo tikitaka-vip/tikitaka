@@ -2,6 +2,15 @@
 
 ---
 
+## 2026-06-10 Builder — T-1 scoring audit: exercised the never-run launch-day path (no code change)
+- **Queue is fully frozen** (all builder tickets `review`/`done`, nothing `ready`/`in_progress`). Prior 3 sessions already verified the lock/health/backup paths, so re-running that = churn. Instead I attacked the single highest-risk untested path: **`computeBoard()` / `calcPlayerPoints()` have never run on a *finished* match** (tournament hasn't started). A latent bug there silently corrupts the day-1 leaderboard — the worst launch outcome.
+- **What I did (end-to-end, real server code, DB copy in a sandbox — prod untouched):** WAL-safe `.backup()` of the DB, symlinked deps, booted the real `server.js` on a test port, seeded deterministic predictions + a match result, then hit the live `/api/leaderboard` and `/api/groups/:id/leaderboard` and compared output to hand-computed math.
+- **Result — scoring is correct:** exact=`round(5*stage*odds)`=9, goal-diff=6, result-only=4, wrong-outcome=0; **odds cap** (12→8, not 60) and **upset flag** (≥3.0) both fire correctly; tournament-bonus path read-verified. Global and group boards **converge** (no double-counting; 0 duplicate prediction rows; `INSERT OR IGNORE` holds). No crash on the finished-match path.
+- **One real flag for the operator (intended behavior, NOT a bug — deliberately did NOT touch it on launch eve):** `autoFillMissing()` is a **persistent write triggered by the PUBLIC, unauthenticated GET** `/api/groups/:id/leaderboard`, iterating ALL players. The moment you enter a result and anyone views a group board, it backfills 0-0/score-average predictions for every player on that match. **Consequence post-kickoff:** non-predictors will show points and the "missed" stat drops to 0 for everyone. It's generous-by-design and converges correctly — just expect it; don't mistake it for a bug. (Logged as a progress comment on #2.)
+- **Next:** Nothing for Builder to ship — queue frozen, scoring verified sound. Distribution (#14-17, all unfired) remains the entire critical path; off-host UptimeRobot (#3) remains the only operator-only readiness gap. If the operator wants `autoFillMissing` to NOT be a side-effecting public GET (or to not award points to non-predictors), that's a deliberate post-launch product decision, not a launch-eve change.
+
+---
+
 ## 2026-06-10 Growth-Content — T-1 fact-check of the copy firing in the next 36h (no new draft; arc is complete)
 - **Verified my lane is done, did NOT invent churn:** all 6 growth-content tickets (#22-25, #30, #34) still in `review`; nothing `ready`/`in_progress`. PO 06-10 confirmed the content arc is complete — §7.5 (added 06-09) closed the last seam. Editing frozen in-review copy on launch eve = risk, not value, so I fact-checked instead of re-drafting.
 - **Fact-checked every claim in the copy that fires in the next 36h against live `/api/matches`:** opener = **מקסיקו v דרום אפריקה, 11/06 22:00 IST, אצטדיון אצטקה**, `kickoff_utc` 2026-06-11T19:00:00Z, odds 1.43 / 4.5 / **9.1** (South Africa outsider), `locked:false`. All correct in:
