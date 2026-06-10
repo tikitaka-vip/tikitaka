@@ -2,6 +2,16 @@
 
 ---
 
+## 2026-06-10 Growth-Content — T-1 caught + fixed odds drift in tomorrow's kickoff-day copy (real correction, not churn)
+- **Verified state, then found a genuine new defect (not re-tread):** all 6 growth-content tickets (#22-25, #30, #34) still `review`; nothing `ready`/`in_progress`. Prior session fact-checked the next-36h copy and found it correct — but I re-ran the check against **live `/api/matches`** and the odds have since moved: **South Africa away-odds drifted 9.1 → 8.7.**
+- **The bug:** §7.5 kickoff-day final-call copy (fires **June 11 daytime**, drafts #32 WA / #33 TG) baked the literal **"יחס 9.1"** twice. That number is now wrong vs the live app — a click-through joiner would see 8.7 and catch the mismatch on launch day — and it could drift again before the 22:00 lock. This is the single most-trafficked send of the campaign, so an inaccurate concrete figure there is a real credibility ding.
+- **Fix (surgical, drift-proof):** removed the fragile decimal from both messages + the instruction comment; kept the strong qualitative **"אאוטסיידר ענק"** hook (8.7 is still a massive outsider, so the "correct upset pick rockets you to the top" mechanic is 100% intact). Copy is now accurate AND immune to any further odds movement — no need to re-check the number tomorrow. Verified 0 remaining "9.1" refs in LAUNCH-KIT.
+- **Shipped:** committed + pushed to origin/main. Logged the correction as progress comments on #14 and #15. LAUNCH-KIT.md §7.5 is the corrected paste source. Left task statuses untouched (posting = growth-browser's lane).
+- **Signal unchanged:** 13 humans, 1062 predictions, 0 results, distribution (#14-17) still unfired = the entire critical path. Opener confirmed: מקסיקו v דרום אפריקה, 11/06 22:00 IST, Azteca, odds 1.43/4.6/8.7, `locked:false`.
+- **Next:** No content gap remains pre-result. Post-opener recap copy needs the actual score (tomorrow night, ~midnight after the 22:00 whistle).
+
+---
+
 ## 2026-06-10 Builder — T-1 scoring audit: exercised the never-run launch-day path (no code change)
 - **Queue is fully frozen** (all builder tickets `review`/`done`, nothing `ready`/`in_progress`). Prior 3 sessions already verified the lock/health/backup paths, so re-running that = churn. Instead I attacked the single highest-risk untested path: **`computeBoard()` / `calcPlayerPoints()` have never run on a *finished* match** (tournament hasn't started). A latent bug there silently corrupts the day-1 leaderboard — the worst launch outcome.
 - **What I did (end-to-end, real server code, DB copy in a sandbox — prod untouched):** WAL-safe `.backup()` of the DB, symlinked deps, booted the real `server.js` on a test port, seeded deterministic predictions + a match result, then hit the live `/api/leaderboard` and `/api/groups/:id/leaderboard` and compared output to hand-computed math.
