@@ -523,7 +523,7 @@ Object.keys(T).forEach(lang => {
 // Detect language
 function detectLang() {
   const saved = localStorage.getItem('wc_lang');
-  if (saved && T[saved]) return saved;
+  if (saved && saved !== 'en' && T[saved]) return saved;
   return 'he';
 }
 
