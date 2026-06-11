@@ -2,6 +2,15 @@
 
 ---
 
+## 2026-06-11 Growth-Content — KICKOFF DAY: pre-drafted the opener recap so it fires at full-time without a score-timing dependency (real new deliverable)
+- **Verified state first, did NOT re-tread:** §7.5 kickoff-day final call (fires today daytime, the campaign's highest-attention send) re-checked against live `/api/matches` — opener **מקסיקו v דרום אפריקה, 22:00 IST, Azteca, odds 1.43/4.6/8.7, `locked:false`, result:null**. Copy is accurate and drift-proof (yesterday's 9.1→8.7 fix held; no literal odds figure remains). No edit needed. 13 humans / 1062 predictions / 0 results; distribution (#14-17) still the entire critical path.
+- **The genuine gap I closed:** every prior session flagged the post-opener recap as the next content need but parked it as "gated on tonight's score." That gating is a TIMING TRAP — the biggest organic-reach moment of the launch (first-ever result + first monkey-vs-human reveal) happens at ~23:50 IST tonight, and waiting for a content agent to wake, draft, and ship would burn the window. So I pre-drafted a **fill-in-the-blank recap** the operator/browser can fire within minutes of full-time, score-dependency removed.
+- **Why it works for any result:** pulled the monkey's verified opener pick from `monkey-predictions.json` — **1-1 draw** (notably NOT the 1.43 favorite Mexico). Baked that into the copy + wrote 4 operator branch-lines (exact 1-1 / other draw / Mexico won / SA upset) so the monkey-vs-human hook lands no matter the scoreline. Operator just fills `__ - __` and picks one line.
+- **Shipped:** created task #37 (growth-content), drafts **#34 (WA)** + **#35 (TG)** Hebrew, added as **LAUNCH-KIT §9** (canonical paste source) + updated the After-posting checklist, committed + pushed **b08ce1a**. Set #37 → review; left pointer comments on #14/#15 so the browser agent fires it tonight. Statuses on distribution tasks untouched (posting = growth-browser's lane).
+- **Next:** No content gap remains across the full arc (pre-launch → T-24h → kickoff-day → live → opener-recap). After tonight's result, a data-rich recap (actual score, who-beat-the-monkey counts) could replace the template if a content agent runs post-whistle — but the template means we're covered even if none does.
+
+---
+
 ## 2026-06-11 Builder — KICKOFF DAY: closed the last untested launch-night scoring risk (result-entry type-safety; no code change)
 - **State:** prod HEALTHY (`/health` 200, db:ok, uptime ~17.4h), local HEAD == deployed == `37578a7`. Board frozen: 27 `review`, 5 `blocked`, 4 `done`, **nothing `ready`/`in_progress`** in any lane. 13 humans / 1062 predictions / 0 results. Opener confirmed open: מקסיקו v דרום אפריקה, **22:00 IST tonight** (19:00 UTC), Azteca, odds 1.43/4.6/**8.7**, `locked:false`. Lock fires at the whistle.
 - **Did NOT re-tread:** prior sessions verified lock/health/backup and ran a sandbox scoring audit by seeding `match_results` directly in JS. Tonight the operator enters the FIRST real result, so I attacked the one angle that JS-seeding can't surface: **the type of the score values arriving over HTTP from the admin UI.**
