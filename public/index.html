@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>TikiTaka — רוטם הקוף מנחש מונדיאל 2026</title>
+<title>TikiTaka — רותם הקוף מנחש מונדיאל 2026</title>
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#0a0e17">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -32,7 +32,7 @@
     autocapture: true,
   });
 </script>
-<meta property="og:title" content="TikiTaka — רוטם הקוף מנחש מונדיאל 2026">
+<meta property="og:title" content="TikiTaka — רותם הקוף מנחש מונדיאל 2026">
 <meta property="og:description" content="קוף אמיתי ממקלט בישראל מנחש את כל 104 משחקי המונדיאל. אתם יכולים לנצח אותו? הפתעות שוות פי 8! חינם.">
 <meta property="og:image" content="https://tikitaka.vip/og-image.png">
 <meta property="og:image:width" content="1200">
@@ -475,15 +475,15 @@
     <div id="langPicker" style="position:absolute;top:14px;left:14px;z-index:100"></div>
     <img src="/images/rotem-pundit.jpg" alt="Rotem the Monkey" class="hero-img" loading="eager">
     <h1>&#9917; TikiTaka</h1>
-    <div class="subtitle">&#128018; הכירו את רוטם — הקוף שמנחש מונדיאל</div>
+    <div class="subtitle">&#128018; הכירו את רותם — הקוף שמנחש מונדיאל</div>
     <p class="tagline">
       קוף אמיתי ממקלט החיות בישראל מנחש את כל 104 משחקי המונדיאל 2026.
       אתם חושבים שאתם יודעים יותר ממנו?
     </p>
     <div class="countdown-hero" id="countdown"></div>
-    <button class="cta-btn" onclick="enterApp()">&#127942; בואו לנחש &#8592;</button>
+    <button class="cta-btn" onclick="enterApp()">&#127942; בואו לנחש!</button>
     <br>
-    <a href="#how" class="cta-secondary">&#8595; איך זה עובד?</a>
+    <a href="#how" class="cta-secondary">איך זה עובד? &#8595;</a>
   </section>
 
   <!-- HOW IT WORKS -->
@@ -503,15 +503,15 @@
       <div class="how-card">
         <div class="step-num">3</div>
         <h3>מנצחים את הקוף</h3>
-        <p>הפתעות שוות פי 8! מי שמפסיד לרוטם — מביא בירות &#127866;</p>
+        <p>הפתעות שוות פי 8! מי שמפסיד לרותם — מביא בירות &#127866;</p>
       </div>
     </div>
   </section>
 
   <!-- IMAGE GALLERY -->
   <section class="gallery-section">
-    <h2>&#127912; רוטם בעולם הכדורגל</h2>
-    <p class="gallery-sub">פרשן ספורט, מגיד עתידות, ת'אג לייף — רוטם עושה הכל</p>
+    <h2>&#127912; רותם בעולם הכדורגל</h2>
+    <p class="gallery-sub">פרשן ספורט, מגיד עתידות, ת'אג לייף — רותם עושה הכל</p>
     <div style="overflow:hidden">
       <div class="gallery-track" id="galleryTrack">
         <div class="gallery-item"><img src="/images/rotem-pundit.jpg" alt="Rotem as sports pundit" loading="lazy"></div>
@@ -541,13 +541,13 @@
 
   <!-- MEET ROTEM -->
   <section class="meet-section">
-    <h2>&#128018; מי זה רוטם?</h2>
+    <h2>&#128018; מי זה רותם?</h2>
     <p>
-      רוטם הוא קוף מסוג Cercopithecus diana שחי במקלט הקופים הישראלי.
+      רותם הוא קוף מסוג Cercopithecus diana שחי במקלט הקופים הישראלי.
       הוא בוחר מנצחים על ידי בחירה בין כדורים צבעוניים — בדיוק כמו פאול התמנון המפורסם, רק הרבה יותר שעיר.
     </p>
     <div class="highlight">
-      &#128293; רוטם כבר ניחש את כל 104 המשחקים. עכשיו תורכם.
+      &#128293; רותם כבר ניחש את כל 104 המשחקים. עכשיו תורכם.
     </div>
     <button class="cta-btn" onclick="enterApp()">&#9917; התחילו לנחש עכשיו</button>
   </section>
@@ -558,7 +558,7 @@
 <div class="app-section" id="appSection">
 
   <div class="app-topbar">
-    <button class="back-btn" onclick="showLanding()">&#8594; חזרה</button>
+    <button class="back-btn" onclick="showLanding()">חזרה &#8592;</button>
     <span class="app-title">&#9917; TikiTaka — ניחושי מונדיאל 2026</span>
   </div>
 
@@ -573,8 +573,8 @@
         <a href="#" id="pinAuthToggle" onclick="showAuthForm('pin');return false" style="color:var(--muted)" data-i18n="login_code">כניסה עם קוד</a>
       </div>
       <div id="emailAuth" style="display:none;gap:6px;align-items:center;flex-wrap:wrap;margin-top:6px">
-        <input type="email" id="authEmail" placeholder="email" style="width:160px">
-        <input type="password" id="authPassword" placeholder="password" style="width:110px">
+        <input type="email" id="authEmail" placeholder="אימייל" style="width:160px" dir="ltr">
+        <input type="password" id="authPassword" placeholder="סיסמה" style="width:110px">
         <button class="btn btn-primary btn-sm" onclick="emailLogin()">כניסה</button>
         <button class="btn btn-sm" style="background:var(--blue);color:#fff" onclick="emailSignup()">הרשמה</button>
         <a href="#" onclick="forgotPassword();return false" style="color:var(--muted);font-size:0.75rem" data-i18n="forgot_password">שכחתי סיסמה</a>
