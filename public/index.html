@@ -477,13 +477,13 @@
     <h1>TikiTaka &#9917;</h1>
     <div class="subtitle">הכירו את רותם — הקוף שמנחש מונדיאל &#128018;</div>
     <p class="tagline">
-      קוף אמיתי ממקלט החיות בישראל מנחש את כל 104 משחקי המונדיאל 2026.
-      אתם חושבים שאתם יודעים יותר ממנו?
+      קוף אמיתי ממקלט החיות בישראל מנחש את כל 104 משחקי המונדיאל 2026.&rlm;
+      אתם חושבים שאתם יודעים יותר ממנו?&rlm;
     </p>
     <div class="countdown-hero" id="countdown"></div>
-    <button class="cta-btn" onclick="enterApp()">בואו לנחש! &#127942;</button>
+    <button class="cta-btn" onclick="enterApp()">בואו לנחש!&rlm; &#127942;</button>
     <br>
-    <a href="#how" class="cta-secondary">איך זה עובד? &#8595;</a>
+    <a href="#how" class="cta-secondary">איך זה עובד?&rlm; &#8595;</a>
   </section>
 
   <!-- HOW IT WORKS -->
@@ -1109,7 +1109,7 @@ function renderAll() { renderLangPicker(); updateStaticText(); updateCountdown()
 document.addEventListener('click', (e) => { if (!e.target.closest('#langPicker')) { const dd = document.getElementById('langDrop'); if (dd) dd.classList.remove('open'); } });
 
 // Countdown
-function updateCountdown() { const el = document.getElementById('countdown'); const now = new Date(); const kick = new Date('2026-06-11T19:00:00Z'); const diff = kick - now; if (diff <= 0) { el.textContent = t('tournament_started') || 'המונדיאל התחיל!'; return; } const d = Math.floor(diff / 86400000); const h = Math.floor((diff % 86400000) / 3600000); const m = Math.floor((diff % 3600000) / 60000); const s = Math.floor((diff % 60000) / 1000); el.textContent = `${d} ${t('days') || 'ימים'} ${h} ${t('hours') || 'שעות'} ${m} ${t('minutes') || 'דקות'} ${s} ${t('seconds') || 'שניות'}`; }
+function updateCountdown() { const el = document.getElementById('countdown'); const now = new Date(); const kick = new Date('2026-06-11T19:00:00Z'); const diff = kick - now; if (diff <= 0) { el.innerHTML = t('tournament_started') || '‏!המונדיאל התחיל'; return; } const d = Math.floor(diff / 86400000); const h = Math.floor((diff % 86400000) / 3600000); const m = Math.floor((diff % 3600000) / 60000); const s = Math.floor((diff % 60000) / 1000); const parts = []; if (d > 0) parts.push(`<span>${d} ${t('days') || 'ימים'}</span>`); parts.push(`<span>${h} ${t('hours') || 'שעות'}</span>`); parts.push(`<span>${m} ${t('minutes') || 'דקות'}</span>`); parts.push(`<span>${s} ${t('seconds') || 'שניות'}</span>`); el.innerHTML = '‏' + parts.join(' ‏'); }
 updateCountdown();
 setInterval(updateCountdown, 1000);
 
