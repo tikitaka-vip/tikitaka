@@ -249,6 +249,51 @@ swap nothing. Warm owned channels only (WhatsApp + Telegram). Drafts #29 (WA) / 
 
 ---
 
+## 9. Opener recap - fire right after full-time tonight  (June 11, ~23:50 Israel)  (task #37)
+The single biggest ORGANIC moment of the launch: the first-ever result lands and the
+monkey-vs-human reveal goes live. Fire this within MINUTES of the final whistle (the
+22:00 opener ends ~23:50 Israel), while everyone is still on their phones reacting to
+the game. Two steps before sending: (1) fill the final score into `__ - __`; (2) pick
+the ONE bracket line that matches the result and drop it where marked `[שורת תוצאה]`.
+The monkey's verified pick for this game is a **1-1 draw** (it did NOT back Mexico the
+favorite) - so the hook lands no matter how it ends. Drafts #34 (WA) / #35 (TG).
+
+### WhatsApp recap (task #14, draft #34)
+```
+🐒⚽ משחק הפתיחה נגמר: מקסיקו __ - __ דרום אפריקה.
+
+הקוף ניחש 1-1 - לפי מה שראה במצלמות חיות בגן חיות. [שורת תוצאה]
+
+וזה רק המשחק הראשון. נשארו עשרות משחקים, כל אחד זה ניחוש חדש ונקודות חדשות, ומי שמנצח את הקוף לאורך הטורניר - מנצח את כולם.
+
+נכנסים, מנחשים את המשחק הבא, פותחים ליגה פרטית עם החברים:
+👉 https://tikitaka.vip/wa
+
+חינם, בעברית, 30 שניות. הניחוש לכל משחק ננעל עם השריקה שלו 🐒
+```
+
+### Telegram recap (task #15, draft #35)
+```
+🐒 משחק הפתיחה של המונדיאל נגמר: מקסיקו __ - __ דרום אפריקה.
+
+והקוף? הוא ניחש 1-1 - לפי מה שראה במצלמות חיות בגן חיות. [שורת תוצאה]
+
+בטיקי-טאקה אתם מתחרים בקוף הזה ובחברים שלכם בליגה פרטית. וזה רק התחיל: נשארו עשרות משחקים, ניחוש מפתיע שווה יותר נקודות, וגם מי שנכנס עכשיו יכול לטפס מהר.
+
+מנחשים את המשחק הבא, תופסים מקום:
+👉 https://tikitaka.vip/tg
+
+חינם, בעברית, 30 שניות. הניחוש לכל משחק ננעל עם השריקה שלו.
+```
+
+### Bracket line - pick the one that matches the result
+- **ended exactly 1-1:** הקוף קלע בול 🎯 מי מכם צדק איתו?
+- **a draw, other score (0-0 / 2-2...):** הקוף ידע שזה תיקו. מי עוד הימר על תיקו?
+- **Mexico won:** מי שהאמין למקסיקו ניצח את הקוף. הימרתם עליו?
+- **South Africa won (אאוטסיידר ענק):** הפתעה! דרום אפריקה הפילה את הפייבוריט, הקוף פספס, וכמעט כולם איתו - מי שצדק קפץ ישר לראש.
+
+---
+
 ## After posting
 - Check signups climbing: open https://tikitaka.vip leaderboard, or ask the agent
   to report player count.
@@ -258,5 +303,8 @@ swap nothing. Warm owned channels only (WhatsApp + Telegram). Drafts #29 (WA) / 
 - On/after the 22:00 whistle (June 11, 19:00 UTC), switch to the section-8 live-tournament
   wave for all further warm-channel posts - waves 1-2, the section-7 reminder, and the
   section-7.5 final call all go stale once the opener kicks off.
+- Right after full-time tonight (~23:50 Israel), fire the section-9 opener recap while the
+  result is fresh - fill the score, pick the matching bracket line, send. Highest organic
+  moment of the launch (first result + monkey-vs-human reveal).
 - Approval gate: every block above was drafted by the content agent and is paste-ready.
   Nothing here was posted by an agent - all of it is yours to send.
