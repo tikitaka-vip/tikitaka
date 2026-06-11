@@ -524,8 +524,6 @@ Object.keys(T).forEach(lang => {
 function detectLang() {
   const saved = localStorage.getItem('wc_lang');
   if (saved && T[saved]) return saved;
-  const nav = navigator.language?.split('-')[0];
-  if (nav && T[nav]) return nav;
   return 'he';
 }
 
