@@ -6,3 +6,4 @@ backups/
 *.db-wal
 *.db-shm
 *.db-wal
+.env

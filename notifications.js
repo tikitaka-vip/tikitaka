@@ -1,5 +1,6 @@
 const webpush = require('web-push');
 const https = require('https');
+const { handleTelegramMessage, handleTelegramCallback } = require('./telegram-bot');
 
 const VAPID_PUBLIC = 'BNYhhxgzt7qDXmsp0ytjm6_sqyR62wioYxGFTHn05CLgllIedJb5TzKsrNFpm2Fxxc4EOIwO3zKPvVKgiOeucpo';
 const VAPID_PRIVATE = 'CvfuSu23-LwfnjptaJPxiYZszdjbweoeqGgcUfWt8SA';
@@ -168,6 +169,12 @@ function setupNotificationRoutes(app, db) {
   app.post('/api/telegram/webhook', async (req, res) => {
     res.json({ ok: true });
 
+    // Inline-keyboard button taps (the primary guessing UX)
+    if (req.body?.callback_query) {
+      await handleTelegramCallback(db, req.body.callback_query).catch(e => console.error('TG callback error:', e.message));
+      return;
+    }
+
     const msg = req.body?.message;
     if (!msg?.text) return;
 
@@ -175,9 +182,9 @@ function setupNotificationRoutes(app, db) {
     const text = msg.text.trim();
     const tgUser = msg.from;
 
-    if (!text.startsWith('/start')) return;
-
-    const payload = text.slice(7).trim(); // everything after "/start "
+    // Deep-link payload only when it's a /start command; plain text (guesses,
+    // commands) has no payload and falls through to the shared bot engine below.
+    const payload = text.startsWith('/start') ? text.slice(7).trim() : '';
 
     // TG Login: /start login_XXXXX
     if (payload.startsWith('login_')) {
@@ -250,8 +257,9 @@ function setupNotificationRoutes(app, db) {
       return;
     }
 
-    // Plain /start
-    await sendTelegram(chatId, '🐒 TikiTaka World Cup 2026\n\nTo get reminders, link your account from tikitaka.vip → click "Connect Telegram"');
+    // No token: sign-up + in-chat guessing via the rich Telegram UI (inline keyboards).
+    await handleTelegramMessage(db, { chatId, tgUser, text })
+      .catch(e => console.error('TG message error:', e.message));
   });
 }
 

@@ -16,6 +16,7 @@
   "dependencies": {
     "better-sqlite3": "^12.10.0",
     "express": "^5.2.1",
+    "puppeteer-core": "^25.1.0",
     "web-push": "^3.6.7"
   }
 }

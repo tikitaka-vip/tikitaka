@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "agent-factory": {
+      "command": "node",
+      "args": ["/home/ubuntu/projects/worldcup/board/mcp-agent-factory.js"],
+      "env": {
+        "AGENT_FACTORY_DIR": "/home/ubuntu/.agent-factory",
+        "FOUNDER_OS_DIR": "/home/ubuntu/.claude/projects/-home-ubuntu-projects/memory",
+        "AGENT_ROLE": "growth-browser"
+      }
+    }
+  }
+}

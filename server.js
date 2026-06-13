@@ -5,6 +5,19 @@ const fs = require('fs');
 const https = require('https');
 const http = require('http');
 
+// Minimal zero-dependency .env loader. No-op when env is already injected
+// (e.g. launched via `infisical run -- node server.js`). Existing env wins.
+(function loadDotEnv() {
+  try {
+    const envPath = path.join(__dirname, '.env');
+    if (!fs.existsSync(envPath)) return;
+    for (const line of fs.readFileSync(envPath, 'utf8').split('\n')) {
+      const m = line.match(/^\s*([A-Za-z0-9_]+)\s*=\s*(.*?)\s*$/);
+      if (m && process.env[m[1]] === undefined) process.env[m[1]] = m[2].replace(/^["']|["']$/g, '');
+    }
+  } catch (e) { console.warn('.env load skipped:', e.message); }
+})();
+
 const { sendWelcomeEmail, sendResetEmail, sendVerifyEmail, hashPassword, verifyPassword } = require('./email');
 const { setupNotificationRoutes, startNotificationScheduler, notifyResult, setTgBotToken } = require('./notifications');
 const app = express();
@@ -43,7 +56,7 @@ function rateLimit(windowMs, max) {
 }
 setInterval(() => { const now = Date.now(); for (const [k, v] of rateMap) { if (now > v.reset) rateMap.delete(k); } }, 60000);
 
-app.use(express.json());
+app.use(express.json({ verify: (req, res, buf) => { req.rawBody = buf; } }));
 app.use((req, res, next) => {
   res.setHeader('X-Frame-Options', 'DENY');
   res.setHeader('X-Content-Type-Options', 'nosniff');
@@ -102,6 +115,9 @@ app.use(express.static(path.join(__dirname, 'public'), {
 
 db.pragma('journal_mode = WAL');
 try { db.exec("ALTER TABLE players ADD COLUMN ref_source TEXT DEFAULT NULL"); } catch(e) {}
+try { db.exec("ALTER TABLE tournament_predictions ADD COLUMN updated_at TEXT DEFAULT (datetime('now'))"); } catch(e) {}
+try { db.exec("ALTER TABLE group_members ADD COLUMN joined_at TEXT"); } catch(e) {}
+try { db.exec("UPDATE group_members SET joined_at = datetime('now') WHERE joined_at IS NULL"); } catch(e) {}
 db.exec(`
   CREATE TABLE IF NOT EXISTS analytics (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -165,6 +181,7 @@ db.exec(`
     player_id INTEGER NOT NULL REFERENCES players(id),
     prediction_type TEXT NOT NULL,
     value TEXT NOT NULL,
+    updated_at TEXT DEFAULT (datetime('now')),
     UNIQUE(player_id, prediction_type)
   );
 
@@ -211,6 +228,8 @@ const migrations = [
   ['reset_expires', "ALTER TABLE players ADD COLUMN reset_expires TEXT"],
   ['telegram_chat_id', "ALTER TABLE players ADD COLUMN telegram_chat_id TEXT"],
   ['tg_link_token', "ALTER TABLE players ADD COLUMN tg_link_token TEXT"],
+  ['whatsapp_id', "ALTER TABLE players ADD COLUMN whatsapp_id TEXT"],
+  ['bot_pending_match_id', "ALTER TABLE players ADD COLUMN bot_pending_match_id INTEGER"],
 ];
 for (const [col, sql] of migrations) {
   if (!cols.has(col)) db.exec(sql);
@@ -435,9 +454,9 @@ function findDbMatch(matchesList, homeTeam, awayTeam) {
   });
 }
 
-function fetchJson(url) {
+function fetchJson(url, timeoutMs = 10000) {
   return new Promise((resolve, reject) => {
-    https.get(url, resp => {
+    const req = https.get(url, resp => {
       let d = '';
       resp.on('data', chunk => d += chunk);
       resp.on('end', () => {
@@ -445,6 +464,7 @@ function fetchJson(url) {
         try { resolve(JSON.parse(d)); } catch(e) { reject(e); }
       });
     }).on('error', reject);
+    req.setTimeout(timeoutMs, () => { req.destroy(); reject(new Error(`Request timeout after ${timeoutMs}ms`)); });
   });
 }
 
@@ -704,12 +724,19 @@ app.get('/api/matches', (req, res) => {
   const odds = db.prepare('SELECT * FROM match_odds').all();
   const oddsMap = {};
   odds.forEach(o => oddsMap[o.match_id] = { odds_a: o.odds_a, odds_draw: o.odds_draw, odds_b: o.odds_b });
+  const monkeyPlayer = db.prepare("SELECT id FROM players WHERE name = ?").get(GLOBAL_MONKEY_NAME) || db.prepare("SELECT id FROM players WHERE name LIKE '%קוף%' LIMIT 1").get();
+  const monkeyPreds = {};
+  if (monkeyPlayer) {
+    const preds = db.prepare('SELECT match_id, score_a, score_b FROM predictions WHERE player_id = ?').all(monkeyPlayer.id);
+    preds.forEach(p => monkeyPreds[p.match_id] = { score_a: p.score_a, score_b: p.score_b });
+  }
   const now = new Date();
   res.json(matches.map(m => ({
     ...m,
     result: resultMap[m.id] || null,
     odds: oddsMap[m.id] || null,
     locked: m.kickoff_utc ? new Date(m.kickoff_utc) <= now : false,
+    monkey_pred: m.kickoff_utc && new Date(m.kickoff_utc) <= now ? (monkeyPreds[m.id] || null) : null,
   })));
 });
 
@@ -764,11 +791,16 @@ app.post('/api/predictions/:playerId/match', (req, res) => {
   const { match_id, score_a, score_b, pin } = req.body;
   if (!verifyPlayer(req.params.playerId, pin)) return res.status(401).json({ error: 'אימות נכשל' });
 
+  const sa = parseInt(score_a), sb = parseInt(score_b);
+  if (isNaN(sa) || isNaN(sb) || sa < 0 || sb < 0 || sa > 20 || sb > 20) {
+    return res.status(400).json({ error: 'ניקוד לא תקין (0-20)' });
+  }
+
   const match = db.prepare('SELECT * FROM matches WHERE id = ?').get(match_id);
   if (match && isLocked(match)) return res.status(403).json({ error: 'המשחק כבר התחיל, אי אפשר לשנות' });
 
   db.prepare('INSERT OR REPLACE INTO predictions (player_id, match_id, score_a, score_b) VALUES (?, ?, ?, ?)')
-    .run(req.params.playerId, match_id, score_a, score_b);
+    .run(req.params.playerId, match_id, sa, sb);
   res.json({ ok: true });
 });
 
@@ -776,12 +808,17 @@ app.post('/api/predictions/:playerId/tournament', (req, res) => {
   const { prediction_type, value, pin } = req.body;
   if (!verifyPlayer(req.params.playerId, pin)) return res.status(401).json({ error: 'אימות נכשל' });
 
-  const tournamentStart = new Date('2026-06-11T19:00:00Z');
-  if (new Date() >= tournamentStart) return res.status(403).json({ error: 'הניחושים ננעלו! הטורניר כבר התחיל' });
-
-  db.prepare('INSERT OR REPLACE INTO tournament_predictions (player_id, prediction_type, value) VALUES (?, ?, ?)')
+  db.prepare('INSERT OR REPLACE INTO tournament_predictions (player_id, prediction_type, value, updated_at) VALUES (?, ?, ?, datetime(\'now\'))')
     .run(req.params.playerId, prediction_type, value);
-  res.json({ ok: true });
+
+  const tournamentStart = new Date('2026-06-11T19:00:00Z');
+  const now = new Date();
+  let decay = 1;
+  if (now >= tournamentStart) {
+    const daysIn = (now - tournamentStart) / 86400000;
+    decay = Math.max(0.1, 1 - daysIn / 30);
+  }
+  res.json({ ok: true, decay: Math.round(decay * 100) });
 });
 
 app.get('/api/actual-results', (req, res) => {
@@ -789,7 +826,7 @@ app.get('/api/actual-results', (req, res) => {
 });
 
 function computeBoard() {
-  const players = db.prepare('SELECT id, name FROM players').all();
+  const players = db.prepare('SELECT id, name, created_at FROM players').all();
   const results = db.prepare('SELECT * FROM match_results').all();
   const resultMap = {};
   results.forEach(r => resultMap[r.match_id] = { score_a: r.score_a, score_b: r.score_b });
@@ -844,17 +881,32 @@ function computeBoard() {
       }
     }
 
+    const outrightOdds = {};
+    db.prepare('SELECT * FROM outright_odds').all().forEach(o => outrightOdds[o.team_name] = o.odds_winner);
+    const tournStart = new Date('2026-06-11T19:00:00Z');
+
     for (const tp of tpreds) {
       if (actualMap[tp.prediction_type] && tp.value === actualMap[tp.prediction_type]) {
-        if (tp.prediction_type === 'winner') points += 30;
-        else if (tp.prediction_type === 'top_scorer') points += 20;
-        else if (tp.prediction_type === 'runner_up') points += 15;
+        let bonus = tp.prediction_type === 'winner' ? 30 : tp.prediction_type === 'runner_up' ? 15 : 20;
+        if (tp.prediction_type === 'winner' || tp.prediction_type === 'runner_up') {
+          const teamOdds = outrightOdds[tp.value];
+          if (teamOdds) bonus = Math.round(bonus * Math.min(teamOdds / 5, 20));
+          if (tp.updated_at) {
+            const updatedAt = new Date(tp.updated_at + 'Z');
+            if (updatedAt > tournStart) {
+              const daysIn = (updatedAt - tournStart) / 86400000;
+              bonus = Math.round(bonus * Math.max(0.1, 1 - daysIn / 30));
+            }
+          }
+        }
+        points += bonus;
       }
     }
 
-    const totalMatches = matchesAll.filter(m => resultMap[m.id]).length;
-    const predicted = preds.filter(p => resultMap[p.match_id]).length;
-    const missed = totalMatches - predicted;
+    const playerJoined = p.created_at ? new Date(p.created_at) : new Date(0);
+    const eligibleMatches = matchesAll.filter(m => resultMap[m.id] && (!m.kickoff_utc || new Date(m.kickoff_utc) >= playerJoined));
+    const predicted = preds.filter(pr => resultMap[pr.match_id]).length;
+    const missed = eligibleMatches.length - predicted;
 
     return { ...p, points, exact, correctResult, total, upsets, missed };
   });
@@ -988,7 +1040,7 @@ function createAutoGroup(playerId, playerName, lang) {
   const inviteCode = generateInviteCode();
   const result = db.prepare('INSERT INTO groups (name, invite_code, manager_id, scoring_config) VALUES (?, ?, ?, ?)')
     .run(groupName, inviteCode, playerId, JSON.stringify(DEFAULT_SCORING));
-  db.prepare('INSERT INTO group_members (group_id, player_id) VALUES (?, ?)').run(result.lastInsertRowid, playerId);
+  db.prepare('INSERT INTO group_members (group_id, player_id, joined_at) VALUES (?, ?, datetime("now"))').run(result.lastInsertRowid, playerId);
   ensureMonkeyExists(result.lastInsertRowid);
   return inviteCode;
 }
@@ -998,7 +1050,7 @@ function getGroupScoring(group) {
   catch { return DEFAULT_SCORING; }
 }
 
-function calcPlayerPoints(playerId, scoring) {
+function calcPlayerPoints(playerId, scoring, sinceDate) {
   const preds = db.prepare('SELECT * FROM predictions WHERE player_id = ?').all(playerId);
   const tpreds = db.prepare('SELECT * FROM tournament_predictions WHERE player_id = ?').all(playerId);
   const results = db.prepare('SELECT * FROM match_results').all();
@@ -1006,6 +1058,7 @@ function calcPlayerPoints(playerId, scoring) {
   results.forEach(r => resultMap[r.match_id] = { score_a: r.score_a, score_b: r.score_b });
   const matchesAll = db.prepare('SELECT * FROM matches').all();
   const matchMap = Object.fromEntries(matchesAll.map(m => [m.id, m]));
+  const sinceTs = sinceDate ? new Date(sinceDate) : null;
   const oddsAll = db.prepare('SELECT * FROM match_odds').all();
   const oddsMap = {};
   oddsAll.forEach(o => oddsMap[o.match_id] = o);
@@ -1017,8 +1070,9 @@ function calcPlayerPoints(playerId, scoring) {
   for (const pred of preds) {
     const res = resultMap[pred.match_id];
     if (!res) continue;
-    total++;
     const match = matchMap[pred.match_id];
+    if (sinceTs && match?.kickoff_utc && new Date(match.kickoff_utc) < sinceTs) continue;
+    total++;
     const stageMult = scoring[`stage_${match?.stage}`] || 1;
     const pOut = pred.score_a > pred.score_b ? 'a' : pred.score_a < pred.score_b ? 'b' : 'd';
     const rOut = res.score_a > res.score_b ? 'a' : res.score_a < res.score_b ? 'b' : 'd';
@@ -1051,6 +1105,7 @@ function calcPlayerPoints(playerId, scoring) {
   const outrightOdds = {};
   db.prepare('SELECT * FROM outright_odds').all().forEach(o => outrightOdds[o.team_name] = o.odds_winner);
 
+  const tournStart = new Date('2026-06-11T19:00:00Z');
   for (const tp of tpreds) {
     if (actualMap[tp.prediction_type] && tp.value === actualMap[tp.prediction_type]) {
       let bonus = scoring[`bonus_${tp.prediction_type}`] || 0;
@@ -1059,6 +1114,13 @@ function calcPlayerPoints(playerId, scoring) {
         if (teamOdds) {
           const oddsMult = Math.min(teamOdds / 5, 20);
           bonus = Math.round(bonus * oddsMult);
+        }
+        if (tp.updated_at) {
+          const updatedAt = new Date(tp.updated_at + 'Z');
+          if (updatedAt > tournStart) {
+            const daysIn = (updatedAt - tournStart) / 86400000;
+            bonus = Math.round(bonus * Math.max(0.1, 1 - daysIn / 30));
+          }
         }
       }
       points += bonus;
@@ -1095,48 +1157,58 @@ function generateMonkeyPrediction(matchId) {
   };
 }
 
-function ensureMonkeyExists(groupId) {
-  const group = db.prepare('SELECT * FROM groups WHERE id = ?').get(groupId);
-  if (!group) return null;
-  const monkeyName = `🐒 קוף (${group.name})`;
-  let monkey = db.prepare('SELECT * FROM players WHERE name = ?').get(monkeyName);
-  if (!monkey) {
-    const result = db.prepare('INSERT INTO players (name, pin) VALUES (?, ?)').run(monkeyName, 'monkey-no-login');
-    monkey = { id: result.lastInsertRowid, name: monkeyName };
-    db.prepare('INSERT OR IGNORE INTO group_members (group_id, player_id) VALUES (?, ?)').run(groupId, monkey.id);
-    const matches = db.prepare('SELECT * FROM matches').all();
-    const insert = db.prepare('INSERT OR IGNORE INTO predictions (player_id, match_id, score_a, score_b) VALUES (?, ?, ?, ?)');
-    for (const m of matches) {
-      const p = generateMonkeyPrediction(m.id);
-      insert.run(monkey.id, m.id, p.score_a, p.score_b);
-    }
+const GLOBAL_MONKEY_NAME = '🐒 רותם הקוף';
 
-    // Tournament predictions from oracle or random fallback
-    const oracle = loadMonkeyOracle();
-    const insertTP = db.prepare('INSERT OR IGNORE INTO tournament_predictions (player_id, prediction_type, value) VALUES (?, ?, ?)');
-    if (oracle && oracle.tournament) {
-      insertTP.run(monkey.id, 'winner', oracle.tournament.winner);
-      insertTP.run(monkey.id, 'runner_up', oracle.tournament.runner_up);
-      insertTP.run(monkey.id, 'top_scorer', oracle.tournament.top_scorer);
+function getGlobalMonkey() {
+  let monkey = db.prepare('SELECT * FROM players WHERE name = ?').get(GLOBAL_MONKEY_NAME);
+  if (!monkey) {
+    const oldMonkey = db.prepare("SELECT * FROM players WHERE name LIKE '%קוף%' LIMIT 1").get();
+    if (oldMonkey) {
+      db.prepare('UPDATE players SET name = ? WHERE id = ?').run(GLOBAL_MONKEY_NAME, oldMonkey.id);
+      monkey = { ...oldMonkey, name: GLOBAL_MONKEY_NAME };
     } else {
-      const allTeams = [...new Set(matches.filter(m => m.stage === 'בתים').flatMap(m => [m.team_a, m.team_b]))];
-      const randomTeam = () => allTeams[Math.floor(Math.random() * allTeams.length)];
-      const topScorers = ['אמבפה','הולאנד','סלאח','קיין','וינסיוס ג\'וניור','מסי','רונאלדו','יאמל','סאקה','לוקאקו'];
-      const randomScorer = () => topScorers[Math.floor(Math.random() * topScorers.length)];
-      insertTP.run(monkey.id, 'winner', randomTeam());
-      insertTP.run(monkey.id, 'runner_up', randomTeam());
-      insertTP.run(monkey.id, 'top_scorer', randomScorer());
+      const result = db.prepare('INSERT INTO players (name, pin) VALUES (?, ?)').run(GLOBAL_MONKEY_NAME, 'monkey-no-login');
+      monkey = { id: result.lastInsertRowid, name: GLOBAL_MONKEY_NAME };
+      const matches = db.prepare('SELECT * FROM matches').all();
+      const insert = db.prepare('INSERT OR IGNORE INTO predictions (player_id, match_id, score_a, score_b) VALUES (?, ?, ?, ?)');
+      for (const m of matches) {
+        const p = generateMonkeyPrediction(m.id);
+        insert.run(monkey.id, m.id, p.score_a, p.score_b);
+      }
+      const oracle = loadMonkeyOracle();
+      const insertTP = db.prepare('INSERT OR IGNORE INTO tournament_predictions (player_id, prediction_type, value) VALUES (?, ?, ?)');
+      if (oracle && oracle.tournament) {
+        insertTP.run(monkey.id, 'winner', oracle.tournament.winner);
+        insertTP.run(monkey.id, 'runner_up', oracle.tournament.runner_up);
+        insertTP.run(monkey.id, 'top_scorer', oracle.tournament.top_scorer);
+      } else {
+        const allTeams = [...new Set(matches.filter(m => m.stage === 'בתים').flatMap(m => [m.team_a, m.team_b]))];
+        const randomTeam = () => allTeams[Math.floor(Math.random() * allTeams.length)];
+        const topScorers = ['אמבפה','הולאנד','סלאח','קיין','וינסיוס ג\'וניור','מסי','רונאלדו','יאמל','סאקה','לוקאקו'];
+        const randomScorer = () => topScorers[Math.floor(Math.random() * topScorers.length)];
+        insertTP.run(monkey.id, 'winner', randomTeam());
+        insertTP.run(monkey.id, 'runner_up', randomTeam());
+        insertTP.run(monkey.id, 'top_scorer', randomScorer());
+      }
     }
   }
   return monkey;
 }
 
+function ensureMonkeyExists(groupId) {
+  const monkey = getGlobalMonkey();
+  if (!monkey) return null;
+  db.prepare('INSERT OR IGNORE INTO group_members (group_id, player_id, joined_at) VALUES (?, ?, datetime("now"))').run(groupId, monkey.id);
+  return monkey;
+}
+
 // Auto-fill: assign 0-0 (or pattern-based) for players who forgot to predict
+// Only fills for matches that kicked off after the player registered
 function autoFillMissing() {
   const results = db.prepare('SELECT * FROM match_results').all();
   const matchesAll = db.prepare('SELECT * FROM matches').all();
   const insert = db.prepare('INSERT OR IGNORE INTO predictions (player_id, match_id, score_a, score_b) VALUES (?, ?, ?, ?)');
-  const players = db.prepare('SELECT id FROM players').all();
+  const players = db.prepare('SELECT id, created_at FROM players').all();
 
   let filled = 0;
   for (const r of results) {
@@ -1144,10 +1216,15 @@ function autoFillMissing() {
     if (!match) continue;
 
     for (const p of players) {
+      if (p.created_at && match.kickoff_utc) {
+        const playerJoined = new Date(p.created_at);
+        const matchKickoff = new Date(match.kickoff_utc);
+        if (matchKickoff < playerJoined) continue;
+      }
+
       const existing = db.prepare('SELECT 1 FROM predictions WHERE player_id = ? AND match_id = ?').get(p.id, r.match_id);
       if (existing) continue;
 
-      // Check if player has any predictions — use average, otherwise 0-0
       const prev = db.prepare('SELECT AVG(score_a) as avg_a, AVG(score_b) as avg_b, COUNT(*) as c FROM predictions WHERE player_id = ?').get(p.id);
       let sa = 0, sb = 0;
       if (prev && prev.c > 0) {
@@ -1169,7 +1246,7 @@ app.post('/api/groups', (req, res) => {
   const invite_code = generateInviteCode();
   const result = db.prepare('INSERT INTO groups (name, invite_code, manager_id, scoring_config) VALUES (?, ?, ?, ?)')
     .run(name.trim(), invite_code, manager_id, JSON.stringify(DEFAULT_SCORING));
-  db.prepare('INSERT INTO group_members (group_id, player_id) VALUES (?, ?)').run(result.lastInsertRowid, manager_id);
+  db.prepare('INSERT INTO group_members (group_id, player_id, joined_at) VALUES (?, ?, datetime("now"))').run(result.lastInsertRowid, manager_id);
 
   const monkey = ensureMonkeyExists(result.lastInsertRowid);
   track(req, 'group_create', { group_id: result.lastInsertRowid, name: name.trim() });
@@ -1182,7 +1259,7 @@ app.post('/api/groups/join', (req, res) => {
   if (!group) return res.status(404).json({ error: 'קוד הזמנה לא נמצא' });
   const existing = db.prepare('SELECT 1 FROM group_members WHERE group_id = ? AND player_id = ?').get(group.id, player_id);
   if (existing) return res.status(409).json({ error: 'כבר בקבוצה הזו' });
-  db.prepare('INSERT INTO group_members (group_id, player_id) VALUES (?, ?)').run(group.id, player_id);
+  db.prepare('INSERT INTO group_members (group_id, player_id, joined_at) VALUES (?, ?, datetime("now"))').run(group.id, player_id);
   track(req, 'group_join', { group_id: group.id, player_id });
   res.json({ ok: true, group_id: group.id, name: group.name });
 });
@@ -1206,18 +1283,30 @@ app.get('/api/groups/:id', (req, res) => {
   res.json({ ...group, scoring_config: scoring, members });
 });
 
+app.post('/api/groups/:id/rename', (req, res) => {
+  const { name, player_id } = req.body;
+  if (!name || !name.trim()) return res.status(400).json({ error: 'שם ריק' });
+  const group = db.prepare('SELECT * FROM groups WHERE id = ?').get(req.params.id);
+  if (!group) return res.status(404).json({ error: 'קבוצה לא נמצאה' });
+  if (group.manager_id != player_id) return res.status(403).json({ error: 'רק מנהל הקבוצה יכול לשנות שם' });
+  db.prepare('UPDATE groups SET name = ? WHERE id = ?').run(name.trim(), req.params.id);
+  res.json({ ok: true, name: name.trim() });
+});
+
 app.get('/api/groups/:id/leaderboard', (req, res) => {
   const group = db.prepare('SELECT * FROM groups WHERE id = ?').get(req.params.id);
   if (!group) return res.status(404).json({ error: 'קבוצה לא נמצאה' });
   const scoring = getGroupScoring(group);
-  const members = db.prepare('SELECT p.id, p.name FROM group_members gm JOIN players p ON p.id = gm.player_id WHERE gm.group_id = ?').all(req.params.id);
+  const sinceJoined = req.query.since_joined === '1';
+  const members = db.prepare('SELECT p.id, p.name, gm.joined_at FROM group_members gm JOIN players p ON p.id = gm.player_id WHERE gm.group_id = ?').all(req.params.id);
 
   autoFillMissing();
 
   const board = members.map(m => {
-    const stats = calcPlayerPoints(m.id, scoring);
+    const since = sinceJoined ? m.joined_at : undefined;
+    const stats = calcPlayerPoints(m.id, scoring, since);
     const isMonkey = m.name.startsWith('🐒');
-    return { ...m, ...stats, isMonkey };
+    return { ...m, ...stats, isMonkey, joined_at: m.joined_at };
   });
 
   board.sort((a, b) => b.points - a.points || b.exact - a.exact);
@@ -1707,11 +1796,18 @@ app.get('/join/:code', (req, res) => {
   </head><body></body></html>`);
 });
 
-// Notifications — Web Push + Telegram
-setTgBotToken('8959296229:AAElcVWPberJ3UT0RmrSxfSDWvHpQkNS9MY');
-db.prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('tg_bot_username', 'TikiTakaVipBot')").run();
+// Notifications — Web Push + Telegram. Token from env (Infisical /ops/tikitaka), never hardcoded.
+const TG_BOT_TOKEN = process.env.TG_BOT_TOKEN;
+const TG_BOT_USERNAME = process.env.TG_BOT_USERNAME || 'TikiTakaVipBot';
+if (!TG_BOT_TOKEN) console.warn('⚠ TG_BOT_TOKEN not set — Telegram bot disabled');
+setTgBotToken(TG_BOT_TOKEN);
+db.prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('tg_bot_username', ?)").run(TG_BOT_USERNAME);
 setupNotificationRoutes(app, db);
 startNotificationScheduler(db);
+
+// WhatsApp bot — same sign-up + guessing engine as Telegram.
+const { setupWhatsAppRoutes } = require('./whatsapp');
+setupWhatsAppRoutes(app, db);
 
 // --- Graceful error pages (B-9) ---
 function errorPage(code, heading, message) {

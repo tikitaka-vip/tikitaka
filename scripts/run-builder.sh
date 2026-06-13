@@ -16,44 +16,66 @@ git pull origin main --ff-only 2>/dev/null || true
 source /home/agent/.agent-factory/credentials.env
 
 TASKS=$(curl -s "$BOARD/api/tasks?role=builder&status=ready" -H "Authorization: Bearer $KEY" -H "Accept: text/markdown")
-ORDERS=$(curl -s "$BOARD/api/tasks?role=builder" -H "Authorization: Bearer $KEY" | python3 -c "
-import sys,json
-tasks = json.loads(sys.stdin.read())
-for t in tasks:
-    if t['status'] in ('ready','in_progress'):
-        print(f\"Task #{t['id']}: {t['title']} [{t['priority']}]\")
-" 2>/dev/null || echo "Could not parse tasks")
 
-timeout 1800 claude -p \
-  --allowedTools 'Bash,Read,Write,Edit' \
-  "You are the Builder agent for tikitaka.vip — a World Cup 2026 prediction game.
+# Write prompt to a temp file to avoid quoting hell
+PROMPT_FILE=$(mktemp /tmp/builder-prompt-XXXX.md)
+cat > "$PROMPT_FILE" << PROMPT_EOF
+You are the Builder agent for tikitaka.vip — a World Cup 2026 prediction game.
 Working directory: $WORKDIR (git clone, NOT production)
 Production: /opt/worldcup/ (DO NOT modify directly)
 
 ## Your tasks (pick the highest P0 first)
 $TASKS
 
-## Instructions
-1. Pick the top P0 task. If no P0s remain, pick top P1.
-2. Set it to in_progress: curl -s '$BOARD/api/tasks/TASK_ID' -X PATCH -H 'Authorization: Bearer $KEY' -H 'Content-Type: application/json' -d '{\"status\":\"in_progress\"}'
-3. Send heartbeats every ~10 minutes: curl -s '$BOARD/api/tasks/TASK_ID/heartbeat' -X POST -H 'Authorization: Bearer $KEY'
-4. Implement the feature in $WORKDIR
-5. Test locally (node server.js, check it works)
-6. Add progress comment: curl -s '$BOARD/api/tasks/TASK_ID/comments' -X POST -H 'Authorization: Bearer $KEY' -H 'Content-Type: application/json' -d '{\"type\":\"progress\",\"content\":\"WHAT YOU DID\"}'
-7. Set to review: curl -s '$BOARD/api/tasks/TASK_ID' -X PATCH -H 'Authorization: Bearer $KEY' -H 'Content-Type: application/json' -d '{\"status\":\"review\"}'
-8. Git commit and push
-9. If time remains, pick the next task
+## Board API
+Base URL: $BOARD
+Auth header: Authorization: Bearer $KEY
+
+To update a task status:
+curl -s "$BOARD/api/tasks/TASK_ID" -X PATCH -H "Authorization: Bearer $KEY" -H "Content-Type: application/json" -d '{"status":"in_progress"}'
+
+To add a progress comment:
+curl -s "$BOARD/api/tasks/TASK_ID/comments" -X POST -H "Authorization: Bearer $KEY" -H "Content-Type: application/json" -d '{"type":"progress","content":"WHAT YOU DID"}'
+
+To send heartbeat (do this every ~10 min):
+curl -s "$BOARD/api/tasks/TASK_ID/heartbeat" -X POST -H "Authorization: Bearer $KEY"
+
+## Workflow
+1. Pick the top P0 task
+2. Set it to in_progress via the API
+3. Implement the feature in $WORKDIR
+4. Test locally (node server.js on a test port, verify it works)
+5. Add a progress comment describing what you did
+6. Set status to review
+7. Git commit and push
+8. DEPLOY: if the task is ready for production, run: sudo /opt/board/scripts/deploy-prod.sh
+9. Set status to done (not review) if deployed and verified
+10. If time remains, pick the next task
 
 ## If blocked
-Add a blocker comment and set status to blocked:
-curl -s '$BOARD/api/tasks/TASK_ID/comments' -X POST -H 'Authorization: Bearer $KEY' -H 'Content-Type: application/json' -d '{\"type\":\"blocker\",\"content\":\"WHAT IS BLOCKING\"}'
+Set status to blocked and add a comment with type "blocker".
 
-## Notify when done
-curl -s 'https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage' -d 'chat_id=${TG_CHAT_ID}' -d 'text=Builder done: SUMMARY'
+## When done
+Send a Telegram notification:
+curl -s "https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage" -d "chat_id=${TG_CHAT_ID}" -d "text=Builder done: SUMMARY_HERE"
+
+## Capabilities
+Read /home/agent/.claude/founder-os/capabilities.md to know what tools and services are available.
 
 ## Quality
-- Ship working code, not perfect code (6-day sprint)
+- Ship working code, not perfect code
 - Hebrew RTL must not break
-- Mobile-first
-- Test before marking review" \
-  >> "$LOG" 2>&1
+- Mobile-first — most users are on phones
+- Test before deploying
+PROMPT_EOF
+
+cat "$PROMPT_FILE" | timeout 1800 claude -p --dangerously-skip-permissions --mcp-config /home/agent/.claude/mcp-builder.json >> "$LOG" 2>&1
+EXIT_CODE=$?
+
+rm -f "$PROMPT_FILE"
+
+if [ $EXIT_CODE -ne 0 ]; then
+  curl -s "https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage" \
+    -d "chat_id=${TG_CHAT_ID}" \
+    -d "text=Builder agent failed (exit $EXIT_CODE). Check $LOG" > /dev/null 2>&1
+fi

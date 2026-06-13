@@ -99,8 +99,8 @@ Status: `[ ]` todo · `[~]` in progress · `[x]` done · `[!]` blocked · `[-]` 
 - [x] **9.3** Dynamic OG for invite links (/join/CODE shows group name + member count)
 - [x] **9.4** robots.txt + sitemap.xml
 - [x] **9.5** Google Search Console verification
-- [ ] **9.6** Submit sitemap to Google Search Console
-- [ ] **9.7** Bing Webmaster Tools — verify + submit sitemap
+- [x] **9.6** Submit sitemap to Google Search Console (submitted, status: processing)
+- [x] **9.7** Bing Webmaster Tools — verified (auto-imported from GSC), IndexNow submitted
 - [x] **9.8** Short link (spoo.me/wc26il)
 
 ## Phase 10 — Monitoring & Reliability

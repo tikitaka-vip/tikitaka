@@ -19,7 +19,7 @@ const AGENT_KEYS = {
 
 const VALID_STATUSES = ['backlog', 'ready', 'in_progress', 'review', 'done', 'blocked', 'stale'];
 const VALID_PRIORITIES = ['p0', 'p1', 'p2'];
-const VALID_ROLES = ['po', 'builder', 'growth', 'unassigned'];
+const VALID_ROLES = ['po', 'builder', 'growth', 'growth-content', 'growth-browser', 'unassigned'];
 const VALID_COMMENT_TYPES = ['order', 'progress', 'blocker', 'standup', 'system'];
 
 // --- DB setup ---
@@ -52,19 +52,40 @@ db.exec(`
     created_at TEXT DEFAULT (datetime('now'))
   );
 
+  CREATE TABLE IF NOT EXISTS drafts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    task_id INTEGER REFERENCES tasks(id),
+    version INTEGER DEFAULT 1,
+    lang TEXT DEFAULT 'he',
+    body_md TEXT NOT NULL,
+    metadata TEXT DEFAULT '{}',
+    status TEXT DEFAULT 'draft',
+    created_at TEXT DEFAULT (datetime('now')),
+    updated_at TEXT DEFAULT (datetime('now'))
+  );
+
   CREATE INDEX IF NOT EXISTS idx_tasks_role_status ON tasks(role, status);
   CREATE INDEX IF NOT EXISTS idx_comments_task ON comments(task_id);
+  CREATE INDEX IF NOT EXISTS idx_drafts_task ON drafts(task_id);
 `);
 
 // --- Auth middleware ---
 
 function authAgent(req, res, next) {
+  // Check Bearer token first (agents)
   const authHeader = req.headers.authorization || '';
   const key = authHeader.replace('Bearer ', '');
   const role = Object.entries(AGENT_KEYS).find(([, v]) => v === key);
-  if (!role) return res.status(401).json({ error: 'Invalid API key' });
-  req.agentRole = role[0];
-  next();
+  if (role) { req.agentRole = role[0]; return next(); }
+
+  // Fall back to cookie auth (operator via UI)
+  const cookie = (req.headers.cookie || '').split(';').map(c => c.trim()).find(c => c.startsWith('board_auth='));
+  if (cookie && cookie.split('=')[1] === makeToken()) {
+    req.agentRole = 'po';
+    return next();
+  }
+
+  return res.status(401).json({ error: 'Invalid API key' });
 }
 
 // --- Auto-block enforcement ---
@@ -172,7 +193,7 @@ app.patch('/api/tasks/:id', authAgent, (req, res) => {
   if (role === 'builder' && task.role !== 'builder' && !req.body.heartbeat_at) {
     return res.status(403).json({ error: 'Builder can only update builder tasks' });
   }
-  if (role === 'growth' && task.role !== 'growth' && !req.body.heartbeat_at) {
+  if (role === 'growth' && !task.role.startsWith('growth') && !req.body.heartbeat_at) {
     return res.status(403).json({ error: 'Growth can only update growth tasks' });
   }
 
@@ -234,6 +255,39 @@ app.get('/api/tasks/:id/comments', authAgent, (req, res) => {
   sql += ' ORDER BY created_at DESC LIMIT 20';
 
   res.json(db.prepare(sql).all(...params));
+});
+
+// --- Drafts API ---
+
+app.post('/api/drafts', authAgent, (req, res) => {
+  const { task_id, body_md, lang, metadata } = req.body;
+  if (!task_id || !body_md) return res.status(400).json({ error: 'task_id and body_md required' });
+  const maxVersion = db.prepare('SELECT MAX(version) as v FROM drafts WHERE task_id = ?').get(task_id);
+  const version = (maxVersion?.v || 0) + 1;
+  const result = db.prepare(`
+    INSERT INTO drafts (task_id, version, lang, body_md, metadata, status) VALUES (?, ?, ?, ?, ?, 'draft')
+  `).run(task_id, version, lang || 'he', body_md, JSON.stringify(metadata || {}));
+  db.prepare("INSERT INTO comments (task_id, role, type, content) VALUES (?, ?, 'progress', ?)").run(
+    task_id, req.agentRole, `Draft v${version} ready (draft_id=${result.lastInsertRowid}, lang=${lang || 'he'})`
+  );
+  res.status(201).json({ draft_id: result.lastInsertRowid, version });
+});
+
+app.get('/api/drafts/:id', authAgent, (req, res) => {
+  const draft = db.prepare('SELECT * FROM drafts WHERE id = ?').get(req.params.id);
+  if (!draft) return res.status(404).json({ error: 'Draft not found' });
+  res.json(draft);
+});
+
+app.get('/api/tasks/:id/drafts', authAgent, (req, res) => {
+  const drafts = db.prepare('SELECT * FROM drafts WHERE task_id = ? ORDER BY version DESC').all(req.params.id);
+  res.json(drafts);
+});
+
+app.patch('/api/drafts/:id', authAgent, (req, res) => {
+  const { status } = req.body;
+  if (status) db.prepare("UPDATE drafts SET status = ?, updated_at = datetime('now') WHERE id = ?").run(status, req.params.id);
+  res.json({ ok: true });
 });
 
 // Summary endpoint for standup digest
@@ -300,7 +354,32 @@ app.get('/health', (req, res) => res.json({ ok: true, time: new Date().toISOStri
 
 // --- Web UI ---
 
-app.get('/', (req, res) => {
+const OPERATOR_PASS = process.env.OPERATOR_PASS || 'changeme';
+const COOKIE_SECRET = crypto.randomBytes(32).toString('hex');
+
+function makeToken() {
+  return crypto.createHmac('sha256', COOKIE_SECRET).update(OPERATOR_PASS).digest('hex');
+}
+
+function authUI(req, res, next) {
+  const cookie = (req.headers.cookie || '').split(';').map(c => c.trim()).find(c => c.startsWith('board_auth='));
+  if (cookie && cookie.split('=')[1] === makeToken()) return next();
+  return res.send(`<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Login</title><style>body{background:#0f172a;color:#e2e8f0;font-family:sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;margin:0}
+form{background:#1e293b;padding:24px;border-radius:8px;text-align:center}input{padding:8px 12px;border-radius:4px;border:1px solid #334155;background:#0f172a;color:#e2e8f0;font-size:1rem;margin:8px 0}
+button{padding:8px 20px;border-radius:4px;border:none;background:#3b82f6;color:#fff;font-size:1rem;cursor:pointer}</style></head>
+<body><form method="POST" action="/board/login"><h2>Sprint Board</h2><br><input type="password" name="pass" placeholder="Password" autofocus><br><button>Login</button></form></body></html>`);
+}
+
+app.post('/login', (req, res) => {
+  if (req.body.pass === OPERATOR_PASS) {
+    res.setHeader('Set-Cookie', `board_auth=${makeToken()}; Path=/; HttpOnly; SameSite=Strict; Max-Age=604800`);
+    return res.redirect('/board/');
+  }
+  res.status(401).send('Wrong password. <a href="/board/">Try again</a>');
+});
+
+app.get('/', authUI, (req, res) => {
   enforceBlocks();
   const tasks = db.prepare(`
     SELECT * FROM tasks
@@ -320,6 +399,17 @@ app.get('/', (req, res) => {
     review: '#8b5cf6', done: '#10b981', blocked: '#ef4444', stale: '#f97316'
   };
 
+  const allComments = {};
+  const commentRows = db.prepare('SELECT * FROM comments ORDER BY created_at DESC').all();
+  commentRows.forEach(c => {
+    if (!allComments[c.task_id]) allComments[c.task_id] = [];
+    allComments[c.task_id].push(c);
+  });
+
+  const commentTypeColors = { blocker: '#ef4444', order: '#f59e0b', progress: '#3b82f6', standup: '#8b5cf6', system: '#6b7280' };
+
+  const daysToKickoff = Math.ceil((new Date('2026-06-11') - new Date()) / 86400000);
+
   const html = `<!DOCTYPE html>
 <html><head>
 <meta charset="utf-8">
@@ -327,114 +417,138 @@ app.get('/', (req, res) => {
 <title>TikiTaka Sprint Board</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; padding: 16px; }
-  h1 { font-size: 1.5rem; margin-bottom: 4px; }
-  .subtitle { color: #94a3b8; font-size: 0.85rem; margin-bottom: 16px; }
-  .board { display: flex; gap: 12px; overflow-x: auto; min-height: 60vh; }
-  .column { background: #1e293b; border-radius: 8px; min-width: 220px; flex: 1; padding: 8px; }
-  .column-header { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; padding: 6px 8px; border-radius: 4px; margin-bottom: 8px; display: flex; justify-content: space-between; }
-  .card { background: #0f172a; border: 1px solid #334155; border-radius: 6px; padding: 10px; margin-bottom: 8px; cursor: pointer; transition: border-color 0.15s; }
-  .card:hover { border-color: #64748b; }
-  .card-id { font-size: 0.7rem; color: #64748b; }
-  .card-title { font-size: 0.85rem; font-weight: 500; margin: 4px 0; }
-  .card-meta { display: flex; gap: 6px; flex-wrap: wrap; }
-  .badge { font-size: 0.65rem; padding: 2px 6px; border-radius: 3px; font-weight: 600; }
-  .priority-controls { display: flex; gap: 2px; margin-top: 6px; }
-  .priority-controls button { background: #334155; border: none; color: #94a3b8; padding: 2px 8px; border-radius: 3px; cursor: pointer; font-size: 0.75rem; }
-  .priority-controls button:hover { background: #475569; color: #e2e8f0; }
-  .priority-controls select { background: #334155; border: none; color: #e2e8f0; padding: 2px 4px; border-radius: 3px; font-size: 0.7rem; }
-  .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 100; justify-content: center; align-items: flex-start; padding-top: 10vh; }
-  .modal-overlay.active { display: flex; }
-  .modal { background: #1e293b; border-radius: 12px; padding: 20px; width: 90%; max-width: 600px; max-height: 80vh; overflow-y: auto; }
-  .modal h2 { font-size: 1.1rem; margin-bottom: 12px; }
-  .modal .desc { color: #94a3b8; font-size: 0.85rem; margin-bottom: 12px; white-space: pre-wrap; }
-  .comment { border-left: 3px solid #334155; padding: 6px 10px; margin: 6px 0; font-size: 0.8rem; }
-  .comment .meta { color: #64748b; font-size: 0.7rem; }
-  .stats { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
-  .stat { background: #1e293b; padding: 8px 14px; border-radius: 6px; }
-  .stat-val { font-size: 1.2rem; font-weight: 700; }
-  .stat-label { font-size: 0.7rem; color: #94a3b8; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; padding: 12px; max-width: 800px; margin: 0 auto; }
+  h1 { font-size: 1.3rem; margin-bottom: 2px; }
+  .subtitle { color: #94a3b8; font-size: 0.8rem; margin-bottom: 12px; }
+  .stats { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .stat { background: #1e293b; padding: 6px 10px; border-radius: 6px; text-align: center; }
+  .stat-val { font-size: 1.1rem; font-weight: 700; }
+  .stat-label { font-size: 0.65rem; color: #94a3b8; }
+  .filters { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+  .filter-btn { background: #1e293b; border: 1px solid #334155; color: #94a3b8; padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; cursor: pointer; }
+  .filter-btn.active { background: #334155; color: #e2e8f0; border-color: #64748b; }
+  .section { margin-bottom: 16px; }
+  .section-header { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; padding: 6px 0; color: #94a3b8; border-bottom: 1px solid #1e293b; margin-bottom: 6px; display: flex; justify-content: space-between; }
+  .task { background: #1e293b; border: 1px solid #334155; border-radius: 8px; margin-bottom: 6px; overflow: hidden; }
+  .task-header { padding: 10px 12px; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+  .task-header:active { background: #334155; }
+  .task-id { font-size: 0.7rem; color: #64748b; min-width: 28px; }
+  .task-title { font-size: 0.85rem; font-weight: 500; flex: 1; }
+  .badge { font-size: 0.6rem; padding: 2px 5px; border-radius: 3px; font-weight: 600; white-space: nowrap; }
+  .task-body { display: none; padding: 0 12px 12px; border-top: 1px solid #334155; }
+  .task-body.open { display: block; padding-top: 10px; }
+  .desc { color: #94a3b8; font-size: 0.8rem; margin-bottom: 10px; white-space: pre-wrap; line-height: 1.4; }
+  .controls { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+  .controls select { background: #0f172a; border: 1px solid #334155; color: #e2e8f0; padding: 4px 6px; border-radius: 4px; font-size: 0.75rem; }
+  .deps { color: #ef4444; font-size: 0.75rem; margin-bottom: 8px; }
+  .comment { border-left: 3px solid #334155; padding: 4px 8px; margin: 4px 0; font-size: 0.78rem; line-height: 1.3; }
+  .comment .meta { color: #64748b; font-size: 0.65rem; margin-bottom: 2px; }
+  .comment-form { display: flex; gap: 6px; margin-top: 8px; }
+  .comment-form textarea { flex: 1; background: #0f172a; border: 1px solid #334155; color: #e2e8f0; padding: 6px 8px; border-radius: 4px; font-size: 0.8rem; font-family: inherit; resize: vertical; min-height: 36px; }
+  .comment-form button { background: #3b82f6; border: none; color: #fff; padding: 6px 12px; border-radius: 4px; font-size: 0.75rem; cursor: pointer; white-space: nowrap; }
+  .comment-form button:active { background: #2563eb; }
+  .no-comments { color: #475569; font-size: 0.75rem; font-style: italic; }
 </style>
 </head><body>
-<h1>TikiTaka Sprint Board</h1>
-<div class="subtitle">World Cup 2026 — ${Math.ceil((new Date('2026-06-11') - new Date()) / 86400000)} days to kickoff</div>
+<h1>TikiTaka Sprint</h1>
+<div class="subtitle">${daysToKickoff} days to World Cup kickoff</div>
 
 <div class="stats">
   ${Object.entries(statusGroups).map(([s, ts]) => ts.length ? `<div class="stat"><div class="stat-val" style="color:${statusColors[s]}">${ts.length}</div><div class="stat-label">${s}</div></div>` : '').join('')}
 </div>
 
-<div class="board">
-${['ready', 'in_progress', 'review', 'blocked', 'stale', 'backlog', 'done'].map(status => `
-  <div class="column">
-    <div class="column-header" style="background:${statusColors[status]}22; color:${statusColors[status]}">
-      <span>${status.replace('_', ' ')}</span>
-      <span>${statusGroups[status]?.length || 0}</span>
-    </div>
-    ${(statusGroups[status] || []).map(t => `
-      <div class="card" onclick="openTask(${t.id})">
-        <div class="card-id">#${t.id} ${t.sprint_ref || ''}</div>
-        <div class="card-title">${t.title}</div>
-        <div class="card-meta">
-          <span class="badge" style="background:${roleColors[t.role]}33; color:${roleColors[t.role]}">${t.role}</span>
-          <span class="badge" style="background:${t.priority === 'p0' ? '#ef444433' : '#33415533'}; color:${t.priority === 'p0' ? '#ef4444' : '#94a3b8'}">${t.priority}</span>
-        </div>
-        <div class="priority-controls">
-          <select onchange="updateTask(${t.id}, 'priority', this.value); event.stopPropagation()">
-            ${VALID_PRIORITIES.map(p => `<option value="${p}" ${p === t.priority ? 'selected' : ''}>${p.toUpperCase()}</option>`).join('')}
-          </select>
-          <select onchange="updateTask(${t.id}, 'status', this.value); event.stopPropagation()">
-            ${VALID_STATUSES.map(s => `<option value="${s}" ${s === t.status ? 'selected' : ''}>${s}</option>`).join('')}
-          </select>
-        </div>
-      </div>
-    `).join('')}
-  </div>
-`).join('')}
+<div class="filters">
+  <button class="filter-btn active" onclick="filterTasks('all')">All</button>
+  <button class="filter-btn" onclick="filterTasks('builder')" style="color:#3b82f6">Builder</button>
+  <button class="filter-btn" onclick="filterTasks('growth')" style="color:#10b981">Growth</button>
+  <button class="filter-btn" onclick="filterTasks('p0')" style="color:#ef4444">P0 only</button>
 </div>
 
-<div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
-  <div class="modal" id="modal-content"></div>
-</div>
+${['in_progress', 'blocked', 'stale', 'ready', 'review', 'backlog', 'done'].map(status => {
+    const sectionTasks = statusGroups[status] || [];
+    if (!sectionTasks.length) return '';
+    return `
+<div class="section" data-status="${status}">
+  <div class="section-header">
+    <span style="color:${statusColors[status]}">${status.replace('_', ' ')} (${sectionTasks.length})</span>
+  </div>
+  ${sectionTasks.map(t => {
+    const deps = JSON.parse(t.blocked_by || '[]');
+    const tc = (allComments[t.id] || []).slice(0, 10);
+    return `
+  <div class="task" data-role="${t.role}" data-priority="${t.priority}" data-id="${t.id}">
+    <div class="task-header" onclick="toggleTask(${t.id})">
+      <span class="task-id">#${t.id}</span>
+      <span class="task-title">${t.title}</span>
+      <span class="badge" style="background:${roleColors[t.role]}33;color:${roleColors[t.role]}">${t.role}</span>
+      <span class="badge" style="background:${t.priority === 'p0' ? '#ef444433' : '#33415533'};color:${t.priority === 'p0' ? '#ef4444' : '#94a3b8'}">${t.priority}</span>
+    </div>
+    <div class="task-body" id="body-${t.id}">
+      <div class="desc">${t.description || 'No description.'}</div>
+      ${deps.length ? `<div class="deps">Blocked by: ${deps.map(d => '#' + d).join(', ')}</div>` : ''}
+      <div class="controls">
+        <select onchange="updateTask(${t.id},'priority',this.value)">
+          ${VALID_PRIORITIES.map(p => `<option value="${p}" ${p === t.priority ? 'selected' : ''}>${p.toUpperCase()}</option>`).join('')}
+        </select>
+        <select onchange="updateTask(${t.id},'status',this.value)">
+          ${VALID_STATUSES.map(s => `<option value="${s}" ${s === t.status ? 'selected' : ''}>${s}</option>`).join('')}
+        </select>
+      </div>
+      <div id="comments-${t.id}">
+        ${tc.length ? tc.map(c => `
+        <div class="comment" style="border-color:${commentTypeColors[c.type] || '#334155'}">
+          <div class="meta">${c.type} · ${c.role} · ${c.created_at}</div>
+          ${c.content}
+        </div>`).join('') : '<p class="no-comments">No activity yet</p>'}
+      </div>
+      <div class="comment-form">
+        <textarea id="input-${t.id}" placeholder="Add a comment..." rows="1"></textarea>
+        <button onclick="addComment(${t.id})">Send</button>
+      </div>
+    </div>
+  </div>`;
+  }).join('')}
+</div>`;
+  }).join('')}
 
 <script>
-const API_KEY = new URLSearchParams(location.search).get('key') || '';
+function toggleTask(id) {
+  const body = document.getElementById('body-' + id);
+  body.classList.toggle('open');
+}
 
 async function apiFetch(url, opts = {}) {
-  return fetch(url, { ...opts, headers: { 'Authorization': 'Bearer ' + API_KEY, 'Content-Type': 'application/json', ...opts.headers }});
+  return fetch(url, { ...opts, credentials: 'same-origin', headers: { 'Content-Type': 'application/json', ...opts.headers }});
 }
-
-async function openTask(id) {
-  const res = await apiFetch('/api/tasks/' + id);
-  const t = await res.json();
-  const deps = JSON.parse(t.blocked_by || '[]');
-  document.getElementById('modal-content').innerHTML = \`
-    <h2>#\${t.id}: \${t.title}</h2>
-    <div class="card-meta" style="margin-bottom:12px">
-      <span class="badge" style="background:#3b82f633;color:#3b82f6">\${t.role}</span>
-      <span class="badge" style="background:#f59e0b33;color:#f59e0b">\${t.status}</span>
-      <span class="badge">\${t.priority}</span>
-    </div>
-    \${deps.length ? '<p style="color:#ef4444;font-size:0.8rem">Blocked by: ' + deps.join(', ') + '</p>' : ''}
-    <div class="desc">\${t.description || 'No description'}</div>
-    <h3 style="font-size:0.9rem;margin:12px 0 6px">Activity</h3>
-    \${(t.comments || []).reverse().map(c => \`
-      <div class="comment" style="border-color:\${c.type==='blocker'?'#ef4444':c.type==='order'?'#f59e0b':'#334155'}">
-        <div class="meta">\${c.type} · \${c.role} · \${c.created_at}</div>
-        \${c.content}
-      </div>
-    \`).join('') || '<p style="color:#64748b;font-size:0.8rem">No activity yet</p>'}
-  \`;
-  document.getElementById('modal').classList.add('active');
-}
-
-function closeModal() { document.getElementById('modal').classList.remove('active'); }
 
 async function updateTask(id, field, value) {
   await apiFetch('/api/tasks/' + id, { method: 'PATCH', body: JSON.stringify({ [field]: value }) });
   location.reload();
 }
 
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+async function addComment(id) {
+  const input = document.getElementById('input-' + id);
+  const text = input.value.trim();
+  if (!text) return;
+  input.disabled = true;
+  await apiFetch('/api/tasks/' + id + '/comments', {
+    method: 'POST',
+    body: JSON.stringify({ type: 'order', content: text })
+  });
+  location.reload();
+}
+
+function filterTasks(filter) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  document.querySelectorAll('.task').forEach(t => {
+    const role = t.dataset.role;
+    const pri = t.dataset.priority;
+    if (filter === 'all') t.style.display = '';
+    else if (filter === 'p0') t.style.display = pri === 'p0' ? '' : 'none';
+    else t.style.display = role === filter ? '' : 'none';
+  });
+}
 </script>
 </body></html>`;
 
