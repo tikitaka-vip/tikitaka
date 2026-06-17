@@ -1494,6 +1494,69 @@ async function doFetchScores() {
   return { updated, total: data.filter(m => m.completed).length };
 }
 
+// Quota-free score source: ESPN's public scoreboard (no API key, no usage limits).
+// This is the PRIMARY auto-fetch source; the Odds API above is kept only as a
+// manual fallback. Matches are paired by team name (date-agnostic) using the same
+// NAME_MAP/aliases as the Odds path, so DB schedule drift doesn't break pairing.
+async function doFetchScoresEspn() {
+  const now = new Date();
+  const matchesList = db.prepare('SELECT * FROM matches').all();
+  const existingResults = new Set(db.prepare('SELECT match_id FROM match_results').all().map(r => r.match_id));
+  const unresolved = matchesList.filter(m =>
+    m.kickoff_utc && !existingResults.has(m.id) &&
+    (() => { const d = (now - new Date(m.kickoff_utc)) / 60000; return d > 100 && d < 5 * 24 * 60; })()
+  );
+  if (unresolved.length === 0) return { updated: 0, total: 0 };
+
+  // ESPN groups late-night kickoffs under the previous calendar day, so query each
+  // match's UTC date and the day before/after to be safe. De-duped into one set.
+  const dates = new Set();
+  for (const m of unresolved) {
+    const k = new Date(m.kickoff_utc);
+    for (const off of [-1, 0, 1]) {
+      const d = new Date(k.getTime() + off * 24 * 60 * 60 * 1000);
+      dates.add(`${d.getUTCFullYear()}${String(d.getUTCMonth() + 1).padStart(2, '0')}${String(d.getUTCDate()).padStart(2, '0')}`);
+    }
+  }
+
+  const newlyResolved = [];
+  let total = 0;
+  for (const ds of dates) {
+    let j;
+    try { j = await fetchJson(`https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard?dates=${ds}`); }
+    catch (e) { console.error('ESPN fetch failed for', ds, e.message); continue; }
+    for (const e of (j.events || [])) {
+      const c = e.competitions?.[0];
+      if (!c || !c.status?.type?.completed) continue;
+      total++;
+      const home = (c.competitors || []).find(x => x.homeAway === 'home');
+      const away = (c.competitors || []).find(x => x.homeAway === 'away');
+      if (!home || !away) continue;
+
+      const dbMatch = findDbMatch(matchesList, home.team.displayName, away.team.displayName);
+      if (!dbMatch || existingResults.has(dbMatch.id)) continue;
+
+      const homeNorm = normalizeTeamName(home.team.displayName);
+      const teamANorm = normalizeTeamName(NAME_MAP[dbMatch.team_a] || dbMatch.team_a);
+      let scoreA, scoreB;
+      if (teamANorm === homeNorm) { scoreA = parseInt(home.score); scoreB = parseInt(away.score); }
+      else { scoreA = parseInt(away.score); scoreB = parseInt(home.score); }
+      if (isNaN(scoreA) || isNaN(scoreB)) continue;
+
+      db.prepare('INSERT OR REPLACE INTO match_results (match_id, score_a, score_b) VALUES (?, ?, ?)').run(dbMatch.id, scoreA, scoreB);
+      existingResults.add(dbMatch.id);
+      newlyResolved.push(dbMatch.id);
+      console.log(`ESPN-result: ${dbMatch.team_a} ${scoreA}-${scoreB} ${dbMatch.team_b}`);
+      autoFillMissing();
+    }
+  }
+
+  for (const id of newlyResolved) {
+    try { await notifyResult(db, id); } catch (e) { console.error('notifyResult failed:', e.message); }
+  }
+  return { updated: newlyResolved.length, total };
+}
+
 // --- API endpoints ---
 
 app.post('/api/fetch-odds', async (req, res) => {
@@ -1507,8 +1570,14 @@ app.post('/api/fetch-odds', async (req, res) => {
 
 app.post('/api/fetch-scores', async (req, res) => {
   try {
-    const result = await doFetchScores();
-    res.json({ ok: true, ...result });
+    // Primary: free ESPN source. Fall back to the Odds API only if ESPN updated
+    // nothing AND an Odds key is configured (quota permitting).
+    const result = await doFetchScoresEspn();
+    if (result.updated === 0 && db.prepare("SELECT value FROM settings WHERE key = 'odds_api_key'").get()?.value) {
+      try { const odds = await doFetchScores(); return res.json({ ok: true, source: 'odds-fallback', ...odds }); }
+      catch (e) { /* quota/auth error — return ESPN's (empty) result below */ }
+    }
+    res.json({ ok: true, source: 'espn', ...result });
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
@@ -1520,44 +1589,21 @@ let autoFetchInterval = null;
 function startAutoFetch() {
   if (autoFetchInterval) return;
   autoFetchInterval = setInterval(async () => {
-    const apiKey = db.prepare("SELECT value FROM settings WHERE key = 'odds_api_key'").get()?.value;
-    if (!apiKey) return;
-
     const now = new Date();
     const mins = (m) => (now - new Date(m.kickoff_utc)) / 1000 / 60;
-    // Finished matches (>100 min past kickoff) still missing a result, within the
-    // Odds API's 3-day scores horizon.
+    // Any finished match (>100 min past kickoff, <5 days) still missing a result.
     const unresolved = db.prepare('SELECT * FROM matches WHERE kickoff_utc IS NOT NULL').all()
-      .filter(m => { const d = mins(m); return d > 100 && d < 3 * 24 * 60; })
+      .filter(m => { const d = mins(m); return d > 100 && d < 5 * 24 * 60; })
       .filter(m => !db.prepare('SELECT 1 FROM match_results WHERE match_id = ?').get(m.id));
 
     if (unresolved.length === 0) return;
 
-    // Hard backoff after the Odds API reports the quota is exhausted — otherwise we
-    // hammer a 401 every 5 min (this is what burned the quota in the first place).
-    const getSetting = (k) => db.prepare('SELECT value FROM settings WHERE key = ?').get(k)?.value;
-    const backoffUntil = getSetting('score_fetch_backoff_until');
-    if (backoffUntil && now < new Date(backoffUntil)) return;
-
-    // A single scores request (daysFrom=3) already covers EVERY unresolved match,
-    // so poll at most once an hour to stay inside the limited monthly quota.
-    const lastFetch = getSetting('last_score_fetch');
-    if (lastFetch && (now - new Date(lastFetch)) < 60 * 60 * 1000) return;
-    db.prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('last_score_fetch', ?)").run(now.toISOString());
-
+    // Quota-free ESPN source — safe to poll every cycle while results are pending.
     try {
-      const result = await doFetchScores();
-      if (result.updated > 0) {
-        console.log(`Auto-fetch: updated ${result.updated} match results`);
-      }
+      const result = await doFetchScoresEspn();
+      if (result.updated > 0) console.log(`Auto-fetch (ESPN): updated ${result.updated} match results`);
     } catch (e) {
       console.error('Auto-fetch scores failed:', e.message);
-      // On a quota/auth failure, stop polling for 6h instead of retrying every cycle.
-      if (/quota|OUT_OF_USAGE|\b401\b/i.test(e.message)) {
-        const until = new Date(now.getTime() + 6 * 60 * 60 * 1000).toISOString();
-        db.prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('score_fetch_backoff_until', ?)").run(until);
-        console.error('Odds API quota/auth error — backing off score fetches until ' + until);
-      }
     }
   }, 5 * 60 * 1000);
 }
