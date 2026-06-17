@@ -1449,6 +1449,7 @@ async function doFetchScores() {
   const matchesList = db.prepare('SELECT * FROM matches').all();
   const existingResults = new Set(db.prepare('SELECT match_id FROM match_results').all().map(r => r.match_id));
   let updated = 0;
+  const newlyResolved = [];
 
   for (const apiMatch of data) {
     if (!apiMatch.completed) continue;
@@ -1479,8 +1480,15 @@ async function doFetchScores() {
 
     upsertResult.run(dbMatch.id, scoreA, scoreB);
     updated++;
+    newlyResolved.push(dbMatch.id);
     console.log(`Auto-result: ${dbMatch.team_a} ${scoreA}-${scoreB} ${dbMatch.team_b}`);
     autoFillMissing();
+  }
+
+  // Tell players their result is in (scoring notification). Was previously never
+  // fired — notifyResult was imported but never called from any result path.
+  for (const id of newlyResolved) {
+    try { await notifyResult(db, id); } catch (e) { console.error('notifyResult failed:', e.message); }
   }
 
   return { updated, total: data.filter(m => m.completed).length };
@@ -1516,20 +1524,26 @@ function startAutoFetch() {
     if (!apiKey) return;
 
     const now = new Date();
-    const matchesToday = db.prepare('SELECT * FROM matches WHERE kickoff_utc IS NOT NULL').all()
-      .filter(m => {
-        const kick = new Date(m.kickoff_utc);
-        const diff = (now - kick) / 1000 / 60;
-        return diff > 90 && diff < 360; // finished 1.5-6 hours ago
-      });
-
-    if (matchesToday.length === 0) return;
-
-    const unresolved = matchesToday.filter(m => {
-      return !db.prepare('SELECT 1 FROM match_results WHERE match_id = ?').get(m.id);
-    });
+    const mins = (m) => (now - new Date(m.kickoff_utc)) / 1000 / 60;
+    // Finished matches (>100 min past kickoff) still missing a result, within the
+    // Odds API's 3-day scores horizon.
+    const unresolved = db.prepare('SELECT * FROM matches WHERE kickoff_utc IS NOT NULL').all()
+      .filter(m => { const d = mins(m); return d > 100 && d < 3 * 24 * 60; })
+      .filter(m => !db.prepare('SELECT 1 FROM match_results WHERE match_id = ?').get(m.id));
 
     if (unresolved.length === 0) return;
+
+    // Hard backoff after the Odds API reports the quota is exhausted — otherwise we
+    // hammer a 401 every 5 min (this is what burned the quota in the first place).
+    const getSetting = (k) => db.prepare('SELECT value FROM settings WHERE key = ?').get(k)?.value;
+    const backoffUntil = getSetting('score_fetch_backoff_until');
+    if (backoffUntil && now < new Date(backoffUntil)) return;
+
+    // A single scores request (daysFrom=3) already covers EVERY unresolved match,
+    // so poll at most once an hour to stay inside the limited monthly quota.
+    const lastFetch = getSetting('last_score_fetch');
+    if (lastFetch && (now - new Date(lastFetch)) < 60 * 60 * 1000) return;
+    db.prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('last_score_fetch', ?)").run(now.toISOString());
 
     try {
       const result = await doFetchScores();
@@ -1538,6 +1552,12 @@ function startAutoFetch() {
       }
     } catch (e) {
       console.error('Auto-fetch scores failed:', e.message);
+      // On a quota/auth failure, stop polling for 6h instead of retrying every cycle.
+      if (/quota|OUT_OF_USAGE|\b401\b/i.test(e.message)) {
+        const until = new Date(now.getTime() + 6 * 60 * 60 * 1000).toISOString();
+        db.prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('score_fetch_backoff_until', ?)").run(until);
+        console.error('Odds API quota/auth error — backing off score fetches until ' + until);
+      }
     }
   }, 5 * 60 * 1000);
 }
@@ -1598,8 +1618,12 @@ app.get('/api/settings/:key', (req, res) => {
 app.post('/api/matches/:id/result', (req, res) => {
   if (!isAdmin(req)) return res.status(403).json({ error: 'אין הרשאה' });
   const { score_a, score_b } = req.body;
-  db.prepare('INSERT OR REPLACE INTO match_results (match_id, score_a, score_b) VALUES (?, ?, ?)').run(req.params.id, score_a, score_b);
+  const matchId = req.params.id;
+  const existed = db.prepare('SELECT 1 FROM match_results WHERE match_id = ?').get(matchId);
+  db.prepare('INSERT OR REPLACE INTO match_results (match_id, score_a, score_b) VALUES (?, ?, ?)').run(matchId, score_a, score_b);
   res.json({ ok: true });
+  // Notify players only on a first-time result, not on a correction (avoids re-spamming).
+  if (!existed) notifyResult(db, matchId).catch(e => console.error('notifyResult failed:', e.message));
 });
 
 app.post('/api/actual-results', (req, res) => {

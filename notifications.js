@@ -1,6 +1,7 @@
 const webpush = require('web-push');
 const https = require('https');
 const { handleTelegramMessage, handleTelegramCallback } = require('./telegram-bot');
+const { sendWhatsApp } = require('./whatsapp');
 
 const VAPID_PUBLIC = 'BNYhhxgzt7qDXmsp0ytjm6_sqyR62wioYxGFTHn05CLgllIedJb5TzKsrNFpm2Fxxc4EOIwO3zKPvVKgiOeucpo';
 const VAPID_PRIVATE = 'CvfuSu23-LwfnjptaJPxiYZszdjbweoeqGgcUfWt8SA';
@@ -285,7 +286,7 @@ function startNotificationScheduler(db) {
 
       // Find players who haven't predicted this match
       const unpredicted = db.prepare(`
-        SELECT p.id, p.lang, p.telegram_chat_id FROM players p
+        SELECT p.id, p.lang, p.telegram_chat_id, p.whatsapp_id FROM players p
         WHERE p.id NOT IN (
           SELECT player_id FROM predictions WHERE match_id = ?
         ) AND p.pin != 'monkey-no-login'
@@ -324,10 +325,14 @@ function startNotificationScheduler(db) {
       if (!alreadyDigest) {
         const todaysMatches = db.prepare(
           'SELECT * FROM matches WHERE kickoff_utc >= ? AND kickoff_utc < ? ORDER BY kickoff_utc'
-        ).all(todayStart.toISOString(), todayEnd.toISOString());
+        ).all(todayStart.toISOString(), todayEnd.toISOString())
+          // Only matches that haven't kicked off yet — the 08:00 digest runs at 05:00 UTC,
+          // so without this it nags about early matches that already started (predictions
+          // locked), which is exactly the "reminder arrived too late" complaint.
+          .filter(m => new Date(m.kickoff_utc) > now);
 
         if (todaysMatches.length > 0) {
-          const players = db.prepare("SELECT id, lang, telegram_chat_id FROM players WHERE pin != 'monkey-no-login'").all();
+          const players = db.prepare("SELECT id, lang, telegram_chat_id, whatsapp_id FROM players WHERE pin != 'monkey-no-login'").all();
 
           for (const player of players) {
             const unpredictedToday = todaysMatches.filter(m =>
@@ -367,7 +372,7 @@ function startNotificationScheduler(db) {
       ).get(logKey);
 
       if (!alreadySent) {
-        const players = db.prepare("SELECT id, lang, telegram_chat_id FROM players WHERE pin != 'monkey-no-login'").all();
+        const players = db.prepare("SELECT id, lang, telegram_chat_id, whatsapp_id FROM players WHERE pin != 'monkey-no-login'").all();
         for (const player of players) {
           const lang = player.lang || 'he';
           const payload = {
@@ -384,7 +389,28 @@ function startNotificationScheduler(db) {
   }
 
   async function sendToPlayer(db, player, payload) {
-    // Web push
+    // Channel routing: if the player connected a chat channel (Telegram/WhatsApp),
+    // send reminders THERE only — do not also web-push (avoids double notifying).
+    // Web push is the fallback for accounts with no connected chat channel.
+    let sentToChat = false;
+
+    if (player.telegram_chat_id) {
+      const tgText = `<b>${payload.title}</b>\n${payload.body}\n\n<a href="https://tikitaka.vip${payload.data?.url || ''}">Open TikiTaka</a>`;
+      await sendTelegram(player.telegram_chat_id, tgText);
+      sentToChat = true;
+    }
+
+    if (player.whatsapp_id) {
+      // NOTE: proactive WhatsApp outside the 24h window needs an approved template;
+      // plain text only delivers within the window. Template send to be added with WA launch.
+      const waText = `*${payload.title}*\n${payload.body}\n\nhttps://tikitaka.vip${payload.data?.url || ''}`;
+      try { await sendWhatsApp(player.whatsapp_id, waText); } catch (e) { console.error('WA notify failed:', e.message); }
+      sentToChat = true;
+    }
+
+    if (sentToChat) return; // chat channel connected -> skip web push
+
+    // Web push fallback (accounts with no connected chat channel)
     const subs = db.prepare('SELECT * FROM push_subscriptions WHERE player_id = ?').all(player.id);
     for (const sub of subs) {
       const subscription = {
@@ -395,12 +421,6 @@ function startNotificationScheduler(db) {
       if (result === 'expired') {
         db.prepare('DELETE FROM push_subscriptions WHERE endpoint = ?').run(sub.endpoint);
       }
-    }
-
-    // Telegram
-    if (player.telegram_chat_id) {
-      const tgText = `<b>${payload.title}</b>\n${payload.body}\n\n<a href="https://tikitaka.vip${payload.data?.url || ''}">Open TikiTaka</a>`;
-      await sendTelegram(player.telegram_chat_id, tgText);
     }
   }
 
@@ -418,7 +438,7 @@ async function notifyResult(db, matchId) {
   if (!match || !result) return;
 
   const predictions = db.prepare(`
-    SELECT pred.*, p.id as pid, p.lang, p.telegram_chat_id
+    SELECT pred.*, p.id as pid, p.lang, p.telegram_chat_id, p.whatsapp_id
     FROM predictions pred
     JOIN players p ON p.id = pred.player_id
     WHERE pred.match_id = ? AND p.pin != 'monkey-no-login'
@@ -443,19 +463,28 @@ async function notifyResult(db, matchId) {
       data: { url: '/?tab=scoring' }
     };
 
-    await sendToPlayer(db, { id: pred.pid, telegram_chat_id: pred.telegram_chat_id }, payload);
+    await sendToPlayer(db, { id: pred.pid, telegram_chat_id: pred.telegram_chat_id, whatsapp_id: pred.whatsapp_id }, payload);
   }
 
+  // Same channel routing as the scheduler: chat channels take priority; web push is the fallback.
   async function sendToPlayer(db, player, payload) {
+    let sentToChat = false;
+    if (player.telegram_chat_id) {
+      const tgText = `<b>${payload.title}</b>\n${payload.body}\n\n<a href="https://tikitaka.vip${payload.data?.url || ''}">Open TikiTaka</a>`;
+      await sendTelegram(player.telegram_chat_id, tgText);
+      sentToChat = true;
+    }
+    if (player.whatsapp_id) {
+      const waText = `*${payload.title}*\n${payload.body}\n\nhttps://tikitaka.vip${payload.data?.url || ''}`;
+      try { await sendWhatsApp(player.whatsapp_id, waText); } catch (e) { console.error('WA notify failed:', e.message); }
+      sentToChat = true;
+    }
+    if (sentToChat) return;
     const subs = db.prepare('SELECT * FROM push_subscriptions WHERE player_id = ?').all(player.id);
     for (const sub of subs) {
       const subscription = { endpoint: sub.endpoint, keys: { p256dh: sub.keys_p256dh, auth: sub.keys_auth } };
       const res = await sendWebPush(subscription, payload);
       if (res === 'expired') db.prepare('DELETE FROM push_subscriptions WHERE endpoint = ?').run(sub.endpoint);
-    }
-    if (player.telegram_chat_id) {
-      const tgText = `<b>${payload.title}</b>\n${payload.body}\n\n<a href="https://tikitaka.vip${payload.data?.url || ''}">Open TikiTaka</a>`;
-      await sendTelegram(player.telegram_chat_id, tgText);
     }
   }
 }
