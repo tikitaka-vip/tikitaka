@@ -1438,6 +1438,70 @@ async function doFetchOdds() {
   return { updated, total: data.length };
 }
 
+// American moneyline (e.g. "+265", "-125", or a raw number) -> decimal odds.
+function americanToDecimal(a) {
+  const n = parseInt(a, 10);
+  if (isNaN(n) || n === 0) return null;
+  return +(n > 0 ? (n / 100 + 1) : (100 / Math.abs(n) + 1)).toFixed(2);
+}
+
+// Quota-free match odds via ESPN's public scoreboard (DraftKings 3-way moneyline).
+// Primary odds source; the Odds API (doFetchOdds) is kept as a manual fallback.
+// Only refreshes upcoming (not-yet-kicked-off) matches with real teams.
+async function doFetchOddsEspn() {
+  const now = new Date();
+  const matchesList = db.prepare('SELECT * FROM matches').all();
+  const upcoming = matchesList.filter(m =>
+    m.kickoff_utc && new Date(m.kickoff_utc) > now &&
+    (new Date(m.kickoff_utc) - now) < 8 * 24 * 60 * 60 * 1000 &&
+    m.team_a !== 'TBD' && m.team_b !== 'TBD'
+  );
+  if (upcoming.length === 0) return { updated: 0, total: 0 };
+
+  const dates = new Set();
+  for (const m of upcoming) {
+    const k = new Date(m.kickoff_utc);
+    for (const off of [-1, 0, 1]) {
+      const d = new Date(k.getTime() + off * 24 * 60 * 60 * 1000);
+      dates.add(`${d.getUTCFullYear()}${String(d.getUTCMonth() + 1).padStart(2, '0')}${String(d.getUTCDate()).padStart(2, '0')}`);
+    }
+  }
+
+  const upsert = db.prepare('INSERT OR REPLACE INTO match_odds (match_id, odds_a, odds_draw, odds_b) VALUES (?, ?, ?, ?)');
+  let updated = 0, total = 0;
+  for (const ds of dates) {
+    let j;
+    try { j = await fetchJson(`https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard?dates=${ds}`); }
+    catch (e) { console.error('ESPN odds fetch failed for', ds, e.message); continue; }
+    for (const e of (j.events || [])) {
+      const c = e.competitions?.[0];
+      const o = (c?.odds || [])[0];
+      if (!o || !o.moneyline) continue;
+      const home = (c.competitors || []).find(x => x.homeAway === 'home');
+      const away = (c.competitors || []).find(x => x.homeAway === 'away');
+      if (!home || !away) continue;
+      const dbMatch = findDbMatch(matchesList, home.team.displayName, away.team.displayName);
+      if (!dbMatch) continue;
+      total++;
+
+      const ml = o.moneyline;
+      const dHome = americanToDecimal(ml.home?.close?.odds ?? ml.home?.open?.odds);
+      const dAway = americanToDecimal(ml.away?.close?.odds ?? ml.away?.open?.odds);
+      let dDraw = americanToDecimal(ml.draw?.close?.odds ?? ml.draw?.open?.odds);
+      if (dDraw == null && o.drawOdds?.moneyLine != null) dDraw = americanToDecimal(o.drawOdds.moneyLine);
+      if (dHome == null || dAway == null || dDraw == null) continue;
+
+      const homeNorm = normalizeTeamName(home.team.displayName);
+      const teamANorm = normalizeTeamName(NAME_MAP[dbMatch.team_a] || dbMatch.team_a);
+      const [oa, ob] = (teamANorm === homeNorm) ? [dHome, dAway] : [dAway, dHome];
+      upsert.run(dbMatch.id, oa, dDraw, ob);
+      updated++;
+    }
+  }
+  db.prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('last_odds_fetch', ?)").run(now.toISOString());
+  return { updated, total };
+}
+
 async function doFetchScores() {
   const apiKey = db.prepare("SELECT value FROM settings WHERE key = 'odds_api_key'").get()?.value;
   if (!apiKey) throw new Error('הגדירו ODDS_API_KEY בהגדרות');
@@ -1561,8 +1625,14 @@ async function doFetchScoresEspn() {
 
 app.post('/api/fetch-odds', async (req, res) => {
   try {
-    const result = await doFetchOdds();
-    res.json({ ok: true, ...result });
+    // Primary: free ESPN odds. Fall back to the Odds API only if ESPN updated
+    // nothing AND an Odds key is configured (quota permitting).
+    const result = await doFetchOddsEspn();
+    if (result.updated === 0 && db.prepare("SELECT value FROM settings WHERE key = 'odds_api_key'").get()?.value) {
+      try { const odds = await doFetchOdds(); return res.json({ ok: true, source: 'odds-fallback', ...odds }); }
+      catch (e) { /* quota/auth error — return ESPN's (empty) result below */ }
+    }
+    res.json({ ok: true, source: 'espn', ...result });
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
@@ -1610,32 +1680,26 @@ function startAutoFetch() {
 
 startAutoFetch();
 
-// Auto-fetch odds daily (B-7). Scores are fetched every 5 min above; odds
-// change far more slowly, so a daily refresh keeps multipliers current without
-// burning the limited Odds API quota. Also runs once shortly after boot if the
-// last fetch is stale (>20h), so a restart doesn't leave odds outdated.
+// Auto-fetch odds hourly via the free ESPN source. Odds drift as kickoff nears,
+// and ESPN has no quota, so an hourly refresh keeps multipliers current. Also runs
+// once shortly after boot so a restart doesn't leave odds stale.
 let oddsAutoFetchInterval = null;
 
 function startOddsAutoFetch() {
   if (oddsAutoFetchInterval) return;
-  const DAY = 24 * 60 * 60 * 1000;
+  const HOUR = 60 * 60 * 1000;
 
-  const runIfDue = async (force) => {
-    const apiKey = db.prepare("SELECT value FROM settings WHERE key = 'odds_api_key'").get()?.value;
-    if (!apiKey) return;
-    const last = db.prepare("SELECT value FROM settings WHERE key = 'last_odds_fetch'").get()?.value;
-    const stale = !last || (Date.now() - new Date(last).getTime()) > 20 * 60 * 60 * 1000;
-    if (!force && !stale) return;
+  const run = async () => {
     try {
-      const r = await doFetchOdds();
-      console.log(`Auto-fetch odds: updated ${r.updated}/${r.total} matches`);
+      const r = await doFetchOddsEspn();
+      if (r.updated > 0) console.log(`Auto-fetch odds (ESPN): updated ${r.updated}/${r.total} matches`);
     } catch (e) {
       console.error('Auto-fetch odds failed:', e.message);
     }
   };
 
-  setTimeout(() => runIfDue(false), 60 * 1000);   // post-boot catch-up if stale
-  oddsAutoFetchInterval = setInterval(() => runIfDue(true), DAY);  // daily
+  setTimeout(run, 45 * 1000);                 // post-boot refresh
+  oddsAutoFetchInterval = setInterval(run, HOUR);  // hourly
 }
 
 startOddsAutoFetch();
