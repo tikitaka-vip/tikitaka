@@ -1415,27 +1415,35 @@ async function doFetchOdds() {
       }
     }
   }
-  // Also fetch outright winner odds
-  try {
-    const winnerUrl = `https://api.the-odds-api.com/v4/sports/soccer_fifa_world_cup_winner/odds?apiKey=${encodeURIComponent(apiKey)}&regions=eu&markets=outrights&oddsFormat=decimal`;
-    const winnerData = await fetchJson(winnerUrl);
-    if (Array.isArray(winnerData) && winnerData.length > 0 && winnerData[0].bookmakers?.length) {
-      const outcomes = winnerData[0].bookmakers[0].markets?.[0]?.outcomes || [];
-      const upsertOutright = db.prepare('INSERT OR REPLACE INTO outright_odds (team_name, odds_winner) VALUES (?, ?)');
-      for (const o of outcomes) {
-        const hebrewName = REVERSE_NAME_MAP[normalizeTeamName(o.name)];
-        if (hebrewName) {
-          upsertOutright.run(hebrewName, o.price);
-        }
-      }
-      console.log(`Outright odds: updated ${outcomes.length} teams`);
-    }
-  } catch (e) {
-    console.error('Outright odds fetch failed:', e.message);
-  }
+  // Also refresh outright winner odds (shares the same Odds API).
+  try { await doFetchOutrightOdds(); } catch (e) { console.error('Outright odds fetch failed:', e.message); }
 
   db.prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('last_odds_fetch', ?)").run(new Date().toISOString());
   return { updated, total: data.length };
+}
+
+// Tournament outright-winner (champion) odds. ESPN has no futures market, so this
+// is the one thing still on the Odds API — but it's a single request run at most
+// daily, and since scores + match odds now use ESPN, it's the SOLE consumer of the
+// free Odds API quota (~30 of 500 calls/month). Resumes automatically at the
+// monthly quota reset; quota/auth errors are logged and skipped, not retried hard.
+async function doFetchOutrightOdds() {
+  const apiKey = db.prepare("SELECT value FROM settings WHERE key = 'odds_api_key'").get()?.value;
+  if (!apiKey) return { updated: 0 };
+  const url = `https://api.the-odds-api.com/v4/sports/soccer_fifa_world_cup_winner/odds?apiKey=${encodeURIComponent(apiKey)}&regions=eu&markets=outrights&oddsFormat=decimal`;
+  const data = await fetchJson(url);
+  let updated = 0;
+  if (Array.isArray(data) && data.length > 0 && data[0].bookmakers?.length) {
+    const outcomes = data[0].bookmakers[0].markets?.[0]?.outcomes || [];
+    const upsertOutright = db.prepare('INSERT OR REPLACE INTO outright_odds (team_name, odds_winner) VALUES (?, ?)');
+    for (const o of outcomes) {
+      const hebrewName = REVERSE_NAME_MAP[normalizeTeamName(o.name)];
+      if (hebrewName) { upsertOutright.run(hebrewName, o.price); updated++; }
+    }
+    console.log(`Outright odds: updated ${updated} teams`);
+  }
+  db.prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('last_outright_fetch', ?)").run(new Date().toISOString());
+  return { updated };
 }
 
 // American moneyline (e.g. "+265", "-125", or a raw number) -> decimal odds.
@@ -1703,6 +1711,31 @@ function startOddsAutoFetch() {
 }
 
 startOddsAutoFetch();
+
+// Outright (champion) odds — once daily via the now-idle Odds API. Runs shortly
+// after boot if stale (>20h) and every 24h thereafter.
+let outrightAutoFetchInterval = null;
+
+function startOutrightAutoFetch() {
+  if (outrightAutoFetchInterval) return;
+  const DAY = 24 * 60 * 60 * 1000;
+
+  const run = async () => {
+    const last = db.prepare("SELECT value FROM settings WHERE key = 'last_outright_fetch'").get()?.value;
+    if (last && (Date.now() - new Date(last).getTime()) < 20 * 60 * 60 * 1000) return;
+    try {
+      const r = await doFetchOutrightOdds();
+      if (r.updated > 0) console.log(`Auto-fetch outright (Odds API): updated ${r.updated} teams`);
+    } catch (e) {
+      console.error('Auto-fetch outright failed:', e.message); // e.g. quota exhausted — retries next day
+    }
+  };
+
+  setTimeout(run, 90 * 1000);                 // post-boot catch-up if stale
+  outrightAutoFetchInterval = setInterval(run, DAY);  // daily
+}
+
+startOutrightAutoFetch();
 
 const ADMIN_EMAIL = 'evyatar.kaplan@gmail.com';
 
