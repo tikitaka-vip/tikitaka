@@ -14,6 +14,10 @@ const T = {
   he: {
     title: 'ניחושי מונדיאל 2026',
     subtitle: 'ארה״ב / קנדה / מקסיקו · 11 ביוני – 19 ביולי',
+    today_games: '⚽ משחקי היום',
+    no_games_today: 'אין משחקים מתוכננים להיום',
+    show_past_games: 'הצג משחקים קודמים',
+    hide_past_games: 'הסתר משחקים קודמים',
     tab_predict: 'ניחושים',
     tab_groups: 'הקבוצות שלי',
     tab_admin: 'ניהול',
@@ -166,6 +170,10 @@ const T = {
   en: {
     title: 'World Cup 2026 Predictions',
     subtitle: 'USA / Canada / Mexico · June 11 – July 19',
+    today_games: "⚽ Today's Games",
+    no_games_today: 'No games scheduled for today',
+    show_past_games: 'Show past games',
+    hide_past_games: 'Hide past games',
     tab_predict: 'Predict',
     tab_groups: 'My Groups',
     tab_admin: 'Admin',
