@@ -57,8 +57,8 @@ const NOTIFY_STRINGS = {
   he: {
     unpredicted_title: '⚽ יש משחקים שלא ניחשת!',
     unpredicted_body: '{count} משחקים היום בלי ניחוש. הראשון: {match} ב-{time}',
-    pre_match_title: '⏰ עוד שעתיים!',
-    pre_match_body: '{teamA} נגד {teamB} מתחיל עוד שעתיים. נעלו ניחוש!',
+    pre_match_title: '⏰ תזכורת ניחוש!',
+    pre_match_body: '{teamA} נגד {teamB} מתחיל {when}. נעלו ניחוש!',
     result_title: '📊 התוצאה נכנסה!',
     result_body: '{teamA} {scoreA}-{scoreB} {teamB}. קיבלת {pts} נקודות!',
     tournament_lock_title: '🏆 ניחושי טורניר ננעלים!',
@@ -73,8 +73,8 @@ const NOTIFY_STRINGS = {
   en: {
     unpredicted_title: '⚽ Unpredicted matches today!',
     unpredicted_body: "{count} matches today without predictions. First: {match} at {time}",
-    pre_match_title: '⏰ 2 hours to kickoff!',
-    pre_match_body: "{teamA} vs {teamB} starts in 2 hours. Lock in your prediction!",
+    pre_match_title: '⏰ Prediction reminder!',
+    pre_match_body: "{teamA} vs {teamB} starts {when}. Lock in your prediction!",
     result_title: '📊 Result is in!',
     result_body: '{teamA} {scoreA}-{scoreB} {teamB}. You scored {pts} points!',
     tournament_lock_title: '🏆 Tournament predictions locking!',
@@ -90,6 +90,17 @@ const NOTIFY_STRINGS = {
 
 function ns(lang, key) {
   return NOTIFY_STRINGS[lang]?.[key] || NOTIFY_STRINGS.en[key];
+}
+
+// Human phrase for "time until kickoff" so the reminder reflects the REAL gap,
+// not a hardcoded "2 hours" (which is wrong after a restart/late check).
+function formatLeadTime(mins, lang) {
+  const he = lang === 'he';
+  if (mins >= 105) return he ? 'עוד שעתיים' : 'in 2 hours';
+  if (mins >= 50) return he ? 'עוד כשעה' : 'in about an hour';
+  if (mins >= 20) { const r = Math.round(mins / 5) * 5; return he ? `עוד כ-${r} דקות` : `in ~${r} min`; }
+  if (mins >= 2) return he ? `עוד ${mins} דקות` : `in ${mins} min`;
+  return he ? 'עכשיו' : 'now';
 }
 
 function getPlayerInviteCode(db, playerId) {
@@ -284,6 +295,8 @@ function startNotificationScheduler(db) {
       ).get(match.id);
       if (alreadyNotified) continue;
 
+      const minsToKickoff = Math.round((new Date(match.kickoff_utc) - now) / 60000);
+
       // Find players who haven't predicted this match
       const unpredicted = db.prepare(`
         SELECT p.id, p.lang, p.telegram_chat_id, p.whatsapp_id FROM players p
@@ -298,7 +311,8 @@ function startNotificationScheduler(db) {
           title: ns(lang, 'pre_match_title'),
           body: ns(lang, 'pre_match_body')
             .replace('{teamA}', match.team_a)
-            .replace('{teamB}', match.team_b),
+            .replace('{teamB}', match.team_b)
+            .replace('{when}', formatLeadTime(minsToKickoff, lang)),
           icon: '/icon-192.png',
           data: { url: '/?tab=predict' }
         };
