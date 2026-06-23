@@ -1140,6 +1140,7 @@ tr:hover td { background: rgba(95,189,68,0.04); }
           <div class="monkey-last5-title">5 משחקים אחרונים</div>
           <div class="monkey-last5" id="monkeyLast5"></div>
         </div>
+        <button class="widget-footer-btn" id="monkeyShareBtn" style="display:none;margin-top:12px" onclick="shareCard()">&#128226; <span id="monkeyShareLabel">שתפו את הכרטיס שלי</span></button>
       </div>
     </div>
 
@@ -1614,6 +1615,14 @@ async function loadMonkeyWidget() {
         const cls = (myPred.score_a === res.score_a && myPred.score_b === res.score_b) ? 'W' : myOut === rOut ? 'D' : 'L';
         return `<span class="result-dot ${cls}">${cls}</span>`;
       }).join('');
+    }
+    const shareBtn = document.getElementById('monkeyShareBtn');
+    const shareLbl = document.getElementById('monkeyShareLabel');
+    if (shareBtn && shareLbl) {
+      shareLbl.textContent = (userWins > monkeyWins && t('share_beating_monkey') !== 'share_beating_monkey')
+        ? t('share_beating_monkey')
+        : (t('nudge_share_card') || 'שתפו את הכרטיס שלי');
+      shareBtn.style.display = 'block';
     }
   } catch(e) {}
 }
