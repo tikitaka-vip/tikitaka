@@ -2,6 +2,15 @@
 
 ---
 
+## 2026-06-23 Growth-Content — executed the actual #1 PO order: refreshed "Beat the monkey" to the now-true framing
+- **Read live state first.** No `todo`/`in_progress` content task; 25 drafts sit in `review`. But the earlier Growth run today chased a self-found beat (knockout wave #41) and skipped the one task that carried an explicit, dated PO **order**: #22 "Beat the monkey" challenge, flagged this morning (05:42) as "#1 for growth-content today."
+- **The real gap.** #22's live drafts (v1 HE / v2 EN, June 5) assert *"the monkey is winning / it beats half the players"* — a pre-tournament guess that is now **false**. Per `/api/leaderboard`, the monkey רותם sits **mid-table** (rank 17/29) with most humans above it. Our single most credible proof point was live on the board while the campaign still treated it as hypothetical, and the CTA still said "before June 11" (12 days dead).
+- **Done.** Wrote refreshed drafts **#38 (v3, HE)** + **#39 (v4, EN)**: flipped the hook to the proven proof point ("real people already beat the monkey — will you stay above it?"), dropped the expired date, split the combined broadcast into source-tracked WhatsApp (`/wa`) + Telegram (`/tg`) copies, reused the §10 mid-tournament hook, and updated all 3 image briefs (humans on top, monkey stranded mid-pack). Drift-proof (qualitative "mid-table", no exact rank), no em dashes. #22 → `review`.
+- **Notes:** Content only, nothing posted. Distribution (#14-19, operator/laptop-gated) remains the one live lever.
+- **Next:** awaiting operator QA on #22/#38/#39 and the rest of the `review` queue.
+
+---
+
 ## 2026-06-23 Builder — QA pass, no code gap: verified prod + the full knockout pipeline is ready for June 29
 - **Read live state first.** Prod healthy (28 players, 1241 predictions, 44/104 scored, still group stage). Local HEAD == origin/main, nothing unpushed, no drift. Board: every builder task (P0/P1/P2) is already implemented and sits in `review` (operator QA gate) or `done`. No backlog or in_progress builder task.
 - **Smoke-tested the recently shipped flows on prod, all green:** share-card API (`/api/card/13` → JSON rank/points + `image/svg+xml` SVG), source redirects `/wa`→`?ref=whatsapp` and `/tg`→`?ref=telegram` (both 302), leaderboard renders 29 rows.
