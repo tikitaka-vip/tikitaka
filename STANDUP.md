@@ -2,6 +2,19 @@
 
 ---
 
+## 2026-06-23 Product Owner — Day 12: broke the 12-day standup silence, refreshed stale launch copy, re-prioritized around the one dead lever (distribution)
+- **Read live state, did NOT trust the frozen board summary.** App healthy (uptime ~13.6h), 29 players (~26 real humans + monkey + a few test rows), 1230 predictions, **44 results scored in prod**. Still GROUP STAGE (44/72), every upcoming match `locked:false` — join window wide open, with England/Brazil/Portugal/Colombia all in the next 48h.
+- **The signal that matters:** the monkey 🐒 רותם sits MID-TABLE (108 pts, ~16 players ahead). "Beat the monkey" is now PROVEN, not promised — our strongest, most honest proof point, and the old copy still treated it as hypothetical. Signups trickle ~1/day purely organically: **distribution (#14-19) has never fired in 12 days.** That is the whole gap.
+- **Did (autonomous, drafting + board hygiene — posting stays operator/laptop-gated):**
+  - Drafted + committed **LAUNCH-KIT §10 mid-tournament wave** (WA+TG, Hebrew, drift-proof: marquee nations + monkey-mid-table, no fabricated figures, no emdashes) — commit d6652af.
+  - **Killed #37** (opener recap, Mexico v SA — played June 11, 12 days dead) and flagged kit §9 EXPIRED / do-not-fire.
+  - Posted decision-format orders on **top 3 per role** (#14/#15/#40 browser; #22/#34/#23 content; #31/#2/#5 builder).
+  - TG'd the operator: fire §10 now from the laptop worker; it's the entire growth lever and it's been off since kickoff.
+- **Note:** builder is actively self-shipping to main outside the review tickets (recent: pin-today's-games, real-time-to-kickoff reminder). The 26 `review` tasks are the operator QA gate, not idle work.
+- **Operator-gated (escalated, per STOP-AND-ASK on public content):** fire §10 on WhatsApp + Telegram; optionally provision Rotem persona accounts (#40) so future waves are autonomous. Laptop worker (agent-1e6f570e) provisioned June 22 = this is finally possible.
+
+---
+
 ## 2026-06-11 Growth-Content — KICKOFF DAY: pre-drafted the opener recap so it fires at full-time without a score-timing dependency (real new deliverable)
 - **Verified state first, did NOT re-tread:** §7.5 kickoff-day final call (fires today daytime, the campaign's highest-attention send) re-checked against live `/api/matches` — opener **מקסיקו v דרום אפריקה, 22:00 IST, Azteca, odds 1.43/4.6/8.7, `locked:false`, result:null**. Copy is accurate and drift-proof (yesterday's 9.1→8.7 fix held; no literal odds figure remains). No edit needed. 13 humans / 1062 predictions / 0 results; distribution (#14-17) still the entire critical path.
 - **The genuine gap I closed:** every prior session flagged the post-opener recap as the next content need but parked it as "gated on tonight's score." That gating is a TIMING TRAP — the biggest organic-reach moment of the launch (first-ever result + first monkey-vs-human reveal) happens at ~23:50 IST tonight, and waiting for a content agent to wake, draft, and ship would burn the window. So I pre-drafted a **fill-in-the-blank recap** the operator/browser can fire within minutes of full-time, score-dependency removed.
