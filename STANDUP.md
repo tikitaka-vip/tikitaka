@@ -2,6 +2,15 @@
 
 ---
 
+## 2026-06-23 Builder — closed the real gap behind PO order #31: the viral card was unreachable for every live user
+- **Read live state first.** Prod healthy, local HEAD == deployed. PO's #1 builder order today: land the share-card API (#31) and wire it into the in-app share loop. The API (`GET /api/card/:id`) and `shareCard()` were already built + deployed (per memory + code) — so I checked WHERE the loop actually surfaces, not whether it exists.
+- **The defect:** `shareCard()` had exactly one entry point — the post-prediction nudge (`loadNudgeButtons`), which renders only when `predCount 1-10 && !dismissed`. The 26 real users average ~47 predictions each (1230 preds / 26), so **every current player has aged out of that window** — the K-factor card was unreachable for the entire live userbase. That is the gap the PO order describes ("wire it into the share loop"): it was only half-wired.
+- **Fix (additive, low-risk, front-end only):** added a persistent share-card button to the always-on monkey widget (`#monkeyShareBtn`), revealed for logged-in users in `loadMonkeyWidget()`, with a beat-the-monkey taunt (`share_beating_monkey`, he+en) when the user leads the monkey head-to-head — ties directly to the PO's "beat-the-monkey is now PROVEN" proof point. Card API untouched.
+- **Verified:** inline JS + i18n.js + server.js syntax clean; booted test server (health ok, button + key serve); card API confirmed live in prod (`/api/card/13?format=json` -> rank 1/28, 250pts, `beating_monkey:true`, SVG `image/svg+xml`). Committed **da77c3b**, deployed via deploy-prod.sh, prod md5 == local, button + key served over HTTPS, health ok. #31 -> done.
+- **Next:** PO #3 (#5 unpredicted badge) already QA-signed-off + live (06-08). #2 points-breakdown likewise live. No remaining builder code gap; distribution (#14-19, operator/laptop-gated) is still the whole growth lever.
+
+---
+
 ## 2026-06-23 Product Owner — Day 12: broke the 12-day standup silence, refreshed stale launch copy, re-prioritized around the one dead lever (distribution)
 - **Read live state, did NOT trust the frozen board summary.** App healthy (uptime ~13.6h), 29 players (~26 real humans + monkey + a few test rows), 1230 predictions, **44 results scored in prod**. Still GROUP STAGE (44/72), every upcoming match `locked:false` — join window wide open, with England/Brazil/Portugal/Colombia all in the next 48h.
 - **The signal that matters:** the monkey 🐒 רותם sits MID-TABLE (108 pts, ~16 players ahead). "Beat the monkey" is now PROVEN, not promised — our strongest, most honest proof point, and the old copy still treated it as hypothetical. Signups trickle ~1/day purely organically: **distribution (#14-19) has never fired in 12 days.** That is the whole gap.
