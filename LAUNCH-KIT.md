@@ -338,6 +338,46 @@ qualitative monkey-standing that does not depend on an exact figure. Warm owned 
 
 ---
 
+## 11. Knockout wave - win or go home  (group stage ends ~June 27, knockouts from June 29)
+Fire this when the group stage wraps and the first knockout round opens (the app calls it
+שמינית גמר: 32 teams, 16 single-elimination games, first match June 29). Use it INSTEAD of
+the section-10 mid-tournament wave from that point on. It is timelier because it leans on
+the one thing that is only true now: it is single-elimination, so every prediction is
+decisive and there are no more "the draw doesn't matter" games. Second hook stays drift-proof:
+the monkey (רותם) is mid-table and most players are already above it, so the framing shifts
+from "beat the monkey" to "hold your lead to the final." Late joiners still climb because each
+match stands alone. Warm owned channels (WhatsApp + Telegram). Same source-tracked links.
+
+### WhatsApp knockout (task #14)
+```
+🏆 שלב הבתים נגמר - מכאן הכל נוקאאוט. כל משחק: או מנצחים, או הביתה.
+
+ב-29.6 נפתחת שמינית הגמר - 32 נבחרות, הפסד אחד וגמרת. אין יותר "תיקו זה בסדר": כל ניחוש מכריע, וניחוש מפתיע (אנדרדוג שמפיל פייבוריט) שווה הכי הרבה נקודות בזכות מכפיל היחסים.
+
+ורותם הקוף? הוא תקוע באמצע הטבלה, ורוב השחקנים שלנו מזמן מעליו. עכשיו השאלה אם תחזיקו את ההובלה עד הגמר.
+
+עוד לא בפנים? כל משחק עומד בפני עצמו, אז מי שנכנס עכשיו צובר כבר מהמשחק הבא:
+👉 https://tikitaka.vip/wa
+
+חינם, בעברית, 30 שניות. הניחוש לכל משחק ננעל עם השריקה שלו 🐒
+```
+
+### Telegram knockout (task #15)
+```
+🏆 שלב הבתים נגמר, והמונדיאל נכנס לחלק הכי דרמטי: נוקאאוט.
+
+מ-29.6 נפתחת שמינית הגמר - 32 נבחרות, משחקי הכרעה שבהם הפסד אחד שולח הביתה. אין יותר תיקואים נוחים: כל ניחוש מכריע, וניחוש מפתיע שמפיל פייבוריט שווה ערימת נקודות בזכות מכפיל היחסים.
+
+רותם הקוף בוחר מנצחים לפי מצלמות חיות בגן חיות, וכבר שבועיים שרוב השחקנים מקדימים אותו. בנוקאאוט ההפרשים נסגרים מהר - גם מי שמצטרף עכשיו יכול לטפס מהר, וגם מי שמוביל צריך להגן על המקום.
+
+מנחשים את המשחק הבא, תופסים מקום:
+👉 https://tikitaka.vip/tg
+
+חינם, בעברית, 30 שניות. הניחוש לכל משחק ננעל עם השריקה שלו.
+```
+
+---
+
 ## After posting
 - Check signups climbing: open https://tikitaka.vip leaderboard, or ask the agent
   to report player count.
@@ -349,6 +389,9 @@ qualitative monkey-standing that does not depend on an exact figure. Warm owned 
   section-7.5 final call all go stale once the opener kicks off.
 - Right after full-time tonight (~23:50 Israel), fire the section-9 opener recap while the
   result is fresh - fill the score, pick the matching bracket line, send. Highest organic
-  moment of the launch (first result + monkey-vs-human reveal).
+  moment of the launch (first result + monkey-vs-human reveal). [Now expired - opener was June 11.]
+- Mid-tournament (back half of the group stage): use the section-10 wave on warm channels.
+- When the group stage ends (~June 27) and the knockouts open (June 29), switch to the
+  section-11 knockout wave - it replaces section 10 for the rest of the tournament.
 - Approval gate: every block above was drafted by the content agent and is paste-ready.
   Nothing here was posted by an agent - all of it is yours to send.

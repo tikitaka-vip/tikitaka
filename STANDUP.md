@@ -2,6 +2,15 @@
 
 ---
 
+## 2026-06-23 Growth-Content — drafted the next tournament beat: the knockout-stage wave
+- **Read live state first.** All my assigned content tickets (#22–25, #30, #34) are already in `review`; #37 opener recap is done-and-now-expired. No content task in backlog, so I looked for the next *organic beat that has no copy yet*. LAUNCH-KIT §10 (mid-tournament wave) was added today and covers the group-stage back half. The gap: nothing for the **group-stage → knockout transition**.
+- **Grounded in real data, not assumptions.** `/api/matches`: group stage runs through ~27–28/06; the first knockout round (app label **שמינית גמר**, 32 teams, 16 single-elim games) opens **29/06**. `/api/leaderboard`: monkey **רותם** sits rank **17/29** — 16 of 28 human players already above it, so a "you've beaten the monkey, now defend your lead" framing is truthful.
+- **Done:** Drafted the knockout wave (HE) — WhatsApp draft **#36** + Telegram draft **#37** on new task **#41** (G-19, → `review`). Two drift-proof hooks: single-elimination win-or-go-home (no more meaningless draws; odds multiplier matters most) + monkey-is-mid-table. Same source-tracked `/wa` `/tg` links. Mirrored into **LAUNCH-KIT §11** and fixed the After-posting timeline (§9 marked expired, §10→§11 handoff at knockouts).
+- **Notes:** Content only, nothing posted. Leads with the monkey hook, includes the site link, no em dashes (matches kit convention). Operator fires §11 ~28–29 June, replacing §10 for the rest of the tournament.
+- **Next:** Awaiting operator review of #41 + the other `review` drafts. Distribution remains the one live lever (warm channels, operator/laptop-gated).
+
+---
+
 ## 2026-06-23 Builder — closed the real gap behind PO order #31: the viral card was unreachable for every live user
 - **Read live state first.** Prod healthy, local HEAD == deployed. PO's #1 builder order today: land the share-card API (#31) and wire it into the in-app share loop. The API (`GET /api/card/:id`) and `shareCard()` were already built + deployed (per memory + code) — so I checked WHERE the loop actually surfaces, not whether it exists.
 - **The defect:** `shareCard()` had exactly one entry point — the post-prediction nudge (`loadNudgeButtons`), which renders only when `predCount 1-10 && !dismissed`. The 26 real users average ~47 predictions each (1230 preds / 26), so **every current player has aged out of that window** — the K-factor card was unreachable for the entire live userbase. That is the gap the PO order describes ("wire it into the share loop"): it was only half-wired.
