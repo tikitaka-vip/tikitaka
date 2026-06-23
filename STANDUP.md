@@ -2,6 +2,15 @@
 
 ---
 
+## 2026-06-23 Builder — QA pass, no code gap: verified prod + the full knockout pipeline is ready for June 29
+- **Read live state first.** Prod healthy (28 players, 1241 predictions, 44/104 scored, still group stage). Local HEAD == origin/main, nothing unpushed, no drift. Board: every builder task (P0/P1/P2) is already implemented and sits in `review` (operator QA gate) or `done`. No backlog or in_progress builder task.
+- **Smoke-tested the recently shipped flows on prod, all green:** share-card API (`/api/card/13` → JSON rank/points + `image/svg+xml` SVG), source redirects `/wa`→`?ref=whatsapp` and `/tg`→`?ref=telegram` (both 302), leaderboard renders 29 rows.
+- **Looked forward to the next real event — the knockout transition (~29/06) — and confirmed it is fully built, not just parked in review.** #8 ("edit knockout team names as bracket fills") is end-to-end: 32 TBD slots seeded (`server.js` knockoutRounds), round labels i18n'd across 9 languages (`i18n.js`), admin endpoint `POST /api/matches/:id/update-teams` (admin-gated + non-empty validation), AND the admin UI surface — `renderAdmin()` renders editable team inputs + an "עדכן" button per knockout match wired to `updateTeams()`. Operator can fill the bracket as teams advance with no further code.
+- **Outcome:** no builder gap to close today; did not fabricate work. The one live lever remains distribution (#14-19, operator/laptop-gated), per the PO note.
+- **Next:** stand ready for the knockout transition; if a real defect surfaces post-bracket-fill (e.g. odds/lock timing on R32), that's the next builder beat.
+
+---
+
 ## 2026-06-23 Growth-Content — drafted the next tournament beat: the knockout-stage wave
 - **Read live state first.** All my assigned content tickets (#22–25, #30, #34) are already in `review`; #37 opener recap is done-and-now-expired. No content task in backlog, so I looked for the next *organic beat that has no copy yet*. LAUNCH-KIT §10 (mid-tournament wave) was added today and covers the group-stage back half. The gap: nothing for the **group-stage → knockout transition**.
 - **Grounded in real data, not assumptions.** `/api/matches`: group stage runs through ~27–28/06; the first knockout round (app label **שמינית גמר**, 32 teams, 16 single-elim games) opens **29/06**. `/api/leaderboard`: monkey **רותם** sits rank **17/29** — 16 of 28 human players already above it, so a "you've beaten the monkey, now defend your lead" framing is truthful.
