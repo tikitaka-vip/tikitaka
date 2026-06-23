@@ -249,7 +249,11 @@ swap nothing. Warm owned channels only (WhatsApp + Telegram). Drafts #29 (WA) / 
 
 ---
 
-## 9. Opener recap - fire right after full-time tonight  (June 11, ~23:50 Israel)  (task #37)
+## 9. Opener recap - EXPIRED, DO NOT FIRE  (was June 11; task #37 closed)
+> This section is kept for reference only. The opener (Mexico v South Africa) was played
+> on June 11. Firing this now would reference a match from weeks ago and read as stale.
+> Use section 10 (mid-tournament wave) or section 8 (evergreen) instead.
+
 The single biggest ORGANIC moment of the launch: the first-ever result lands and the
 monkey-vs-human reveal goes live. Fire this within MINUTES of the final whistle (the
 22:00 opener ends ~23:50 Israel), while everyone is still on their phones reacting to
@@ -291,6 +295,46 @@ favorite) - so the hook lands no matter how it ends. Drafts #34 (WA) / #35 (TG).
 - **a draw, other score (0-0 / 2-2...):** הקוף ידע שזה תיקו. מי עוד הימר על תיקו?
 - **Mexico won:** מי שהאמין למקסיקו ניצח את הקוף. הימרתם עליו?
 - **South Africa won (אאוטסיידר ענק):** הפתעה! דרום אפריקה הפילה את הפייבוריט, הקוף פספס, וכמעט כולם איתו - מי שצדק קפץ ישר לראש.
+
+---
+
+## 10. Mid-tournament wave - the big nations are on now  (group stage, late June onward)
+Fire this any day in the back half of the group stage / into the knockouts. It is timelier
+than the section-8 evergreen because it leans on two things that are only true NOW: the
+marquee nations are entering the schedule (England, Brazil, Portugal, Colombia and more
+all play in the coming days), and the monkey has been picking for two weeks and sits
+mid-table - so "beat the monkey" is no longer a promise, it is something most players have
+already done. Both hooks are drift-proof: real national teams that keep recurring, and a
+qualitative monkey-standing that does not depend on an exact figure. Warm owned channels
+(WhatsApp + Telegram). Same source-tracked links as every other wave.
+
+### WhatsApp mid-tournament (task #14)
+```
+⚽ עכשיו מגיע החלק הטוב - הנבחרות הגדולות רק נכנסות לעניינים.
+
+בימים הקרובים משחקים אנגליה, ברזיל, פורטוגל, קולומביה ועוד, וכל אחד מהם זה ניחוש חדש ונקודות חדשות. ועוד לא מאוחר בכלל: בטיקי-טאקה כל משחק עומד בפני עצמו, אז מי שנכנס עכשיו מתחיל לצבור כבר מהמשחק הבא.
+
+ויש לכם יריב קבוע - הקוף. רותם בוחר מנצחים לפי מצלמות חיות בגן חיות, וכבר שבועיים שרוב השחקנים מקדימים אותו על הלוח. השאלה אם גם אתם.
+
+נכנסים, מנחשים את המשחק הבא, פותחים ליגה פרטית עם החברים:
+👉 https://tikitaka.vip/wa
+
+חינם, בעברית, 30 שניות. הניחוש לכל משחק ננעל עם השריקה שלו 🐒
+```
+
+### Telegram mid-tournament (task #15)
+```
+⚽ המונדיאל נכנס לשיא - והנבחרות הגדולות רק עכשיו עולות הילוך.
+
+אנגליה, ברזיל, פורטוגל, קולומביה ועוד בדרך בימים הקרובים, וכל משחק זה ניחוש נקי ונקודות חדשות. בטיקי-טאקה כל משחק עומד בפני עצמו, אז גם מי שמצטרף באמצע הטורניר מתחיל לטפס מיד, וניחוש מפתיע שווה יותר נקודות.
+
+ויש כאן גם קוף. רותם מנחש לפי מצלמות חיות בגן חיות, וכבר שבועיים שרוב השחקנים מעליו בטבלה. תראו אם תצליחו גם אתם.
+
+מנחשים את המשחק הבא, תופסים מקום:
+👉 https://tikitaka.vip/tg
+
+חינם, בעברית, 30 שניות. הניחוש לכל משחק ננעל עם השריקה שלו.
+```
 
 ---
 
