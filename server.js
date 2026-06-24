@@ -259,6 +259,35 @@ db.exec(`
   );
 `);
 
+// Rough team strength (lower = stronger) used to seed sensible default odds
+// before real odds land from the daily fetch. Shared by the seed loop and the
+// knockout team-fill endpoint so every match has odds the moment teams are known.
+const TEAM_STRENGTH = {
+  'ברזיל':1.4,'ארגנטינה':1.4,'צרפת':1.45,'אנגליה':1.5,'ספרד':1.5,
+  'גרמניה':1.55,'הולנד':1.6,'פורטוגל':1.55,'בלגיה':1.7,'קרואטיה':1.8,
+  'אורוגוואי':1.8,'קולומביה':1.85,'ארצות הברית':1.9,'מקסיקו':2.0,
+  'יפן':2.0,'דרום קוריאה':2.2,'מרוקו':1.7,'סנגל':2.2,'טורקיה':2.1,
+  'שוויץ':2.0,'אקוודור':2.3,'חוף השנהב':2.2,'מצרים':2.5,
+  'קנדה':2.3,'אוסטרליה':2.5,'נורבגיה':2.3,'שוודיה':2.2,
+  'אוסטריה':2.2,'איראן':2.8,'ערב הסעודית':2.8,'קטאר':3.0,
+  'צ\'כיה':2.3,'בוסניה והרצגובינה':2.5,'אלג\'יריה':2.6,
+  'ירדן':3.2,'עיראק':3.0,'פרגוואי':2.6,'גאנה':2.8,
+  'פנמה':3.5,'דרום אפריקה':2.8,'סקוטלנד':2.5,
+  'תוניסיה':2.8,'כף ורדה':4.5,'האיטי':6.0,'קוראסאו':7.0,
+  'ניו זילנד':4.0,'קונגו':3.5,'אוזבקיסטן':3.2,
+};
+
+function computeDefaultOdds(teamA, teamB) {
+  const sa = TEAM_STRENGTH[teamA] || 2.5;
+  const sb = TEAM_STRENGTH[teamB] || 2.5;
+  const ratio = sb / sa;
+  let oa, od, ob;
+  if (ratio > 1.3) { oa = 1.5 + Math.random()*0.4; od = 3.2 + Math.random()*0.5; ob = 3.5 + Math.random()*2; }
+  else if (ratio > 0.77) { oa = 2.2 + Math.random()*0.6; od = 3.0 + Math.random()*0.4; ob = 2.2 + Math.random()*0.6; }
+  else { oa = 3.5 + Math.random()*2; od = 3.2 + Math.random()*0.5; ob = 1.5 + Math.random()*0.4; }
+  return { odds_a: +oa.toFixed(2), odds_draw: +od.toFixed(2), odds_b: +ob.toFixed(2) };
+}
+
 // --- Seed matches ---
 const count = db.prepare('SELECT COUNT(*) as c FROM matches').get().c;
 if (count === 0) {
@@ -370,30 +399,9 @@ if (count === 0) {
   const allMatches = db.prepare('SELECT * FROM matches WHERE stage = ?').all('בתים');
 
   // Rough seed odds based on FIFA rankings — favorites get lower odds
-  const teamStrength = {
-    'ברזיל':1.4,'ארגנטינה':1.4,'צרפת':1.45,'אנגליה':1.5,'ספרד':1.5,
-    'גרמניה':1.55,'הולנד':1.6,'פורטוגל':1.55,'בלגיה':1.7,'קרואטיה':1.8,
-    'אורוגוואי':1.8,'קולומביה':1.85,'ארצות הברית':1.9,'מקסיקו':2.0,
-    'יפן':2.0,'דרום קוריאה':2.2,'מרוקו':1.7,'סנגל':2.2,'טורקיה':2.1,
-    'שוויץ':2.0,'אקוודור':2.3,'חוף השנהב':2.2,'מצרים':2.5,
-    'קנדה':2.3,'אוסטרליה':2.5,'נורבגיה':2.3,'שוודיה':2.2,
-    'אוסטריה':2.2,'איראן':2.8,'ערב הסעודית':2.8,'קטאר':3.0,
-    'צ\'כיה':2.3,'בוסניה והרצגובינה':2.5,'אלג\'יריה':2.6,
-    'ירדן':3.2,'עיראק':3.0,'פרגוואי':2.6,'גאנה':2.8,
-    'פנמה':3.5,'דרום אפריקה':2.8,'סקוטלנד':2.5,
-    'תוניסיה':2.8,'כף ורדה':4.5,'האיטי':6.0,'קוראסאו':7.0,
-    'ניו זילנד':4.0,'קונגו':3.5,'אוזבקיסטן':3.2,
-  };
-
   for (const m of allMatches) {
-    const sa = teamStrength[m.team_a] || 2.5;
-    const sb = teamStrength[m.team_b] || 2.5;
-    const ratio = sb / sa;
-    let oa, od, ob;
-    if (ratio > 1.3) { oa = 1.5 + Math.random()*0.4; od = 3.2 + Math.random()*0.5; ob = 3.5 + Math.random()*2; }
-    else if (ratio > 0.77) { oa = 2.2 + Math.random()*0.6; od = 3.0 + Math.random()*0.4; ob = 2.2 + Math.random()*0.6; }
-    else { oa = 3.5 + Math.random()*2; od = 3.2 + Math.random()*0.5; ob = 1.5 + Math.random()*0.4; }
-    defaultOdds.run(m.id, +oa.toFixed(2), +od.toFixed(2), +ob.toFixed(2));
+    const o = computeDefaultOdds(m.team_a, m.team_b);
+    defaultOdds.run(m.id, o.odds_a, o.odds_draw, o.odds_b);
   }
 }
 
@@ -746,8 +754,16 @@ app.post('/api/matches/:id/update-teams', (req, res) => {
   if (!team_a || !team_b || !String(team_a).trim() || !String(team_b).trim()) {
     return res.status(400).json({ error: 'שמות קבוצות חסרים' });
   }
+  const ta = String(team_a).trim(), tb = String(team_b).trim();
   db.prepare('UPDATE matches SET team_a = ?, team_b = ? WHERE id = ?')
-    .run(String(team_a).trim(), String(team_b).trim(), req.params.id);
+    .run(ta, tb, req.params.id);
+  // Seed sensible default odds now that the teams are known, so a knockout
+  // match scored before the daily odds fetch lands still gets a real
+  // multiplier (base x stage x odds) instead of a flat 1.0. INSERT OR IGNORE
+  // never clobbers odds already fetched from the API.
+  const o = computeDefaultOdds(ta, tb);
+  db.prepare('INSERT OR IGNORE INTO match_odds (match_id, odds_a, odds_draw, odds_b) VALUES (?, ?, ?, ?)')
+    .run(req.params.id, o.odds_a, o.odds_draw, o.odds_b);
   res.json({ ok: true });
 });
 
