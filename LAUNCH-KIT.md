@@ -376,6 +376,15 @@ match stands alone. Warm owned channels (WhatsApp + Telegram). Same source-track
 חינם, בעברית, 30 שניות. הניחוש לכל משחק ננעל עם השריקה שלו.
 ```
 
+### Image assets (rendered, paste-ready)
+Both waves now ship WITH art, not just text. Generated 24/06 via FLUX; stored in
+`socials/memes/`. Image-gen garbles on-screen text, so overlay the real Hebrew copy
+above when posting; the art is the backdrop.
+- Beat-the-monkey (§ task #22 / drafts #38-#39): `socials/memes/11-beat-monkey-leaderboard.jpg`
+  — glowing leaderboard ladder, human fans celebrating at the top, monkey stranded mid-pack.
+- Knockout win-or-go-home (this section / task #41): `socials/memes/12-knockout-win-or-go-home.jpg`
+  — floodlit pitch, one side advancing through a glowing bracket gate, the other walking off.
+
 ---
 
 ## After posting
