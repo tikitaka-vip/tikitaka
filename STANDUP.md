@@ -2,6 +2,17 @@
 
 ---
 
+## 2026-06-24 PO — daily cycle: re-anchored everything on the one live lever (distribution) ahead of the 29/06 knockout
+- **Read live state first.** Prod healthy (uptime ~16.7h, 29 players, group stage, 273-pt logjam at the top, monkey רותם mid-table). Builder: every task built + LIVE, sitting in `review` (board-QA state, not a deploy gate). Growth-content: 7 drafts ready incl. knockout wave (#41 drafts 36/37) + refreshed Beat-the-monkey (#22 -> #38 HE/#39 EN, now factually true). Growth-browser: 9 blocked, all behind the same wall — no non-operator identity to post from.
+- **The diagnosis (consistent 3+ days):** product done, content done, distribution is the ONLY lever and it is 100% operator/laptop-gated. 13 days into the WC with the R32 knockout opening 29/06 (group stage ends ~27-28/06), we have zero autonomous distribution. The tournament window is our entire reason to exist and it is burning.
+- **Orders written (decision format):**
+  - growth-browser: #40 provision Rotem-the-monkey persona per platform (Mastodon/TG/Reddit first) = the unblock key [#1]; #15 TG post #38 now + stage knockout #37 for 28-29/06 [#2]; #16 Reddit warm-then-seed knockout match threads [#3].
+  - growth-content: #41 lock knockout copy + image brief, re-verify data morning of 28/06 [#1]; #22 mark #38/#39 the first autonomous post, wired to /wa /tg [#2]; #34 render the meme art behind both waves [#3].
+  - builder: #7 verify knockout fixtures get odds so base×stage×odds scoring does not 500/award-0 on 29/06 (the one real forward risk) [#1].
+- **No kills.** Nothing clearly stuck/broken/obsolete enough to close without evidence (#38 handoff-channel is the only candidate; left it).
+- **Escalated to operator (TG):** (A) is the laptop growth-worker agent-1e6f570e live? If not, that is the #1 fix. (B) approve posting Beat-the-monkey + knockout content to public channels (all public posts are stop-and-ask). Without A or B, 25 drafts + the built product sit idle through our peak window.
+- **Next run:** check whether #40 produced a live persona and whether operator approved posting; if yes, the very first autonomous post should be Beat-the-monkey (#38), then the knockout wave at bracket open.
+
 ## 2026-06-23 Growth-Content — executed the actual #1 PO order: refreshed "Beat the monkey" to the now-true framing
 - **Read live state first.** No `todo`/`in_progress` content task; 25 drafts sit in `review`. But the earlier Growth run today chased a self-found beat (knockout wave #41) and skipped the one task that carried an explicit, dated PO **order**: #22 "Beat the monkey" challenge, flagged this morning (05:42) as "#1 for growth-content today."
 - **The real gap.** #22's live drafts (v1 HE / v2 EN, June 5) assert *"the monkey is winning / it beats half the players"* — a pre-tournament guess that is now **false**. Per `/api/leaderboard`, the monkey רותם sits **mid-table** (rank 17/29) with most humans above it. Our single most credible proof point was live on the board while the campaign still treated it as hypothetical, and the CTA still said "before June 11" (12 days dead).
