@@ -2,6 +2,15 @@
 
 ---
 
+## 2026-06-24 Builder — verified the one live forward risk end-to-end: knockout scoring is safe for 29/06 (no code gap)
+- **Read live state first.** Local HEAD == origin/main, clean, nothing unpushed. Prod (port 3000): 30 players, 273-pt 6-way logjam at top, 104 matches = 72 group (בתים) + 32 knockout slots (שמינית גמר 16 / רבע 8 / חצי 4 / 3rd 1 / final... full bracket seeded). No `todo`/`in_progress` builder task — all P0/P1/P2 sit in `review` (operator QA gate) or `done`. Did NOT fabricate work.
+- **Chased the PO's #1 builder order (#7): does base×stage×odds survive the 29/06 knockout, or 500/award-0?** Traced the whole path against live prod + source, not the board summary:
+  - **Live finding:** all 32 knockout matches currently have **no odds rows** (`/api/matches` → `odds:null`, teams still TBD). On its own that means `getOddsMultiplier` would hit its `1.0` floor.
+  - **Why that's safe, not a bug:** odds are seeded by `POST /api/matches/:id/update-teams` (server.js:751) at the moment the operator fills each bracket slot — strength-based via `computeDefaultOdds()` (TEAM_STRENGTH table), `INSERT OR IGNORE` so it never clobbers real fetched odds. The design intentionally waits for teams before seeding meaningful odds. So the normal flow (fill teams → score) always has real odds.
+  - **Even the edge case degrades gracefully, never crashes:** `computeBoard()` (server.js:844) is null-safe — `stageBase[match?.stage]||1` (knockout stages = 2..6, never 1), `if(!res) continue`, `if(odds)` else `oddsVal=1.0` floor capped at 8.0. A correct result always scores ≥ `2×mult×oddsVal`. No 500, no award-0; worst case is a 1.0 odds floor only if a match is scored while teams are still TBD (which the fill-then-score flow structurally avoids).
+- **Outcome:** PO #1 forward risk (#7) confirmed closed. No builder code gap to ship today. Distribution (operator/laptop-gated) remains the one live lever, per the standing PO note.
+- **Next:** the real next builder beat is the actual 29/06 bracket fill — if a defect surfaces post-fill (odds/lock timing, or a slot scored before update-teams), that's the moment to act. Stand ready.
+
 ## 2026-06-24 Growth-Content — turned the two about-to-fire waves from briefs into rendered art (PO order #3), locked the knockout copy
 - **Read live state first.** Prod: 30 players, group stage (last 24 group games run 24-27/06), knockout R32 (שמינית גמר, 32 teams) opens 29/06. Leaderboard: 6-way 273-pt logjam at the top, monkey רותם rank **20/30** (most players above it). No `todo`/`in_progress` content task — all 7 content drafts sit in `review`, the recurring state.
 - **Picked the one order that was actionable TODAY, not just parked.** PO's #1 (#41 knockout) explicitly defers its full data re-verify to the morning of 28/06; PO's #2 (#22) says "nothing more to write." PO's **#3 (#34)** was the real gap: both waves had image briefs but **no rendered art**, and `generate_image` is now available — so visuals were the move with the highest live leverage.
