@@ -387,6 +387,44 @@ above when posting; the art is the backdrop.
 
 ---
 
+## 12. Mastodon - our one autonomously-postable channel  (needs a single operator YES)
+Every other channel (WhatsApp, Telegram, Reddit, FB, IG) is laptop/operator-gated. Mastodon
+is the ONE channel the VPS can publish to on its own, via the social publisher
+(`curl -X POST http://64.177.65.238:3847/api/publish -d '{"platforms":["mastodon"],"text":"..."}'`).
+Public posts are stop-and-ask, so this still needs one operator approval - but once approved,
+each subsequent post here ships with no laptop. Mastodon is global + tech-leaning, so the
+English variant leads (hashtags carry it); Hebrew variant is there for the IL fediverse.
+Link is source-tracked via `/ma` -> `?ref=mastodon`. All claims drift-checked 25/06: monkey
+רותם is rank 17/30, mid-table, most players above it (true).
+
+### Mastodon - English (lead)
+```
+⚽ World Cup prediction game, and yes, you are up against a monkey.
+
+Rotem the monkey picks winners off live zoo cams. Two weeks in, most of our players are already above him on the board. Can you hold your lead through the knockouts?
+
+Free, 30 seconds, every match locks at kickoff.
+👉 https://tikitaka.vip/ma
+
+#WorldCup #Mundial2026 #Football
+```
+
+### Mastodon - Hebrew (IL fediverse)
+```
+⚽ משחק ניחושים למונדיאל, ויש לכם יריב קבוע: קוף.
+
+רותם הקוף בוחר מנצחים לפי מצלמות חיות בגן חיות, וכבר שבועיים שרוב השחקנים מקדימים אותו על הלוח. תחזיקו מעליו עד הגמר?
+
+חינם, 30 שניות, כל ניחוש ננעל עם השריקה.
+👉 https://tikitaka.vip/ma
+
+#מונדיאל #כדורגל
+```
+
+Image backdrop: `socials/memes/11-beat-monkey-leaderboard.jpg` (optional; overlay no text).
+
+---
+
 ## After posting
 - Check signups climbing: open https://tikitaka.vip leaderboard, or ask the agent
   to report player count.

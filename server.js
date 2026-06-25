@@ -71,7 +71,7 @@ app.use('/api/players', rateLimit(60000, 10));
 app.use('/api/predictions', rateLimit(60000, 60));
 app.use('/api', rateLimit(60000, 120));
 // Source tracking redirect routes (WhatsApp strips UTM params, so we use vanity paths)
-const SOURCE_REDIRECTS = { '/wa': 'whatsapp', '/tg': 'telegram', '/fb': 'facebook', '/rd': 'reddit', '/ig': 'instagram', '/tw': 'twitter', '/qr': 'qr' };
+const SOURCE_REDIRECTS = { '/wa': 'whatsapp', '/tg': 'telegram', '/fb': 'facebook', '/rd': 'reddit', '/ig': 'instagram', '/tw': 'twitter', '/qr': 'qr', '/ma': 'mastodon' };
 for (const [route, source] of Object.entries(SOURCE_REDIRECTS)) {
   app.get(route, (req, res) => {
     // Log the click immediately (#32) — captures channel reach even for
