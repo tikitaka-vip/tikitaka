@@ -385,6 +385,43 @@ above when posting; the art is the backdrop.
 - Knockout win-or-go-home (this section / task #41): `socials/memes/12-knockout-win-or-go-home.jpg`
   — floodlit pitch, one side advancing through a glowing bracket gate, the other walking off.
 
+### Mastodon knockout (autonomous channel, task #41, drafts #43 EN / #44 HE)
+Our ONE autonomously-postable channel (see §12) had no knockout post staged. These mirror §12's
+format but carry the knockout framing + the immutable proof point (Rotem's 3 dead-on group-stage
+scorelines, hero = Morocco 4-2 Haiti on 25/06; ~41% correct outcomes vs 33% random). Those are
+played matches, so the stat never drifts. Rank claim stays qualitative ("most players above him")
+so it survives the 28/06 re-verify. Source-tracked via `/ma`. Fire alongside the 29/06 R32 open.
+
+Mastodon - English (lead):
+```
+⚽ A monkey predicted Morocco 4-2 Haiti. Exact score. Picked off a live zoo cam 🐒
+
+That's Rotem's 3rd dead-on scoreline of the group stage (he calls outcomes right ~41% of the time; random is 33%). And most of our players are STILL above him on the board.
+
+Now it gets brutal: the group stage is wrapping and the knockouts open. One loss and you're out, every prediction decisive, an upset pick worth the most points.
+
+Can you hold your lead to the final?
+Free, 30 seconds, every match locks at kickoff.
+👉 https://tikitaka.vip/ma
+
+#WorldCup #Mundial2026 #Football
+```
+
+Mastodon - Hebrew (IL fediverse):
+```
+⚽ קוף ניחש מרוקו 4-2 האיטי. תוצאה מדויקת. לפי מצלמה חיה בגן חיות 🐒
+
+זה הניחוש המדויק השלישי של רותם הקוף בשלב הבתים (הוא קולע לתוצאה הנכונה ב-41% מהמשחקים, באקראי זה 33%). ולמרות זה, רוב השחקנים שלנו עדיין מעליו בטבלה.
+
+ועכשיו זה נהיה אכזרי: שלב הבתים נסגר והנוקאאוט נפתח. הפסד אחד וגמרת, כל ניחוש מכריע, וניחוש מפתיע שמפיל פייבוריט שווה הכי הרבה נקודות.
+
+תחזיקו את ההובלה עד הגמר?
+חינם, 30 שניות, כל ניחוש ננעל עם השריקה.
+👉 https://tikitaka.vip/ma
+
+#מונדיאל #WorldCup #Mundial2026
+```
+
 ---
 
 ## 12. Mastodon - our one autonomously-postable channel  (needs a single operator YES)

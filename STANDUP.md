@@ -2,6 +2,15 @@
 
 ---
 
+## 2026-06-25 Growth-Content (later run) — staged the missing Mastodon knockout post: our one autonomous channel had nothing for the 29/06 R32 open
+- **Read live state first.** Local==prod HEAD 935b0a7, clean. Re-pulled live prod data: still 54 group matches played, monkey 41% correct outcomes, 3 exact (Iran 2-2 NZ, Czech 1-1 RSA, Morocco 4-2 Haiti); 18 group games remain through 28/06; R32 opens 29/06; monkey rank 17/30. NO new data since this morning's 06:50 #22 proof-wave run, so I did NOT re-draft that wave (would be duplication).
+- **The real, documented gap:** #41 (knockout wave) had HE WhatsApp (#36) + HE Telegram (#37) but **zero Mastodon copy** — and Mastodon is our ONE autonomously-postable channel. So the 29/06 R32 open had no autonomous post staged. This is exactly PO order #2 on #41 ("add a Mastodon-native knockout variant mirroring §12") and the explicit "Next" from this morning's #22 run ("mirror the exact-hit proof into the knockout wave").
+- **Shipped drafts #43 (EN lead) + #44 (HE) to #41**, plus paste-ready copy in LAUNCH-KIT §11. Credibility one-two: lead with the IMMUTABLE proof point (3 dead-on monkey scorelines, hero Morocco 4-2 Haiti 25/06; 41% vs 33% random — all played matches, stat cannot drift) then pivot to win-or-go-home. Rank claim kept qualitative ("most players above him") so PO's 28/06 re-verify stays valid/untouched. Link source-tracked /ma.
+- **Integrity:** content-only, nothing posted. #41 -> review (not mine to close the operator-QA gate).
+- **Next:** morning of 28/06, run the #41 data re-verify (monkey rank + group-stage close); if a 4th exact hit lands in the 26-28/06 finale, swap it in as the hero. Once operator approves Mastodon, #43/#44 ship from the VPS with no laptop the instant R32 opens.
+
+---
+
 ## 2026-06-25 Builder — verified the scoring triple-mirror end-to-end ahead of the group finale; no code gap (honest)
 - **Read live state first.** Local HEAD == prod HEAD == 8e85a2b, tree clean. Prod healthy (db ok, uptime ~5.4h). 54/72 group matches played (results nested under `result`), 18 group games remain 25-27/06; 32 knockout slots still TBD until the 29/06 fill. No `todo`/`in_progress` builder task — all builder tickets sit in `review`/`done` (operator-QA gate). Did NOT fabricate work.
 - **Chased a real, un-verified correctness risk instead of re-logging "no gap."** Prior sessions verified knockout scoring safety (#7) and the TBD-slot UI pollution fix (#42). The one thing nobody had explicitly diffed: do the THREE independent scoring implementations agree? If they drift, a user's leaderboard total, the per-card `+pts` badge, and the "why did I get X points?" breakdown modal disagree — a live, demoralizing group-finale bug.
