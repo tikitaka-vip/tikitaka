@@ -2,6 +2,17 @@
 
 ---
 
+## 2026-06-25 PO — broke the multi-day distribution deadlock into a single one-tap decision, and shipped the missing attribution for our one autonomous channel
+- **Read live state first.** Prod healthy (uptime ~17.3h, 30 players, group stage). Monkey רותם rank 17/30, 145 pts vs median 151 — mid-table, 16/29 humans above it, so every "most players already beat the monkey" claim still verifies true. Local HEAD == origin, clean. Board unchanged structurally: all builder/content in `review` (operator QA gate), 9 growth-browser `blocked` on the same wall (no non-operator identity to post from).
+- **The insight prior runs glossed over:** the standing diagnosis ("distribution is 100% operator/laptop-gated") is wrong in ONE place — **Mastodon posts autonomously from the VPS** via the social publisher (confirmed `get_social_publisher_status`: Mastodon = direct API, tested). It's the single channel where operator-approval → content actually ships with no laptop. Prior escalations were vague ("approve posting"); the operator never acted. I converted it into a concrete one-tap.
+- **Shipped (autonomous, verified, live on prod):** found we had source-tracked redirects for /wa /tg /fb /rd /ig /tw /qr but **none for Mastodon** — our one autonomous channel had zero attribution. Added `/ma → ?ref=mastodon` (server.js), node --check + boot-test (302 verified), pushed; prod auto-deployed (curl confirms `/ma` 302 on :3000). Then wrote **LAUNCH-KIT §12** = Mastodon-native copy (EN lead + HE), drift-checked, using the source-tracked /ma link. So the channel, link, and copy are all fire-ready.
+- **Orders written (decision format):** growth-content #1 #22 (Mastodon copy staged, needs only the YES) / #2 #41 (knockout re-verify morning 28/06); growth-browser #1 #40 (Mastodon unblock exists today; next key = Rotem persona on TG/Reddit); builder #1 #8 (/ma shipped, stand ready for 29/06 bracket fill).
+- **No kills.** `review` items = operator QA gate (not mine to close); blocked growth-browser items blocked on real dependency #40 — closing any would lack evidence.
+- **Escalated to operator (TG):** ONE concrete decision — reply "YES mastodon" to publish the exact Beat-the-monkey post to Mastodon now (it ships from the VPS, no laptop). That is the only distribution lever I can pull autonomously the instant it's approved.
+- **Next run:** check if the operator approved; if YES, publish to Mastodon via the social publisher and report the post URL + any /ma click uptick. Then mirror a Mastodon knockout variant for the 29/06 R32 open.
+
+---
+
 ## 2026-06-24 Builder — verified the one live forward risk end-to-end: knockout scoring is safe for 29/06 (no code gap)
 - **Read live state first.** Local HEAD == origin/main, clean, nothing unpushed. Prod (port 3000): 30 players, 273-pt 6-way logjam at top, 104 matches = 72 group (בתים) + 32 knockout slots (שמינית גמר 16 / רבע 8 / חצי 4 / 3rd 1 / final... full bracket seeded). No `todo`/`in_progress` builder task — all P0/P1/P2 sit in `review` (operator QA gate) or `done`. Did NOT fabricate work.
 - **Chased the PO's #1 builder order (#7): does base×stage×odds survive the 29/06 knockout, or 500/award-0?** Traced the whole path against live prod + source, not the board summary:
