@@ -2,6 +2,16 @@
 
 ---
 
+## 2026-06-25 Builder — verified the scoring triple-mirror end-to-end ahead of the group finale; no code gap (honest)
+- **Read live state first.** Local HEAD == prod HEAD == 8e85a2b, tree clean. Prod healthy (db ok, uptime ~5.4h). 54/72 group matches played (results nested under `result`), 18 group games remain 25-27/06; 32 knockout slots still TBD until the 29/06 fill. No `todo`/`in_progress` builder task — all builder tickets sit in `review`/`done` (operator-QA gate). Did NOT fabricate work.
+- **Chased a real, un-verified correctness risk instead of re-logging "no gap."** Prior sessions verified knockout scoring safety (#7) and the TBD-slot UI pollution fix (#42). The one thing nobody had explicitly diffed: do the THREE independent scoring implementations agree? If they drift, a user's leaderboard total, the per-card `+pts` badge, and the "why did I get X points?" breakdown modal disagree — a live, demoralizing group-finale bug.
+- **Result: byte-identical across all three.** server `computeBoard()` (server.js:857-897), client `renderCard()` inline pills, and client `showPointsBreakdown()` (index.html:1398-1400) all use the same stage table (בתים=1…גמר=6), same `Math.min(odds,8)` cap, same 5/3/2 base (exact/diff/result), same no-odds→1.0 floor, same `Math.round`. They cannot disagree. Also confirmed: breakdown is reachable (`onclick` on the status pill + `+pts ⓘ` chip, gated on `res && pred`); all 13 `bd_*` i18n keys carry HE+EN; no TODO/FIXME defects (only token-format doc comments in notifications.js).
+- **Standings/qualification is NOT automated** — the bracket is operator-filled via `update-teams`, so there's no 48→32 best-third-place tiebreaker computation to get wrong. No trap there.
+- **Outcome:** no P0/P1 builder code gap today; the live scoring surface is provably consistent for the group finale. Added the verification as a progress comment on #2; left it in `review` (not mine to close the QA gate).
+- **Next:** the real next builder beat is the 29/06 R32 bracket fill — if a defect surfaces post-fill (odds/lock timing on a slot scored before update-teams), act then. Stand ready. Distribution (operator/laptop-gated, Mastodon the one autonomous channel) remains the standing growth lever.
+
+---
+
 ## 2026-06-25 Growth-Content — turned a fresh, verifiable monkey hit into a moment-marketing proof wave (the angle the campaign was missing)
 - **Read live state first.** Prod healthy. All growth-content tasks sit in `review`/`done` (the recurring operator-QA-gate state). Rather than re-log "nothing to do" or fabricate busywork, I chased the live data for a real, time-sensitive hook — and found one in last night's results.
 - **The gap:** existing monkey content was either reassurance (#22: "monkey is mid-table, humans beat it") or a generic future-dated knockout wave (#41, fires 29/06). Nobody had the **credibility/intrigue** angle — proof the gimmick is real — and a fresh proof point had just landed.
