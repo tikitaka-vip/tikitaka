@@ -2,6 +2,19 @@
 
 ---
 
+## 2026-06-25 Builder — closed a live correctness bug ahead of the 29/06 knockout: TBD slots were polluting the predict UI + reminders
+- **Read live state first.** Prod healthy, local HEAD == prod HEAD == 5f00d89, tree clean. No `todo`/`in_progress` builder task; all builder tickets `review`/`done`. Rather than repeat the prior sessions' "no code gap" QA, I chased the ONE live forward event (R32 opens 29/06) for an actual defect, not a fabricated one.
+- **Found a real, live bug (and a dated one).** The 32 knockout matches are seeded `team_a/team_b=TBD` with kickoff 29/06+. With no teams and a future kickoff, `isLocked` is false, so the client rendered them as **open, predictable "TBD vs TBD" cards** (confirmed on prod: 32/32 render open). Consequences live *today* and worsening toward 29/06:
+  - progress bar denominator inflated by 32 un-fillable matches;
+  - the **B-5 unpredicted-count badge** (built to *drive* completion) stuck at ~32 nobody can clear — demoralizing, the opposite of its purpose;
+  - the missing-predictions alert literally lists "TBD - TBD";
+  - **notifications.js** counted them too, so the 08:00 digest + 2h pre-match push would have spammed every player on the **morning of 29/06** with "16 matches today without predictions, first: TBD vs TBD".
+- **Fix (commit 2770dc5, deployed + verified live).** Treat a match as not-yet-predictable while either team is TBD: client (`renderPredictions`) excludes TBD from `upcoming` (progress/badge/alert) and renders TBD cards disabled+greyed with a "טרם נקבעו קבוצות" pill instead of OPEN; both notification queries exclude TBD. It auto-reverts to fully predictable the moment the operator fills the bracket via `update-teams` (real names + odds), no further code. Status pills stay hardcoded-Hebrew per existing convention, so no i18n surface touched.
+- **Verified:** node --check clean on all touched files; clean boot test (fresh port, /health ok, served HTML carries the pill + filter); deployed via deploy-prod.sh; prod HEAD 2770dc5, prod serves the pill + filter, prod notifications.js has both guards. #42 -> done.
+- **Next:** stand ready for the actual 29/06 bracket fill; if a defect surfaces post-fill (odds/lock timing on a slot scored before update-teams), that's the next builder beat. Distribution (operator/laptop-gated, with Mastodon the one autonomous channel) remains the standing growth lever.
+
+---
+
 ## 2026-06-25 PO — broke the multi-day distribution deadlock into a single one-tap decision, and shipped the missing attribution for our one autonomous channel
 - **Read live state first.** Prod healthy (uptime ~17.3h, 30 players, group stage). Monkey רותם rank 17/30, 145 pts vs median 151 — mid-table, 16/29 humans above it, so every "most players already beat the monkey" claim still verifies true. Local HEAD == origin, clean. Board unchanged structurally: all builder/content in `review` (operator QA gate), 9 growth-browser `blocked` on the same wall (no non-operator identity to post from).
 - **The insight prior runs glossed over:** the standing diagnosis ("distribution is 100% operator/laptop-gated") is wrong in ONE place — **Mastodon posts autonomously from the VPS** via the social publisher (confirmed `get_social_publisher_status`: Mastodon = direct API, tested). It's the single channel where operator-approval → content actually ships with no laptop. Prior escalations were vague ("approve posting"); the operator never acted. I converted it into a concrete one-tap.
