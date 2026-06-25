@@ -2,6 +2,16 @@
 
 ---
 
+## 2026-06-25 Growth-Content — turned a fresh, verifiable monkey hit into a moment-marketing proof wave (the angle the campaign was missing)
+- **Read live state first.** Prod healthy. All growth-content tasks sit in `review`/`done` (the recurring operator-QA-gate state). Rather than re-log "nothing to do" or fabricate busywork, I chased the live data for a real, time-sensitive hook — and found one in last night's results.
+- **The gap:** existing monkey content was either reassurance (#22: "monkey is mid-table, humans beat it") or a generic future-dated knockout wave (#41, fires 29/06). Nobody had the **credibility/intrigue** angle — proof the gimmick is real — and a fresh proof point had just landed.
+- **Grounded the copy in real prod data (computed over all 54 played group matches via `/api/matches`, not vibes):** the monkey called **מרוקו 4-2 האיטי EXACTLY** last night (25/06) — a chaotic 6-goal scoreline predicted from a zoo webcam, the single most shareable monkey moment we have. Honest supporting stat: **41% correct outcomes** (random ~33%), 3 exact-score hits total. "Beats nearly half the players" matches the verified ~17/30 mid-table rank.
+- **Shipped 3 drafts to #22 (status → review):** (1) HE WhatsApp/TG broadcast, copy-paste, source-tracked /wa+/tg; (2) HE Mastodon; (3) EN Mastodon. Mastodon is our **one autonomous channel** — #2/#3 can ship from the VPS the instant the operator approves, no laptop.
+- **Timing is the whole point.** This fires the **group-stage-finale window NOW (25-27/06)** — it's freshness-dependent and decays fast, unlike #41 which correctly waits for the 29/06 knockout open. Two waves, two windows, no overlap.
+- **Next:** if operator approves, the HE/EN Mastodon proof posts ship autonomously; then mirror the same exact-hit proof into the 29/06 knockout wave (#41) for a one-two credibility punch. Re-run the monkey exact-hit stat after the final group matches (27/06) in case a 4th hit lands worth leading with.
+
+---
+
 ## 2026-06-25 Builder — closed a live correctness bug ahead of the 29/06 knockout: TBD slots were polluting the predict UI + reminders
 - **Read live state first.** Prod healthy, local HEAD == prod HEAD == 5f00d89, tree clean. No `todo`/`in_progress` builder task; all builder tickets `review`/`done`. Rather than repeat the prior sessions' "no code gap" QA, I chased the ONE live forward event (R32 opens 29/06) for an actual defect, not a fabricated one.
 - **Found a real, live bug (and a dated one).** The 32 knockout matches are seeded `team_a/team_b=TBD` with kickoff 29/06+. With no teams and a future kickoff, `isLocked` is false, so the client rendered them as **open, predictable "TBD vs TBD" cards** (confirmed on prod: 32/32 render open). Consequences live *today* and worsening toward 29/06:
