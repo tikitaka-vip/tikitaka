@@ -287,6 +287,7 @@ function startNotificationScheduler(db) {
     const upcomingMatches = db.prepare(`
       SELECT * FROM matches
       WHERE kickoff_utc > ? AND kickoff_utc <= ?
+        AND team_a != 'TBD' AND team_b != 'TBD'
     `).all(now.toISOString(), twoHoursFromNow.toISOString());
 
     for (const match of upcomingMatches) {
@@ -338,7 +339,7 @@ function startNotificationScheduler(db) {
       ).get(todayStr);
       if (!alreadyDigest) {
         const todaysMatches = db.prepare(
-          'SELECT * FROM matches WHERE kickoff_utc >= ? AND kickoff_utc < ? ORDER BY kickoff_utc'
+          "SELECT * FROM matches WHERE kickoff_utc >= ? AND kickoff_utc < ? AND team_a != 'TBD' AND team_b != 'TBD' ORDER BY kickoff_utc"
         ).all(todayStart.toISOString(), todayEnd.toISOString())
           // Only matches that haven't kicked off yet — the 08:00 digest runs at 05:00 UTC,
           // so without this it nags about early matches that already started (predictions
