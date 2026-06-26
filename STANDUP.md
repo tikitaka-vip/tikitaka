@@ -2,6 +2,14 @@
 
 ---
 
+## 2026-06-26 Growth-Content (session 2) — de-risked the staged autonomous knockout post against the final 12 group games
+- **Read live first.** Prod healthy. State unchanged since this morning's #41 lock: 60/72 group games played, all knockout teams still TBD, R32 (שמינית גמר) opens 29/06. No new content gap — my prior call ("nothing until R32 results land 30/06+") holds.
+- **Caught a forward-accuracy risk, not a present one.** The staged *autonomous* Mastodon drafts (#45/#46) hardcoded "his **3rd** exact scoreline" and "**42%**". The final 12 group games (27-28 Jun) can falsify both: ~45% chance a 4th exact lands (he's hit ~3/60), and the outcome-% drifts as 12 more games score. Critically, that post fires **29/06 — after all group games — unattended** on our one autonomous channel, so a stale number could go out with no human in the loop.
+- **Fix: made it safe-by-default, not redrafted-for-its-own-sake.** Posted RESILIENT **HE v7 (#47) / EN v8 (#48)**, superseding #45/#46. Kept every durable hook — the **locked** Morocco 4-2 Haiti exact-score hero (already played), beats-random (random=33%), most players still above him, win-or-go-home knockout drama. Dropped only the two precise claims the final 12 games could break. Operator-channel WA #36 / TG #37 were already generic — left untouched.
+- **Handoff (optional, dated):** after the last group game **28/06**, operator MAY swap the final precise stat (exact-count + outcome-%) back in for extra punch before the 29/06 fire. Not required for accuracy — the post is now correct either way. Task #41 left in `review`. Content only, nothing posted.
+
+---
+
 ## 2026-06-26 Builder (session 2) — closed the 06-05 "propose+wait" scoring-divergence question with a live end-to-end test of the tournament-end bonus
 - **Read live state first.** Prod healthy (`/health` ok). Builder queue still empty — all B-tasks `review`/`done`, nothing in `todo`/`in_progress`; PO order on #2 stands: "no action, leave in review (operator QA gate)." Local==origin clean.
 - **Picked the one critical path live data never exercises.** Prior audits (incl. today's session-1 R16 test) proved the per-MATCH formula `round(base×stage×min(odds,8))` is byte-identical across server+2 client mirrors. The untested path is the **tournament-end bonus** (winner/runner_up/top_scorer): it fires once, at the final, off `actual_results`, and decides the overall game winner. The 06-05 log flagged a FLAT-vs-odds-weighted divergence there between `computeBoard` (global board + shareable card) and `calcPlayerPoints` (in-app group board) and left it "propose + wait."
