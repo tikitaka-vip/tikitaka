@@ -2,6 +2,16 @@
 
 ---
 
+## 2026-06-26 Builder — executed (not just read) the R16 scoring path end-to-end; confirmed the 29/06 critical path is sound, no code change
+- **Read live state first.** Prod healthy (`/health` ok, db ok). Builder queue empty: all B-tasks sit in `review`/`done`, nothing in `todo`/`in_progress`. Local==origin clean. Live data on track: 60/72 group results entered, exactly tracking the schedule (next games 61-62 are 26/06 22:00, not yet played) — scoring is not silently frozen.
+- **Audited the imminent knockout-transition path** (group ends 28/06, R32/R16 dated 29/06 — a tight ~1-day predict window). Verified, by direct code read, that TBD exclusion is byte-consistent across all three layers: client `renderPredictions` (`index.html`), server `computeBoard`/leaderboard (`server.js:1481`), and `notifications.js:290,342` — all keyed on the literal `'TBD'` string actually stored. The instant `update-teams` fills a slot, the match flips into predict UI + unpredicted badge + progress + reminders simultaneously. `update-teams` also seeds default odds via `INSERT OR IGNORE` so base×stage×odds never degrades to flat 1.0.
+- **New value beyond prior verifications:** prior logs (06-24/06-25) and today's PO read the code; I *ran* it. Spun up the real `server.js` on a throwaway DB copy (port 3998), simulated the full operator path on R16 match #73: TBD→fill (ארגנטינה/מקסיקו)→odds seed (2.50)→exact prediction 2-1→result 2-1. Live `/api/leaderboard` returned **25 pts = round(5 × stage-mult 2 × odds 2.50)** — exact match, exact=1. The knockout scoring wiring is confirmed correct against a running server, not just by inspection.
+- **Monkey hook for knockouts:** confirmed the monkey already holds a stored scoreline for every knockout slot (created team-agnostic at player-init, keyed by fixed match_id), revealed only at kickoff. Frozen-random is on-brand for a "dumb monkey" baseline, so no refresh needed. Not a gap.
+- **Integrity:** test ran against a `/tmp` copy; working clone DB and git left untouched (`git status` clean, no `__BUILDER_TEST__` leak). No code shipped — none warranted. Did not mass-close the `review` tasks (operator QA gate, not mine).
+- **Next:** stand ready for the 29/06 bracket fill. If after team-fill any R16 slot is missing odds or stuck on TBD, that surfaces as the match being absent from the predict UI — worth an operator spot-check once group standings finalize 28/06.
+
+---
+
 ## 2026-06-26 PO — re-verified the freshest content asset against new data, and reframed the distribution unblock (we hold 21 live accounts, not zero)
 - **Read live state first.** Prod healthy (uptime ~16.7h, db ok). 31 players (+1), 60/104 matches played (+6 group results since yesterday). Monkey רותם rank 20/31, 160 pts vs median 171 — slipped from 17/30 but "most players above it" still holds (19 above). Local HEAD == origin 6a48fd6, clean.
 - **Verified the hero asset against TODAY's data (not vibes).** Recomputed the monkey over all 60 played matches via /api/matches monkey_pred vs result: **42% correct outcomes (25/60, up from 41%), 3 exact hits, hero = Morocco 4-2 Haiti (25/06).** NO new exact hit in the 6 latest games, so Morocco stays the lead and the content team's deferred 28/06 re-verify is pre-answered unless a 4th hit lands 27-28/06. The campaign's most shareable claim is confirmed current.
