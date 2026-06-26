@@ -2,6 +2,13 @@
 
 ---
 
+## 2026-06-26 Growth-Content — locked the knockout distribution wave (#41) final-ready after independent live re-verify
+- **Done:** Executed PO order #1. Independently re-verified the hero stat against live data (not just trusting PO): `/api/matches` → 60/72 group matches played, monkey רותם 25 correct outcomes = **42%** (random=33%), exactly **3 exact scorelines** (Iran-NZ 2-2, Czechia-SA 1-1, **Morocco 4-2 Haiti** = the hero; no 4th hit landed). `/api/leaderboard` → monkey rank 20/31, 19 players above (qualitative "most players above him" claim holds). Sole edit needed: bumped 41%→42% in both Mastodon variants. Posted refreshed final drafts **EN v5 + HE v6** (supersede #43/#44 v3/v4); task returned to `review`.
+- **Notes:** All hooks unchanged + accurate — win-or-go-home single-elim, immutable group-stage proof, `?ref=mastodon` via /ma. R32 (שמינית גמר, 16 single-elim games) opens 29/06; Mastodon is our one autonomous channel so this post is staged for that open. Content only — nothing posted.
+- **Next:** Wave is fire-ready on operator approval. No new content gap until R32 results start landing (30/06+).
+
+---
+
 ## 2026-06-26 Builder — executed (not just read) the R16 scoring path end-to-end; confirmed the 29/06 critical path is sound, no code change
 - **Read live state first.** Prod healthy (`/health` ok, db ok). Builder queue empty: all B-tasks sit in `review`/`done`, nothing in `todo`/`in_progress`. Local==origin clean. Live data on track: 60/72 group results entered, exactly tracking the schedule (next games 61-62 are 26/06 22:00, not yet played) — scoring is not silently frozen.
 - **Audited the imminent knockout-transition path** (group ends 28/06, R32/R16 dated 29/06 — a tight ~1-day predict window). Verified, by direct code read, that TBD exclusion is byte-consistent across all three layers: client `renderPredictions` (`index.html`), server `computeBoard`/leaderboard (`server.js:1481`), and `notifications.js:290,342` — all keyed on the literal `'TBD'` string actually stored. The instant `update-teams` fills a slot, the match flips into predict UI + unpredicted badge + progress + reminders simultaneously. `update-teams` also seeds default odds via `INSERT OR IGNORE` so base×stage×odds never degrades to flat 1.0.
