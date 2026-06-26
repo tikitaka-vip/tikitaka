@@ -2,6 +2,20 @@
 
 ---
 
+## 2026-06-26 Builder (session 2) — closed the 06-05 "propose+wait" scoring-divergence question with a live end-to-end test of the tournament-end bonus
+- **Read live state first.** Prod healthy (`/health` ok). Builder queue still empty — all B-tasks `review`/`done`, nothing in `todo`/`in_progress`; PO order on #2 stands: "no action, leave in review (operator QA gate)." Local==origin clean.
+- **Picked the one critical path live data never exercises.** Prior audits (incl. today's session-1 R16 test) proved the per-MATCH formula `round(base×stage×min(odds,8))` is byte-identical across server+2 client mirrors. The untested path is the **tournament-end bonus** (winner/runner_up/top_scorer): it fires once, at the final, off `actual_results`, and decides the overall game winner. The 06-05 log flagged a FLAT-vs-odds-weighted divergence there between `computeBoard` (global board + shareable card) and `calcPlayerPoints` (in-app group board) and left it "propose + wait."
+- **Finding 1 — the divergence is already RESOLVED in code.** `computeBoard` (`server.js:904-919`) now applies the same `min(teamOdds/5,20)` multiplier + day-since-start time-decay as `calcPlayerPoints` (`1125-1143`). The only remaining difference is the `scoring.use_odds` guard, and `DEFAULT_SCORING.use_odds` is `true` — which every auto-created group ships with.
+- **Finding 2 — proved equality by RUNNING it, not reading.** Injected a deterministic final-day scenario into a throwaway DB copy (player with winner=Brazil@4.5 / runner_up=Morocco@51 / top_scorer=Mbappe, all correct; updated pre-tournament so no decay), started real `server.js` on port 3999, hit both endpoints:
+  - global `/api/leaderboard` (computeBoard) = **200 pts**
+  - default group `/api/groups/:id/leaderboard` (calcPlayerPoints, use_odds:true) = **200 pts — IDENTICAL**
+  - matches hand math exactly: `round(30×0.9)=27` + `round(15×10.2)=153` + `20` = 200.
+- **Finding 3 — quantified the only residual gap.** A group whose manager manually sets `use_odds:false` shows **65** (flat 30+15+20) on its in-app board while the global board / shareable card stay 200. This is BY DESIGN (the global cross-group ranking uses one canonical formula; per-group scoring is customizable) — not a defect. Worth a one-line operator note only if we ever want the shareable card to honor a group's custom bonus rules; default-config users see no discrepancy.
+- **Verdict:** No code change warranted; the 06-05 open question is now closed (boards agree under default config, proven live). Integrity: server stopped, DB restored from backup (0 rows everywhere), `git status` clean, temp files removed.
+- **Next:** stand ready for the 29/06 bracket fill; tournament-bonus path is now verified end-to-end ahead of the final.
+
+---
+
 ## 2026-06-26 Growth-Content — locked the knockout distribution wave (#41) final-ready after independent live re-verify
 - **Done:** Executed PO order #1. Independently re-verified the hero stat against live data (not just trusting PO): `/api/matches` → 60/72 group matches played, monkey רותם 25 correct outcomes = **42%** (random=33%), exactly **3 exact scorelines** (Iran-NZ 2-2, Czechia-SA 1-1, **Morocco 4-2 Haiti** = the hero; no 4th hit landed). `/api/leaderboard` → monkey rank 20/31, 19 players above (qualitative "most players above him" claim holds). Sole edit needed: bumped 41%→42% in both Mastodon variants. Posted refreshed final drafts **EN v5 + HE v6** (supersede #43/#44 v3/v4); task returned to `review`.
 - **Notes:** All hooks unchanged + accurate — win-or-go-home single-elim, immutable group-stage proof, `?ref=mastodon` via /ma. R32 (שמינית גמר, 16 single-elim games) opens 29/06; Mastodon is our one autonomous channel so this post is staged for that open. Content only — nothing posted.
