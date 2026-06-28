@@ -425,6 +425,67 @@ Mastodon - Hebrew (IL fediverse, 440 chars):
 #מונדיאל #WorldCup #Mundial2026
 ```
 
+### Knockout FIXTURES-REVEAL variant (drafts #53 WA/TG · #54 HE Mastodon · #55 EN Mastodon — 28/06)
+Companion to the stat-wave above. The blocks above name no matchups; once the group stage
+closed 72/72, the 16 R32 ties became determinable. Derived from the builder's QA'd dry-run fill
+plan (`node scripts/fill-r32.js --db /opt/worldcup/worldcup.db`, verified 16/16). Lead hooks:
+the monkey's hero team **Morocco is now drawn vs Netherlands**, and **Argentina–Cape Verde**
+is the Cinderella/upset-points angle (Cape Verde advanced on 3 draws). Marquee ties:
+Brazil-Japan · Netherlands-Morocco · France-Sweden · Argentina-Cape Verde · Spain-Austria · England-Congo.
+**FIRE GATING: post ONLY AFTER the operator completes the 29/06 R32 fill** (so the app actually
+shows these matchups) — the stat-only blocks above stay the safe pre-fill teaser.
+
+WhatsApp / Telegram broadcast — Hebrew (root link):
+```
+🐒⚽ שלב הבתים נגמר — השמינית נעולה!
+
+רותם הקוף ניחש בדיוק מרוקו 4-2 האיטי (ממצלמה חיה בגן חיות), צדק ב-39% מהמשחקים — ורוב השחקנים שלנו עדיין מעליו בטבלה.
+
+עכשיו זה אכזרי: 16 משחקי הוצאה, הפסד אחד והביתה. כמה מהמפגשים הגדולים:
+• ברזיל – יפן
+• הולנד – מרוקו
+• צרפת – שוודיה
+• ארגנטינה – כף ורדה
+• ספרד – אוסטריה
+• אנגליה – קונגו
+
+בנוקאאוט ניחוש שמפיל פייבוריט שווה הכי הרבה נקודות — מי שמהמר על הפתעה קופץ למעלה בטבלה.
+
+פתחנו ליגה פרטית — מי מסיים מעל כולם (ומעל הקוף)?
+הצטרפו לפני השריקה הראשונה (29/06):
+👉 https://tikitaka.vip
+```
+
+Mastodon - Hebrew (353 chars, autonomous via `/ma`):
+```
+🐒⚽ הקוף ניבא מרוקו 4-2 האיטי — תוצאה מדויקת, ממצלמה חיה בגן חיות. ועכשיו מרוקו בשמינית גמר המונדיאל.
+
+שלב הבתים נגמר, השמינית נעולה:
+ברזיל–יפן · הולנד–מרוקו · צרפת–שוודיה · ארגנטינה–כף ורדה
+
+הפסד אחד והביתה. וניחוש שמפיל פייבוריט שווה הכי הרבה נקודות.
+
+תחזיקו את ההובלה עד הגמר? חינם, 30 שניות.
+👉 https://tikitaka.vip/ma
+
+#מונדיאל #WorldCup #Mundial2026
+```
+
+Mastodon - English (415 chars, autonomous via `/ma`):
+```
+🐒⚽ A monkey called Morocco 4-2 Haiti — exact score, off a live zoo cam. And now Morocco are in the World Cup Round of 32.
+
+Group stage done, the bracket is locked:
+Brazil–Japan · Netherlands–Morocco · France–Sweden · Argentina–Cape Verde
+
+One loss and you're out. And an upset pick is worth the most points.
+
+Hold your lead to the final? Free, 30 seconds.
+👉 https://tikitaka.vip/ma
+
+#WorldCup #Mundial2026 #Football
+```
+
 ---
 
 ## 12. Mastodon - our one autonomously-postable channel  (needs a single operator YES)

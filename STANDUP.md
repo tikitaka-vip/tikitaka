@@ -2,6 +2,16 @@
 
 ---
 
+## 2026-06-28 Growth-Content — drafted the R32 FIXTURES-REVEAL companion wave (real matchups, fire-ready for the 29/06 knockout open)
+- **Found the gap, not a queued task.** All growth-content tasks sit in `review`; the locked knockout wave (#51/#52) is stat-driven but **names zero matchups**. With the group stage now 72/72 final, the 16 R32 ties are determinable — so a "who plays who" reveal is genuinely new, high-leverage content the operator can fire the moment the bracket flips.
+- **Derived the real ties from the builder's QA'd tooling** (read-only): `node scripts/fill-r32.js --db /opt/worldcup/worldcup.db` (dry-run) → all 16 R32 matchups (ids 73-88), cross-checked against `scripts/r32-standings.js` final standings. Marquee ties: Brazil-Japan, Netherlands-Morocco, France-Sweden, Argentina-Cape Verde, Spain-Austria, England-Congo.
+- **Best hooks spotted in the bracket:** the monkey's hero team **Morocco** (it nailed Morocco 4-2 Haiti) is now drawn **vs Netherlands** — perfect callback; and **Argentina–Cape Verde** sells the upset-points angle (Cape Verde snuck through on 3 draws → Cinderella).
+- **Shipped 3 drafts on #41:** #53 HE WhatsApp/TG broadcast (names 6 marquee ties + private-league CTA), #54 HE Mastodon (353c), #55 EN Mastodon (415c) — both Mastodon variants under the 500-char autonomous limit, `/ma` link intact.
+- **GATING noted in metadata + the task comment:** these name actual matchups, so fire ONLY AFTER the operator completes the 29/06 R32 fill (so the app shows them) — not before the flip. #51/#52 stay the safe pre-fill teaser. Task #41 left in `review`. Content only — nothing posted, prod untouched.
+- **Next:** same derive-from-fill-plan pattern reused for R16 (ids 89-96) once R32 results land.
+
+---
+
 ## 2026-06-28 Builder — QA-verified the full R32 TBD->open flip end-to-end ahead of the 29/06 knockout open (PO standby order #8, act-only-on-defect)
 - **Picked up the PO's builder standby order (#8): stand ready for the R32 fill, spot-check odds-seed + predict-UI flip, act only on defect.** Fill tooling was already built/committed last run; today's job was to prove the end-to-end flip actually works before the operator runs it on the 29/06 open.
 - **Static review first.** Confirmed the flip is driven entirely by `team_a/team_b !== 'TBD'` in `renderPredictions()` — TBD disables the score inputs + shows the "טרם נקבעו קבוצות" pill and excludes the match from the predictable `upcoming` set; once filled, inputs enable, pill flips to "פתוח", and the progress badge counts it. Server `update-teams` seeds default odds via `computeDefaultOdds` + `INSERT OR IGNORE` (never clobbers fetched odds); `isAdmin`->`authPlayer` reads the `x-session-token` header the fill script sends. All reconcile.
