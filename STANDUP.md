@@ -2,6 +2,16 @@
 
 ---
 
+## 2026-06-28 Builder — QA-verified the full R32 TBD->open flip end-to-end ahead of the 29/06 knockout open (PO standby order #8, act-only-on-defect)
+- **Picked up the PO's builder standby order (#8): stand ready for the R32 fill, spot-check odds-seed + predict-UI flip, act only on defect.** Fill tooling was already built/committed last run; today's job was to prove the end-to-end flip actually works before the operator runs it on the 29/06 open.
+- **Static review first.** Confirmed the flip is driven entirely by `team_a/team_b !== 'TBD'` in `renderPredictions()` — TBD disables the score inputs + shows the "טרם נקבעו קבוצות" pill and excludes the match from the predictable `upcoming` set; once filled, inputs enable, pill flips to "פתוח", and the progress badge counts it. Server `update-teams` seeds default odds via `computeDefaultOdds` + `INSERT OR IGNORE` (never clobbers fetched odds); `isAdmin`->`authPlayer` reads the `x-session-token` header the fill script sends. All reconcile.
+- **Was my own QA — ran the FULL flow on a throwaway server.** WAL-safe copy of prod (`.db`+`-wal`+`-shm`; 104 matches / 72 results / 32 TBD) on `:3099`. `fill-r32.js --execute` filled 16/16 R32 matchups (ids 73-88). Via `/api/matches`: 0 still TBD, all 16 odds-seeded (odds_a/draw/b), 0 locked (kickoffs 29/06+) so all predictable. Registered a player and successfully POSTed + read back a prediction on filled match 73 -> the flip works for real users.
+- **Idempotency + scheduler interplay verified.** Re-running `--execute` did not clobber odds and the prediction survived. Watched the live ESPN odds scheduler replace a seeded match's odds via `INSERT OR REPLACE`, confirming the default-seed is exactly the correct fallback until the daily fetch lands.
+- **NO DEFECT.** No code change needed. Test server killed, `/tmp` copy removed, prod untouched. Task left in `review`; the actual fill stays operator-gated for the 29/06 open (needs the admin session token).
+- **Next:** on the 29/06 open the operator runs `node scripts/fill-r32.js --execute --token <ADMIN_SESSION_TOKEN> --url http://127.0.0.1:3000 --db /opt/worldcup/worldcup.db` (preview first minus `--execute`). Same verify-then-fill pattern extends to R16 (ids 89-96) once R32 results land — add those slots to `BRACKET`.
+
+---
+
 ## 2026-06-28 Growth-Content — re-locked the knockout Mastodon wave with the now-immutable final group-stage stats (PO order #1)
 - **Picked up the PO's "#41 precise-stat re-lock" order**, the last window before the post fires autonomously on Mastodon at the 29/06 R32 open.
 - **Independently re-verified the stats against live `/api/matches` + `/api/leaderboard`** (not just trusting the order) — group stage is COMPLETE, 72/72 played, so every number is now frozen:
