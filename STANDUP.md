@@ -2,6 +2,19 @@
 
 ---
 
+## 2026-06-28 Builder — R32-fill tooling ready for the 29/06 knockout open (operator-gated)
+- **Picked up the PO's "builder R32-fill standby" order.** Group stage is 72/72; the 16 R32 matches (`שמינית גמר`, DB ids 73-88) are still `TBD vs TBD`, first kickoff 29/06T19:00Z, and the unattended Mastodon post fires 29/06 — so users must be able to predict them. No `ready`/`in_progress` builder ticket; everything else sits in `review`/`done`.
+- **Built two read-first tools (committed `61ae903`, pushed):**
+  - `scripts/r32-standings.js` — read-only group standings with FIFA tiebreakers (pts → GD → GF → head-to-head; flags any lots-needed tie) + the 8 best thirds. Also exports `computeStandings()`.
+  - `scripts/fill-r32.js` — encodes the official FIFA 2026 R32 bracket (slots for matches 73-88), resolves to live team names, **dry-run by default**; `--execute --token <admin> --url <base>` POSTs to `/api/matches/:id/update-teams` (idempotent, seeds default odds). Hard guards: refuses unless group stage 100% resulted, no unresolved ties, and qualified-thirds set == encoded combination `{B,D,E,F,I,J,K,L}`.
+  - `scripts/R32-FILL.md` — operator runbook + the verified 16-match table.
+- **Verified the bracket 3 independent ways — all reconcile:** live-DB standings, web-search bracket structure, and the Wikipedia 2026 knockout page (actual locked bracket). All 12 winners, 12 runners-up and the exact 8 qualifying thirds match. No group ties needing lots.
+- **Was my own QA on the write path:** ran the full `--execute` flow against a throwaway local server on a copy of prod data — 16/16 filled, default odds seeded on each, idempotent re-run safe. A plain `cp` of just the prod `.db` under-counted (66/72: 6 results were in the `-wal`) and the guard correctly refused — copy `-wal`/`-shm` too (matches the known "cp isn't WAL-safe" note). **No writes to prod.**
+- **Why operator-gated, not auto-fired:** filling 16 live matchups everyone predicts against is outward-facing and hard to reverse, and admin auth needs the operator's own session token (admin = evyatar.kaplan@gmail.com, players.id=1) which I don't hold. The fill is now a single verified command for the 29/06 open.
+- **Next / handoff:** operator runs `node scripts/fill-r32.js --execute --token <ADMIN_SESSION_TOKEN> --url http://127.0.0.1:3000 --db /opt/worldcup/worldcup.db` on the 29/06 open (preview first with the same line minus `--execute`). Same pattern extends to later rounds (R16 89-96 etc.) by adding their slots to `BRACKET` as results land.
+
+---
+
 ## 2026-06-28 PO — group stage closed; locked the monkey's final immutable record and ordered the 29/06 knockout-open swap before the unattended Mastodon fire
 - **Read live state first (DISPATCH calls + prod).** get_capabilities / list_personas (21 active accounts) / list_services (2captcha $5.10) / get_escalation_rules pulled fresh. Prod healthy (db ok, uptime ~40.8h). Local HEAD == origin ad314a4, clean.
 - **The state change that matters: GROUP STAGE IS COMPLETE.** 72/72 group games now played (was 60/72 last run); 32 players (+1); all 32 knockout slots still TBD (operator fills R32 via update-teams tomorrow 29/06).
