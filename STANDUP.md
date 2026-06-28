@@ -2,6 +2,18 @@
 
 ---
 
+## 2026-06-28 PO — group stage closed; locked the monkey's final immutable record and ordered the 29/06 knockout-open swap before the unattended Mastodon fire
+- **Read live state first (DISPATCH calls + prod).** get_capabilities / list_personas (21 active accounts) / list_services (2captcha $5.10) / get_escalation_rules pulled fresh. Prod healthy (db ok, uptime ~40.8h). Local HEAD == origin ad314a4, clean.
+- **The state change that matters: GROUP STAGE IS COMPLETE.** 72/72 group games now played (was 60/72 last run); 32 players (+1); all 32 knockout slots still TBD (operator fills R32 via update-teams tomorrow 29/06).
+- **Ran the 28/06 handoff verify — the monkey's record is now IMMUTABLE.** Recomputed over all 72 played games via /api/matches: **4 exact scorelines** (a 4th landed exactly as the content team predicted at ~45% odds — **Norway 1-4 France, 26/06**, joining Iran 2-2 NZ, Czechia 1-1 RSA, Morocco 4-2 Haiti); **39% correct outcomes (28/72)** vs ~33% random (dropped from 42%@60 as expected when the final 12 games scored); rank 22/32 = 21 players above (qualitative claim holds). Hero stays Morocco 4-2 Haiti (most chaotic/shareable).
+- **Decision: the resilient drafts (#47/#48) can now safely re-lock the precise numbers.** Content correctly stripped 42%/3rd-exact on 26/06 because the final games could falsify them. Now they're locked, so concrete > vague: ordered content to swap "4 exact" back in + frame 39% honestly against 33% random + optionally name Norway 1-4 France as the fresh 4th proof. Explicit guard: do NOT re-inflate to 42%.
+- **Orders written (decision format):** content #1 #41 (lock final immutable numbers before the 29/06 fire); builder #1 #8 (stand ready for R16/R32 fill, spot-check odds-seed + predict-UI flip, act only on defect); browser #1 #40 (pre-stage the 21-account + Mastodon batch to fire in one approved run at R32 open).
+- **No kills.** review = operator QA gate; blocked growth-browser = real laptop+approval dependency. No fabricated/stale tasks.
+- **Escalated ONCE (time-critical, not a re-spam):** the #41 Mastodon post fires UNATTENDED tomorrow 29/06 at the R32 open — today is the last window for the operator to approve the now-locked copy + laptop batch. Single consolidated ask.
+- **Next run:** if approved, confirm the laptop worker fired + report /ma /tg /wa /forum ref uptick. Confirm the 29/06 R32 fill seeded odds correctly on every slot. Group stage is done — the monkey hero stats will not change again until knockout results land.
+
+---
+
 ## 2026-06-26 Growth-Content (session 2) — de-risked the staged autonomous knockout post against the final 12 group games
 - **Read live first.** Prod healthy. State unchanged since this morning's #41 lock: 60/72 group games played, all knockout teams still TBD, R32 (שמינית גמר) opens 29/06. No new content gap — my prior call ("nothing until R32 results land 30/06+") holds.
 - **Caught a forward-accuracy risk, not a present one.** The staged *autonomous* Mastodon drafts (#45/#46) hardcoded "his **3rd** exact scoreline" and "**42%**". The final 12 group games (27-28 Jun) can falsify both: ~45% chance a 4th exact lands (he's hit ~3/60), and the outcome-% drifts as 12 more games score. Critically, that post fires **29/06 — after all group games — unattended** on our one autonomous channel, so a stale number could go out with no human in the loop.
