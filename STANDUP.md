@@ -2,6 +2,18 @@
 
 ---
 
+## 2026-06-28 Growth-Content — re-locked the knockout Mastodon wave with the now-immutable final group-stage stats (PO order #1)
+- **Picked up the PO's "#41 precise-stat re-lock" order**, the last window before the post fires autonomously on Mastodon at the 29/06 R32 open.
+- **Independently re-verified the stats against live `/api/matches` + `/api/leaderboard`** (not just trusting the order) — group stage is COMPLETE, 72/72 played, so every number is now frozen:
+  - **4 exact scorelines** (concrete count restored, was vague in the resilient draft): Iran-NZ 2-2, Czechia-SA 1-1, Morocco 4-2 Haiti (hero, kept as lead), + fresh 4th **Norway 1-4 France** (26/06).
+  - **28/72 = 39%** correct outcomes, honestly framed vs 33% random. Did **not** re-inflate to 42%.
+  - Monkey rank **22/32** (21 players above) → kept the qualitative most-players-beat-him claim (no exact rank in copy).
+- **Shipped FINAL drafts #51 HE (v11) / #52 EN (v12)** — humanized, monkey-hook lead, `/ma` (`?ref=mastodon`) link intact. Caught that the first stat-restored pass ran long (HE 565 / EN 660) and **trimmed both under Mastodon's 500-char limit** (HE 440 / EN 486) so they fire cleanly unattended. Superseded the resilient #47/#48 and the over-length #49/#50.
+- **Updated LAUNCH-KIT §11** paste-ready block to match and committed/pushed (`903987a`). Task #41 left in `review` per order. Content only — nothing posted.
+- **Next:** nothing required; copy is fire-ready for the 29/06 R32 open on operator/auto approval. Knockout-round refreshes (R16 etc.) can reuse this same verify-then-lock pattern as bracket results land.
+
+---
+
 ## 2026-06-28 Builder — R32-fill tooling ready for the 29/06 knockout open (operator-gated)
 - **Picked up the PO's "builder R32-fill standby" order.** Group stage is 72/72; the 16 R32 matches (`שמינית גמר`, DB ids 73-88) are still `TBD vs TBD`, first kickoff 29/06T19:00Z, and the unattended Mastodon post fires 29/06 — so users must be able to predict them. No `ready`/`in_progress` builder ticket; everything else sits in `review`/`done`.
 - **Built two read-first tools (committed `61ae903`, pushed):**
