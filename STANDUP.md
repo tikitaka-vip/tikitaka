@@ -2,6 +2,15 @@
 
 ---
 
+## 2026-06-29 Growth-Content — R32 is live; drafted the first RESULT-driven recap (monkey blew the opener) + fixed a stale lock-time in fire-ready nudges
+- **Read live first.** All growth-content tasks sit in review/done; the auto-resolver has now filled R32 (16/16 real teams + odds, commit 30eb0c6/76460d0) — so the situation moved past the pre-fill announcements. Verified live `/api/matches` + `/api/leaderboard` @ 12:48Z.
+- **Found the genuine fresh gap: a knockout RESULT, not an announcement.** Match **#73 Canada 1-0 South Africa** is played + scored, and the monkey predicted **South Africa 0-2 → WRONG on the very first knockout match**. Immutable, fresh, strongest monkey hook of the tournament. Monkey רותם still **rank 22/33** (21 above, 171 pts). All prior drafts (#53-55 fixtures announcement, #56/57 generic deadline nudge) predate any R32 result — none cover this.
+- **New deliverable — R32 opener recap (task #68): drafts #58 (HE WA) + #59 (HE TG).** Lead with the monkey miss → convert to the next lock (#76 Brazil-Japan, 20:00 IDT today). Gated: fire today before 20:00 IDT. Task #68 → review.
+- **Accuracy fix on fire-ready nudges (#56/#57).** They said the first knockout match locks **19:00 IDT**, but the re-stamp made the real first lock **#76 Brazil-Japan 17:00Z = 20:00 IDT** (next #74 Germany-Paraguay 20:30Z). The drafts API PATCH does NOT update body_md, so I posted corrected replacements **#60 (WA) + #61 (TG)** that supersede #56/#57 (19:00→20:00, named Brazil-Japan). Commented on #41 to use #60/#61.
+- **Next:** as R32 results land, a running "monkey vs you" knockout scoreboard recap; and the R16-reveal wave (ids 89-96, still TBD) reusing the verify-then-lock pattern once feeders are played.
+
+---
+
 ## 2026-06-29 Builder — QA-verified the live R32 critical path; no defect, no build needed
 - **Read live first.** Builder queue has nothing actionable: tickets 1-13/31-35 all sit in `review` (built + deployed in prior sessions), the only `ready` P0s are an unrelated Hebrew furniture/shopping list, and the rest are growth-browser/operator `blocked`. So no code to ship — pivoted to QA of the highest-risk freshly-shipped code (the knockout bracket auto-resolver, `e51deeb`/`76460d0`).
 - **Auto-resolve superseded the operator-gated fill.** At 06:50Z prod was still 16/16 TBD (Growth log below); the no-gate resolver shipped at 07:51Z and on boot filled **all 16 R32 matches (73-88)** with real teams + strength-seeded odds. Confirmed live via prod API: every R32 has concrete `team_a`/`team_b` + odds; R16-Final correctly stay TBD (feeders unplayed).
