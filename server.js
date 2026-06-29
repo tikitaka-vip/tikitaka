@@ -277,6 +277,17 @@ const TEAM_STRENGTH = {
   'ניו זילנד':4.0,'קונגו':3.5,'אוזבקיסטן':3.2,
 };
 
+// Build a valid UTC ISO instant from a base date ('2026-06-29T') and an hour
+// that may exceed 23. The late-night knockout slot is "25:00" == 01:00 the next
+// day; without rolling it over, '...T25:00:00Z' is an Invalid Date and every
+// `new Date(kickoff_utc)` comparison (isLocked, lockedIds, reminders) silently
+// evaluates to false, so the match never locks and its predictions never score.
+function kickoffIso(utcBase, hour, min = 0, sec = 0) {
+  const d = new Date(utcBase + '00:00:00Z');
+  d.setUTCHours(hour, min, sec, 0);
+  return d.toISOString().replace(/\.\d{3}Z$/, 'Z');
+}
+
 function computeDefaultOdds(teamA, teamB) {
   const sa = TEAM_STRENGTH[teamA] || 2.5;
   const sb = TEAM_STRENGTH[teamB] || 2.5;
@@ -389,7 +400,7 @@ if (count === 0) {
 
   for (const round of knockoutRounds) {
     for (let i = 1; i <= round.count; i++) {
-      const utc = `${round.utcBase}${String(16 + (i % 4) * 3).padStart(2,'0')}:00:00Z`;
+      const utc = kickoffIso(round.utcBase, 16 + (i % 4) * 3);
       insert.run(round.stage, null, `TBD`, `TBD`, round.startDate, '', '', utc, ++order);
     }
   }
@@ -403,6 +414,25 @@ if (count === 0) {
     const o = computeDefaultOdds(m.team_a, m.team_b);
     defaultOdds.run(m.id, o.odds_a, o.odds_draw, o.odds_b);
   }
+}
+
+// One-time, idempotent data heal: an earlier knockout seed wrote the late-night
+// slot as '...T25:00:00Z' (and 26/27 for later rounds), which parse to Invalid
+// Date — so those matches never locked, scored, or sent reminders. Normalize any
+// kickoff_utc whose hour is >= 24 into the equivalent valid instant on the next
+// day. Runs every boot but only touches rows that are still malformed.
+{
+  const fixKickoff = db.prepare('UPDATE matches SET kickoff_utc = ? WHERE id = ?');
+  let healed = 0;
+  for (const m of db.prepare("SELECT id, kickoff_utc FROM matches WHERE kickoff_utc IS NOT NULL AND kickoff_utc != ''").all()) {
+    const parts = /^(\d{4}-\d{2}-\d{2})T(\d{2}):(\d{2}):(\d{2})Z$/.exec(m.kickoff_utc);
+    if (!parts || Number(parts[2]) < 24) continue;
+    const fixed = kickoffIso(parts[1] + 'T', Number(parts[2]), Number(parts[3]), Number(parts[4]));
+    fixKickoff.run(fixed, m.id);
+    healed++;
+    console.log(`kickoff heal: match ${m.id} ${m.kickoff_utc} -> ${fixed}`);
+  }
+  if (healed) console.log(`kickoff heal: normalized ${healed} match(es) with out-of-range hour`);
 }
 
 // --- Helpers ---
