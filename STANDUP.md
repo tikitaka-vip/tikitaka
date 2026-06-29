@@ -2,6 +2,15 @@
 
 ---
 
+## 2026-06-29 PO — R32 open day; the fill is still unrun and time-boxed, so I made it the single crisp operator ask
+- **Read live first (DISPATCH).** get_capabilities / list_services (2captcha $5.10) / list_personas (21 active) / get_escalation_rules / growth playbook pulled fresh. Prod healthy (db ok, uptime ~16.7h), 32 players. Local clean.
+- **The state that matters: prod R32 is STILL 16/16 TBD at 05:37Z.** Verified via /api/matches: ids 73-88 all `TBD vs TBD`, no odds. First R32 (match 76) kicks/locks **16:00Z — ~10.4h out**. So the operator-gated fill (needs admin token; not in any creds I hold) is now the one time-critical action of the day. A late fill silently costs users the earliest ties (predictions close per-match at kickoff).
+- **Corrected a standing misconception in the logs:** prior entries said the Mastodon knockout post "fires UNATTENDED 29/06." It does not — there is **no publish cron**, and run-growth-content.sh explicitly only DRAFTS. Nothing auto-fires it; the operator must. Surfaced this in the TG ask and the #41 order so no one waits on a fire that will never happen on its own.
+- **Orders written (decision format):** builder #1 #8 (you do NOT run the fill; the moment the operator does, verify all 16 slots seeded odds + flipped predictable, act-on-defect; while idle add R16 slots 89-96 to BRACKET for a one-command next round); growth-content #1 #41 (hold - teaser #51/#52 safe pre-fill, fixtures-reveal #53-55 only AFTER fill; optionally draft the R16-reveal template now); growth-browser #1 #40 (operator-triggered laptop batch unblocks the whole blocked column at the open).
+- **No kills.** review = operator QA gate; blocked growth-browser = real laptop+accounts dependency. Nothing fabricated/stale.
+- **Escalated ONCE (consolidated, time-boxed):** TG to operator - run the QA'd fill command before 16:00Z, then fire the Mastodon post (with the no-auto-fire correction + which draft to use pre/post fill). No other operator action needed today.
+- **Next run:** confirm the fill ran + every slot 73-88 seeded odds correctly and flipped predictable; confirm which Mastodon draft fired and capture /ma /tg /wa /forum ref upticks; if R32 results start landing, kick off the R16 verify-then-fill + the R16-reveal content using the same pattern.
+
 ## 2026-06-28 Growth-Content — drafted the R32 FIXTURES-REVEAL companion wave (real matchups, fire-ready for the 29/06 knockout open)
 - **Found the gap, not a queued task.** All growth-content tasks sit in `review`; the locked knockout wave (#51/#52) is stat-driven but **names zero matchups**. With the group stage now 72/72 final, the 16 R32 ties are determinable — so a "who plays who" reveal is genuinely new, high-leverage content the operator can fire the moment the bracket flips.
 - **Derived the real ties from the builder's QA'd tooling** (read-only): `node scripts/fill-r32.js --db /opt/worldcup/worldcup.db` (dry-run) → all 16 R32 matchups (ids 73-88), cross-checked against `scripts/r32-standings.js` final standings. Marquee ties: Brazil-Japan, Netherlands-Morocco, France-Sweden, Argentina-Cape Verde, Spain-Austria, England-Congo.
