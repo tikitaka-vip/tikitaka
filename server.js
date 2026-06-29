@@ -20,6 +20,7 @@ const http = require('http');
 
 const { sendWelcomeEmail, sendResetEmail, sendVerifyEmail, hashPassword, verifyPassword } = require('./email');
 const { setupNotificationRoutes, startNotificationScheduler, notifyResult, setTgBotToken } = require('./notifications');
+const { resolveBracket } = require('./bracket');
 const app = express();
 const db = new Database(path.join(__dirname, 'worldcup.db'));
 
@@ -434,6 +435,16 @@ if (count === 0) {
   }
   if (healed) console.log(`kickoff heal: normalized ${healed} match(es) with out-of-range hour`);
 }
+
+// Auto-fill the knockout bracket from current results on every boot, and keep it
+// in sync whenever a result changes (see /api/matches/:id/result and the ESPN
+// auto-fetch). Resolves the official FIFA 2026 R32 from group standings the
+// moment the group stage completes, then advances winners through later rounds —
+// no manual/operator step required.
+try {
+  const r = resolveBracket(db, { computeDefaultOdds });
+  if (r.changed) console.log(`Bracket resolver: filled ${r.changed} knockout match(es)`, r.complete ? '(group stage complete)' : '');
+} catch (e) { console.error('Bracket resolve on startup failed:', e.message); }
 
 // --- Helpers ---
 
@@ -1725,7 +1736,11 @@ function startAutoFetch() {
     // Quota-free ESPN source — safe to poll every cycle while results are pending.
     try {
       const result = await doFetchScoresEspn();
-      if (result.updated > 0) console.log(`Auto-fetch (ESPN): updated ${result.updated} match results`);
+      if (result.updated > 0) {
+        console.log(`Auto-fetch (ESPN): updated ${result.updated} match results`);
+        try { const r = resolveBracket(db, { computeDefaultOdds }); if (r.changed) console.log(`Bracket resolver: filled ${r.changed} knockout match(es)`); }
+        catch (e) { console.error('resolveBracket failed:', e.message); }
+      }
     } catch (e) {
       console.error('Auto-fetch scores failed:', e.message);
     }
@@ -1810,9 +1825,19 @@ app.post('/api/matches/:id/result', (req, res) => {
   const matchId = req.params.id;
   const existed = db.prepare('SELECT 1 FROM match_results WHERE match_id = ?').get(matchId);
   db.prepare('INSERT OR REPLACE INTO match_results (match_id, score_a, score_b) VALUES (?, ?, ?)').run(matchId, score_a, score_b);
+  // A new/updated result may complete the group stage (fills R32) or decide a
+  // knockout tie (advances the winner), so re-resolve the bracket immediately.
+  try { resolveBracket(db, { computeDefaultOdds }); } catch (e) { console.error('resolveBracket failed:', e.message); }
   res.json({ ok: true });
   // Notify players only on a first-time result, not on a correction (avoids re-spamming).
   if (!existed) notifyResult(db, matchId).catch(e => console.error('notifyResult failed:', e.message));
+});
+
+// Manual trigger (admin): recompute knockout teams from current results.
+app.post('/api/admin/resolve-bracket', (req, res) => {
+  if (!isAdmin(req)) return res.status(403).json({ error: 'אין הרשאה' });
+  try { res.json({ ok: true, ...resolveBracket(db, { computeDefaultOdds }) }); }
+  catch (e) { res.status(500).json({ error: e.message }); }
 });
 
 app.post('/api/actual-results', (req, res) => {
