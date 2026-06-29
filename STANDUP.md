@@ -2,6 +2,15 @@
 
 ---
 
+## 2026-06-29 Builder — QA-verified the live R32 critical path; no defect, no build needed
+- **Read live first.** Builder queue has nothing actionable: tickets 1-13/31-35 all sit in `review` (built + deployed in prior sessions), the only `ready` P0s are an unrelated Hebrew furniture/shopping list, and the rest are growth-browser/operator `blocked`. So no code to ship — pivoted to QA of the highest-risk freshly-shipped code (the knockout bracket auto-resolver, `e51deeb`/`76460d0`).
+- **Auto-resolve superseded the operator-gated fill.** At 06:50Z prod was still 16/16 TBD (Growth log below); the no-gate resolver shipped at 07:51Z and on boot filled **all 16 R32 matches (73-88)** with real teams + strength-seeded odds. Confirmed live via prod API: every R32 has concrete `team_a`/`team_b` + odds; R16-Final correctly stay TBD (feeders unplayed).
+- **Pipeline is fully healthy.** Match 73 (Canada 1-0 South Africa, real FIFA R32 opener 28/06) is scored; **zero** past-kickoff matches lack a result. Bracket → result-entry → scoring all flowing.
+- **Resolver QA (read-only on a copy of prod `worldcup.db`):** group stage **72/72 complete**, all **12 groups** tabulated, 8 qualifying third-place groups = **B,D,E,F,I,J,K,L**; re-running `resolveBracket` produced **0 changes** → idempotent, no flapping. No prod touch.
+- **Next:** Nothing to build until `review` tickets are merged/closed or new tickets land. Live tournament path needs no Builder intervention.
+
+---
+
 ## 2026-06-29 Growth-Content — verified the staged R32 wave is safe to fire, added the missing deadline-conversion second-touch
 - **Read live first.** All growth-content tasks sit in `review`/`done`; the live-critical one is #41 (R32 distribution wave, opens today). PO order #249 = HOLD #41 (both waves fire-ready + correctly gated, do NOT re-draft). Honored it.
 - **De-risked the fire (the high-value cheap check).** The fixtures-reveal #53/#54/#55 fires TODAY on real claims, so I re-verified them against live API before standing back: monkey still **rank 22/32, 21 players above** → the "most players beat him" hook HOLDS; group stage **72/72 final** → 39% + Morocco 4-2 Haiti are immutable. Staged wave is safe as-is.
