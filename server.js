@@ -436,6 +436,42 @@ if (count === 0) {
   if (healed) console.log(`kickoff heal: normalized ${healed} match(es) with out-of-range hour`);
 }
 
+// One-time: stamp the real official FIFA 2026 knockout schedule. The original
+// seed crammed every knockout match onto a single placeholder date, so a match
+// that had already kicked off still showed as "open" (never locked) and never
+// got auto-fetched. These are the published kick-off instants (UTC); match_date
+// / match_time are shown in Israel time (UTC+3). Versioned flag = idempotent.
+const KO_SCHEDULE_UTC = {
+  73: '2026-06-28T19:00:00Z', 74: '2026-06-29T20:30:00Z', 75: '2026-06-30T01:00:00Z',
+  76: '2026-06-29T17:00:00Z', 77: '2026-06-30T21:00:00Z', 78: '2026-06-30T17:00:00Z',
+  79: '2026-07-01T01:00:00Z', 80: '2026-07-01T16:00:00Z', 81: '2026-07-02T00:00:00Z',
+  82: '2026-07-01T20:00:00Z', 83: '2026-07-02T23:00:00Z', 84: '2026-07-02T19:00:00Z',
+  85: '2026-07-03T03:00:00Z', 86: '2026-07-03T22:00:00Z', 87: '2026-07-04T01:30:00Z',
+  88: '2026-07-03T18:00:00Z', 89: '2026-07-04T21:00:00Z', 90: '2026-07-04T17:00:00Z',
+  91: '2026-07-05T20:00:00Z', 92: '2026-07-06T00:00:00Z', 93: '2026-07-06T18:00:00Z',
+  94: '2026-07-07T00:00:00Z', 95: '2026-07-07T16:00:00Z', 96: '2026-07-07T20:00:00Z',
+  97: '2026-07-09T20:00:00Z', 98: '2026-07-10T19:00:00Z', 99: '2026-07-11T21:00:00Z',
+  100: '2026-07-12T01:00:00Z', 101: '2026-07-14T18:00:00Z', 102: '2026-07-15T18:00:00Z',
+  103: '2026-07-18T18:00:00Z', 104: '2026-07-19T19:00:00Z',
+};
+if (db.prepare("SELECT value FROM settings WHERE key='ko_real_schedule_v1'").get() === undefined) {
+  const updSched = db.prepare('UPDATE matches SET match_date = ?, match_time = ?, kickoff_utc = ? WHERE id = ?');
+  const pad = n => String(n).padStart(2, '0');
+  let stamped = 0;
+  const tx = db.transaction(() => {
+    for (const [id, iso] of Object.entries(KO_SCHEDULE_UTC)) {
+      const il = new Date(Date.parse(iso) + 3 * 3600 * 1000); // Israel = UTC+3
+      const dateIl = `${pad(il.getUTCDate())}/${pad(il.getUTCMonth() + 1)}`;
+      const timeIl = `${pad(il.getUTCHours())}:${pad(il.getUTCMinutes())}`;
+      updSched.run(dateIl, timeIl, iso, id);
+      stamped++;
+    }
+    db.prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('ko_real_schedule_v1', ?)").run(new Date().toISOString());
+  });
+  tx();
+  console.log(`Stamped official knockout schedule on ${stamped} matches`);
+}
+
 // Auto-fill the knockout bracket from current results on every boot, and keep it
 // in sync whenever a result changes (see /api/matches/:id/result and the ESPN
 // auto-fetch). Resolves the official FIFA 2026 R32 from group standings the
