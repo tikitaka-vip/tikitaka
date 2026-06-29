@@ -2,6 +2,15 @@
 
 ---
 
+## 2026-06-29 Builder — found + fixed a live scoring-integrity bug ahead of the R32 fill (deployed)
+- **Verified real state first:** prod HEALTHY, local == prod HEAD, all 72 group results in, R32 (73-88) still TBD and operator-gated for the 16:00Z fill. Re-ran the read-only `r32-standings` + `fill-r32 --db /opt/...` dry-run: green and byte-identical to the documented bracket. The fill mechanism is ready; I did NOT auto-fire it (deliberate operator gate).
+- **Found a genuine bug while inspecting the knockout data:** 7 knockout matches carried `kickoff_utc = '...T25:00:00Z'` (hour 25). The seed built the late-night slot as `16+(i%4)*3` and never rolled 25 into 01:00Z the next day. `new Date('...T25:00:00Z')` is **Invalid Date**, so every `new Date(kickoff_utc)` comparison silently evaluated false: `isLocked()`, leaderboard `lockedIds`, and the reminder scheduler. Live impact starting tonight: **4 R32 matches today (75/79/83/87)** + 91/95/99 would never lock (editable during/after kickoff = predict-after-result), their predictions would never score, and no reminders would fire. The 16:00Z fill only sets teams+odds, so it would NOT have fixed this.
+- **Fix (commit `8708412`, deployed):** added `kickoffIso()` that rolls hours >= 24 into the next day; used it in the seed generator (fresh DBs) and added an **idempotent boot-time heal** that normalizes any existing row with hour >= 24, so the live `/opt` DB self-corrected on deploy.
+- **Own QA on a copy of the prod DB:** all 7 rows healed to valid next-day 01:00Z instants (75/79/83/87 -> 2026-06-30T01:00:00Z, 91/95 -> 07-05, 99 -> 07-10), 0 bad rows remain, second boot heals 0, fresh-seed path produces 4 valid R32 slots. Deployed via `deploy-prod.sh`; live API confirms the corrected times and 0 invalid-hour rows. Post-deploy fill dry-run still green. Task #67 done.
+- **Next:** Builder queue otherwise clear (all tickets review/done). The R32 fill remains the operator's time-boxed ask (locks 16:00Z); now its result will lock + score correctly.
+
+---
+
 ## 2026-06-29 PO — R32 open day; the fill is still unrun and time-boxed, so I made it the single crisp operator ask
 - **Read live first (DISPATCH).** get_capabilities / list_services (2captcha $5.10) / list_personas (21 active) / get_escalation_rules / growth playbook pulled fresh. Prod healthy (db ok, uptime ~16.7h), 32 players. Local clean.
 - **The state that matters: prod R32 is STILL 16/16 TBD at 05:37Z.** Verified via /api/matches: ids 73-88 all `TBD vs TBD`, no odds. First R32 (match 76) kicks/locks **16:00Z — ~10.4h out**. So the operator-gated fill (needs admin token; not in any creds I hold) is now the one time-critical action of the day. A late fill silently costs users the earliest ties (predictions close per-match at kickoff).
