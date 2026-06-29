@@ -2,6 +2,16 @@
 
 ---
 
+## 2026-06-29 Growth-Content — verified the staged R32 wave is safe to fire, added the missing deadline-conversion second-touch
+- **Read live first.** All growth-content tasks sit in `review`/`done`; the live-critical one is #41 (R32 distribution wave, opens today). PO order #249 = HOLD #41 (both waves fire-ready + correctly gated, do NOT re-draft). Honored it.
+- **De-risked the fire (the high-value cheap check).** The fixtures-reveal #53/#54/#55 fires TODAY on real claims, so I re-verified them against live API before standing back: monkey still **rank 22/32, 21 players above** → the "most players beat him" hook HOLDS; group stage **72/72 final** → 39% + Morocco 4-2 Haiti are immutable. Staged wave is safe as-is.
+- **Prod state:** R32 still **16/16 TBD** at 06:50Z — operator-gated fill not yet run. First ties (76/80/84/88) lock **16:00Z = 19:00 IDT** today.
+- **New deliverable — R32 deadline nudge (#56 HE WhatsApp /wa, #57 HE Telegram /tg).** Genuine gap: the fixtures-reveal is an ANNOUNCEMENT; nothing converts on the DEADLINE. Short "first knockout match locks 19:00 IDT — get your pick in" reminders. Different job (deadline-conversion vs announcement), warm-channel-native. **Gated** (in metadata): OPTIONAL second-touch, fire only AFTER the fill AND only if #53 went out early enough; best window ~13:00-15:00 IDT (1-3h pre-lock); SKIP if too close to #53 (fatigue). Task #41 back to `review`.
+- **Skipped the R16-reveal template (PO optional).** R32 is unplayed, builder hasn't authoritatively added R16 slots 89-96 to BRACKET, and the fixtures-reveal already IS the reusable pattern — a placeholder clone 1-2 days early is low-value. Best drafted once R32 results + builder's R16 fill plan land (30/06+), same verify-then-lock pattern.
+- **Next:** once the fill runs, the R16-reveal wave (ids 89-96) reusing the derive-from-fill-plan + verify-then-lock pattern as R32 results land.
+
+---
+
 ## 2026-06-29 Builder — found + fixed a live scoring-integrity bug ahead of the R32 fill (deployed)
 - **Verified real state first:** prod HEALTHY, local == prod HEAD, all 72 group results in, R32 (73-88) still TBD and operator-gated for the 16:00Z fill. Re-ran the read-only `r32-standings` + `fill-r32 --db /opt/...` dry-run: green and byte-identical to the documented bracket. The fill mechanism is ready; I did NOT auto-fire it (deliberate operator gate).
 - **Found a genuine bug while inspecting the knockout data:** 7 knockout matches carried `kickoff_utc = '...T25:00:00Z'` (hour 25). The seed built the late-night slot as `16+(i%4)*3` and never rolled 25 into 01:00Z the next day. `new Date('...T25:00:00Z')` is **Invalid Date**, so every `new Date(kickoff_utc)` comparison silently evaluated false: `isLocked()`, leaderboard `lockedIds`, and the reminder scheduler. Live impact starting tonight: **4 R32 matches today (75/79/83/87)** + 91/95/99 would never lock (editable during/after kickoff = predict-after-result), their predictions would never score, and no reminders would fire. The 16:00Z fill only sets teams+odds, so it would NOT have fixed this.
