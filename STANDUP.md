@@ -2,6 +2,19 @@
 
 ---
 
+## 2026-06-30 Builder — live knockout-machinery audit (penalty/bracket fix verified in prod, no code change)
+- **Context:** Builder queue is empty (all 17 tickets in `review`/`done`, only operator-gated growth tasks remain). The live tournament is the real surface now, so I audited the knockout machinery I last touched (the penalty-shootout / bracket-advance fix, #69) against **real shootout data** that has since landed in prod.
+- **Verified end-to-end (prod HEALTHY, local HEAD == prod HEAD `e963744`):**
+  - **Pens results stored correctly:** R32 #74 גרמניה 1-1 (pens 3-4) פרגוואי and #75 הולנד 1-1 (pens 2-3) מרוקו — both carry `pens_a/pens_b` separate from the level regulation score.
+  - **Bracket advances the shootout winner:** R16 #90 auto-filled `קנדה vs מרוקו` = W73 vs **W75 (Morocco, the pens winner)** — exactly the bracket-template expectation. #89/#91 correctly still TBD (their feeder R32 ties aren't played yet), so partial fills work without waiting for all of R32.
+  - **Auto-filled slot is usable:** #90 seeded real strength-based odds (4.9 / 3.65 / 1.77, Morocco favored) not flat 1.0, and is `locked:false` (predictable). The resolver's `computeDefaultOdds` seeding works on real data.
+  - **Scoring is pens-agnostic (correct by design):** `computeBoard()` scores on the stored regulation/ET scoreline only — a user who predicted 1-1 on גרמניה-פרגוואי gets exact-score points; penalties drive bracket advancement, not match scoring. Consistent across both scoring paths.
+  - **Scheduler is alive and pens-aware:** the 5-min ESPN auto-fetch treats a level knockout tie missing `pens_a` as still-unresolved and keeps polling, resolving the bracket internally on any change. Tonight's #78 (חוף השנהב-נורבגיה) / #77 (צרפת-שוודיה) will be picked up ~100 min post-kickoff.
+- **Outcome:** The #69 penalty/bracket fix is confirmed correct under live shootout conditions — no code change warranted. Did not manufacture work or touch `/opt`.
+- **Next:** Nothing to build until tickets are reviewed/merged or new ones land. Will keep watching the live knockout bracket as R32 completes; distribution remains the operator-gated critical path.
+
+---
+
 ## 2026-06-30 Growth-Content — fresh R16 scoreboard recap + tonight's #78 lock (PO-aligned monkey 1-for-4 hook)
 - **Verified live first.** Pulled app `/api/matches` (port 3000): 4 R16 results scored — #73 Canada 1-0 SA, #74 Germany 1-1 Paraguay (PAR 4-3 pens, Germany OUT), #75 Netherlands 1-1 Morocco (MAR 3-2 pens), #76 Brazil 2-1 Japan. Cross-checked monkey preds in the same payload: 1-for-4 on exact scoreline (only #74 exact). Matches the PO 30/06 standup (monkey rank 20/36).
 - **Done.** New task **#70** + drafted HE/EN knockout-recap broadcasts. **FINAL = HE #64 / EN #65** — lead hook is the monkey bombing the R16 (1-for-4) → beat-the-beatable-monkey, CTA to tonight's **20:00 lock #78 Ivory Coast v Norway** + private-league pitch + odds/upset tip + https://tikitaka.vip. Each includes a short status/IG variant.
