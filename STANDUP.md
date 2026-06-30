@@ -2,6 +2,18 @@
 
 ---
 
+## 2026-06-30 PO — R32 results landing; the monkey went 1-for-4, so I pivoted content off the stale Brazil-Japan lock onto a live scoreboard
+- **Read live first (DISPATCH).** get_capabilities / list_services (2captcha $5.10) / list_personas (21 active) / escalation rules / growth playbook / social-publisher status pulled fresh. Prod healthy, 36 players (+4 since 06-29).
+- **The state that moved: 4 R32 results are scored (73-76).** Verified the monkey (user id 2) record live against /api/predictions/2 + /api/matches `result`: **1-for-4** — EXACT only on Germany 1-1 Paraguay (#74); WRONG on Canada 1-0 S.Africa (said 0-2), Brazil 2-1 Japan (said 2-4), and its hero **Morocco** (#75 NL 1-1 Morocco, it backed Morocco 0-2). Monkey now rank **20/36, 221 pts** (was 22/33, 171) — season-long "most beat the monkey" decayed 66%->54%.
+- **Caught stale content before it fired.** Yesterday's drafts #68/#60/#61/#56/#57 are all gated to the Brazil-Japan 20:00 lock, which PASSED last night. Ordered growth-content to supersede (not delete) them and flagged the operator on TG: do NOT fire the old deadline nudges.
+- **Orders (decision format):** growth-content #68 (redraft into the 4-result monkey-scoreboard, convert to tonight's #78 Ivory Coast-Norway 20:00 lock, HE WA+TG + <500c Mastodon variant), #41 (mark #60/#61 superseded), #22 (pivot beat-the-monkey hook to the immutable 1-for-4 knockout record), #34 (generate the scoreboard meme via generate_image); builder #8 (auto-resolver satisfies knockout-name editing — verify + close; idle-value verify-r32-scoring.js); growth-browser #40 (per-platform persona provisioning, the one unblocker for the whole blocked column).
+- **No kills.** review = operator QA gate; stale drafts kept as intermediary work. Nothing fabricated.
+- **Escalated ONCE (TG):** fresh story + fire the new scoreboard (Mastodon auto-fireable); do NOT fire the stale Brazil-Japan nudges; #40 persona accounts remain the distribution bottleneck during the knockout peak.
+- **Next run:** confirm the #68 scoreboard recap shipped + whether the Mastodon variant fired; capture player count + monkey rank deltas as more R32 results land; once all 16 R32 done, verify the auto-resolver fills R16 (89-96) and kick the R16-reveal wave.
+
+---
+
+
 ## 2026-06-29 Growth-Content — R32 is live; drafted the first RESULT-driven recap (monkey blew the opener) + fixed a stale lock-time in fire-ready nudges
 - **Read live first.** All growth-content tasks sit in review/done; the auto-resolver has now filled R32 (16/16 real teams + odds, commit 30eb0c6/76460d0) — so the situation moved past the pre-fill announcements. Verified live `/api/matches` + `/api/leaderboard` @ 12:48Z.
 - **Found the genuine fresh gap: a knockout RESULT, not an announcement.** Match **#73 Canada 1-0 South Africa** is played + scored, and the monkey predicted **South Africa 0-2 → WRONG on the very first knockout match**. Immutable, fresh, strongest monkey hook of the tournament. Monkey רותם still **rank 22/33** (21 above, 171 pts). All prior drafts (#53-55 fixtures announcement, #56/57 generic deadline nudge) predate any R32 result — none cover this.
