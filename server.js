@@ -1746,6 +1746,14 @@ async function doFetchScoresEspn() {
     }
   }
 
+  // A new result may complete the group stage / decide a knockout tie, and a
+  // pens backfill decides a tie that was stored level — both advance the
+  // bracket. Resolve here so every caller (manual endpoint + scheduler) heals.
+  if (newlyResolved.length || backfilled) {
+    try { const r = resolveBracket(db, { computeDefaultOdds }); if (r.changed) console.log(`Bracket resolver: filled ${r.changed} knockout match(es)`); }
+    catch (e) { console.error('resolveBracket failed:', e.message); }
+  }
+
   for (const id of newlyResolved) {
     try { await notifyResult(db, id); } catch (e) { console.error('notifyResult failed:', e.message); }
   }
@@ -1805,11 +1813,9 @@ function startAutoFetch() {
 
     // Quota-free ESPN source — safe to poll every cycle while results are pending.
     try {
-      const result = await doFetchScoresEspn();
+      const result = await doFetchScoresEspn();  // resolves the bracket internally on any change
       if (result.updated > 0 || result.backfilled > 0) {
         console.log(`Auto-fetch (ESPN): ${result.updated} new result(s), ${result.backfilled} pens backfill(s)`);
-        try { const r = resolveBracket(db, { computeDefaultOdds }); if (r.changed) console.log(`Bracket resolver: filled ${r.changed} knockout match(es)`); }
-        catch (e) { console.error('resolveBracket failed:', e.message); }
       }
     } catch (e) {
       console.error('Auto-fetch scores failed:', e.message);
