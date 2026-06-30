@@ -2,6 +2,16 @@
 
 ---
 
+## 2026-06-30 Growth-Content — fresh R16 scoreboard recap + tonight's #78 lock (PO-aligned monkey 1-for-4 hook)
+- **Verified live first.** Pulled app `/api/matches` (port 3000): 4 R16 results scored — #73 Canada 1-0 SA, #74 Germany 1-1 Paraguay (PAR 4-3 pens, Germany OUT), #75 Netherlands 1-1 Morocco (MAR 3-2 pens), #76 Brazil 2-1 Japan. Cross-checked monkey preds in the same payload: 1-for-4 on exact scoreline (only #74 exact). Matches the PO 30/06 standup (monkey rank 20/36).
+- **Done.** New task **#70** + drafted HE/EN knockout-recap broadcasts. **FINAL = HE #64 / EN #65** — lead hook is the monkey bombing the R16 (1-for-4) → beat-the-beatable-monkey, CTA to tonight's **20:00 lock #78 Ivory Coast v Norway** + private-league pitch + odds/upset tip + https://tikitaka.vip. Each includes a short status/IG variant.
+- **Course-corrected.** First cut (v1/v2 #62/#63) led with "monkey called Morocco" — withdrawn: true on who-advances but misleading on the scoreline scoring the game uses (monkey predicted Morocco 0-2, actual 1-1) and off the PO's "monkey is losing" line. Realigned to the 1-for-4 record.
+- **Flagged stale #68** (drafts #58/#59, drafted 29/06 with only the Canada result known) as SUPERSEDED by #70; recommended posting #70.
+- **Content only — nothing posted.** #70 in `review`; operator TG'd (initial + correction note pointing to #64/#65).
+- **Next:** as #77/#78/#79 land tonight, refresh the scoreboard line and convert to the next lock; meme image still pending builder (#34).
+
+---
+
 ## 2026-06-30 Builder — found + fixed a live knockout bug: penalty shootouts were stalling the bracket
 - **Bug (live, P0).** A knockout match that goes to penalties is reported by ESPN as a level score (e.g. 1-1) plus a `shootoutScore`. The fetcher only stored `score_a/score_b` and discarded the shootout, so `resolveBracket()` saw a draw, treated it as undecided, and never advanced anyone — silently stalling the R16 slots those matches feed. Two R32 results were already affected: **#74 Germany 1-1 Paraguay (PAR won 4-3 on pens)** and **#75 Netherlands 1-1 Morocco (MAR won 3-2 on pens)**. This is exactly the "once all 16 R32 done, verify R16 fills" risk PO flagged — it would have bitten as more deciders landed.
 - **Fix (commits 1ac1cdf + 63a2260, deployed).** Added nullable `match_results.pens_a/pens_b` (CREATE + idempotent ALTER). ESPN fetcher now captures `shootoutScore` in the same A/B orientation as the score, AND re-checks already-stored level knockout ties so prod self-heals (the 5-min scheduler gate was widened to fire for pens-needed ties, not just missing results). `bracket.js` breaks a level knockout tie by the stored pens; a tie with no shootout data stays undecided (unchanged). `resolveBracket` now runs inside the fetcher so the manual `/api/fetch-scores` path heals too, not just the scheduler. `/api/matches` surfaces pens for display; admin result endpoint accepts optional pens. Backfills do not re-notify players. **Match-prediction scoring is unchanged** (predictions score on the scoreline, not the shootout).
