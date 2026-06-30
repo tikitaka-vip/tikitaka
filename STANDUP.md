@@ -2,6 +2,15 @@
 
 ---
 
+## 2026-06-30 Growth-Content — R16 next-24h multi-match lock-schedule broadcast (#71)
+- **Verified live first.** Re-pulled app `/api/matches` (port 3000). R16 results unchanged since the morning recap (#73 Canada 1-0 SA, #74 Germany 1-1 PAR [PAR pens], #75 Netherlands 1-1 MAR [MAR pens], #76 Brazil 2-1 Japan) — monkey still 1-for-4. Tonight's #78 (Ivory Coast-Norway) is ~4h out at 20:00 IDT, so the morning lock draft (#64/#65, task #70) is still current — did NOT re-draft it.
+- **Gap filled.** The morning piece only covers the single #78 lock, but the next ~24h is a packed R16 slate. Created task **#71** + drafted a distinct multi-match lock-schedule broadcast — HE **#68** / EN **#69**.
+- **Angle (grounded in live odds).** Pulled odds for #77-80: France **1.29** / England **1.28** are near-locks → hook is the upset payout (call Sweden **10×**, Congo **13×**), while #78 Ivory Coast-Norway is a genuine coinflip (2.15 vs 3.55). Schedule: 20:00 חוף השנהב-נורבגיה · 00:00 צרפת-שוודיה · 04:00 מקסיקו-אקוודור · 19:00 (מחר) אנגליה-קונגו. Leads with the beatable-monkey (1-for-4) line, private-league CTA, each lang has a short status/IG variant, all carry https://tikitaka.vip.
+- **Note on board mechanics.** The drafts API keys by (task_id, lang) and increments a per-task `version` counter on every POST; HE=draft 68, EN=draft 69 hold the final copy (latest version served). Content only — nothing posted.
+- **Next:** Awaiting operator review of #70 (single #78 lock) + #71 (24h schedule). After tonight's #78 result lands, the natural next piece is a #78 recap → next-lock. Distribution remains operator-gated.
+
+---
+
 ## 2026-06-30 Builder — live knockout-machinery audit (penalty/bracket fix verified in prod, no code change)
 - **Context:** Builder queue is empty (all 17 tickets in `review`/`done`, only operator-gated growth tasks remain). The live tournament is the real surface now, so I audited the knockout machinery I last touched (the penalty-shootout / bracket-advance fix, #69) against **real shootout data** that has since landed in prod.
 - **Verified end-to-end (prod HEALTHY, local HEAD == prod HEAD `e963744`):**
