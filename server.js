@@ -156,7 +156,9 @@ db.exec(`
   CREATE TABLE IF NOT EXISTS match_results (
     match_id INTEGER PRIMARY KEY REFERENCES matches(id),
     score_a INTEGER NOT NULL,
-    score_b INTEGER NOT NULL
+    score_b INTEGER NOT NULL,
+    pens_a INTEGER,
+    pens_b INTEGER
   );
 
   CREATE TABLE IF NOT EXISTS match_odds (
@@ -217,6 +219,10 @@ db.exec(`
     PRIMARY KEY (group_id, player_id)
   );
 `);
+
+// Migrate: knockout shootout deciders (existing DBs created before pens columns).
+try { db.exec("ALTER TABLE match_results ADD COLUMN pens_a INTEGER"); } catch(e) {}
+try { db.exec("ALTER TABLE match_results ADD COLUMN pens_b INTEGER"); } catch(e) {}
 
 // Migrate: add auth + notification columns
 const cols = new Set(db.prepare("PRAGMA table_info(players)").all().map(c => c.name));
@@ -805,7 +811,7 @@ app.get('/api/matches', (req, res) => {
   const matches = db.prepare('SELECT * FROM matches ORDER BY match_order').all();
   const results = db.prepare('SELECT * FROM match_results').all();
   const resultMap = {};
-  results.forEach(r => resultMap[r.match_id] = { score_a: r.score_a, score_b: r.score_b });
+  results.forEach(r => resultMap[r.match_id] = { score_a: r.score_a, score_b: r.score_b, ...(r.pens_a != null && r.pens_b != null ? { pens_a: r.pens_a, pens_b: r.pens_b } : {}) });
   const odds = db.prepare('SELECT * FROM match_odds').all();
   const oddsMap = {};
   odds.forEach(o => oddsMap[o.match_id] = { odds_a: o.odds_a, odds_draw: o.odds_draw, odds_b: o.odds_b });
@@ -1666,12 +1672,17 @@ async function doFetchScores() {
 async function doFetchScoresEspn() {
   const now = new Date();
   const matchesList = db.prepare('SELECT * FROM matches').all();
-  const existingResults = new Set(db.prepare('SELECT match_id FROM match_results').all().map(r => r.match_id));
+  const resultRows = db.prepare('SELECT * FROM match_results').all();
+  const existingResults = new Set(resultRows.map(r => r.match_id));
+  // Knockout ties stored without a shootout decider (e.g. fetched before pens
+  // support, or a draw that later went to penalties) must be re-checked so the
+  // real winner can be backfilled and the bracket can advance.
+  const needPens = new Set(resultRows.filter(r => r.score_a === r.score_b && r.pens_a == null).map(r => r.match_id));
   const unresolved = matchesList.filter(m =>
-    m.kickoff_utc && !existingResults.has(m.id) &&
+    m.kickoff_utc && (!existingResults.has(m.id) || needPens.has(m.id)) &&
     (() => { const d = (now - new Date(m.kickoff_utc)) / 60000; return d > 100 && d < 5 * 24 * 60; })()
   );
-  if (unresolved.length === 0) return { updated: 0, total: 0 };
+  if (unresolved.length === 0) return { updated: 0, backfilled: 0, total: 0 };
 
   // ESPN groups late-night kickoffs under the previous calendar day, so query each
   // match's UTC date and the day before/after to be safe. De-duped into one set.
@@ -1685,6 +1696,7 @@ async function doFetchScoresEspn() {
   }
 
   const newlyResolved = [];
+  let backfilled = 0;
   let total = 0;
   for (const ds of dates) {
     let j;
@@ -1699,19 +1711,37 @@ async function doFetchScoresEspn() {
       if (!home || !away) continue;
 
       const dbMatch = findDbMatch(matchesList, home.team.displayName, away.team.displayName);
-      if (!dbMatch || existingResults.has(dbMatch.id)) continue;
+      if (!dbMatch) continue;
+      const isBackfill = existingResults.has(dbMatch.id);
+      if (isBackfill && !needPens.has(dbMatch.id)) continue;
 
       const homeNorm = normalizeTeamName(home.team.displayName);
       const teamANorm = normalizeTeamName(NAME_MAP[dbMatch.team_a] || dbMatch.team_a);
-      let scoreA, scoreB;
-      if (teamANorm === homeNorm) { scoreA = parseInt(home.score); scoreB = parseInt(away.score); }
-      else { scoreA = parseInt(away.score); scoreB = parseInt(home.score); }
+      // ESPN reports the regulation/ET score in `score` and, for a shootout,
+      // the penalty tally in `shootoutScore` (the winner also has winner:true).
+      const homeShoot = home.shootoutScore != null ? parseInt(home.shootoutScore) : null;
+      const awayShoot = away.shootoutScore != null ? parseInt(away.shootoutScore) : null;
+      let scoreA, scoreB, pensA, pensB;
+      if (teamANorm === homeNorm) { scoreA = parseInt(home.score); scoreB = parseInt(away.score); pensA = homeShoot; pensB = awayShoot; }
+      else { scoreA = parseInt(away.score); scoreB = parseInt(home.score); pensA = awayShoot; pensB = homeShoot; }
       if (isNaN(scoreA) || isNaN(scoreB)) continue;
+      if (pensA != null && isNaN(pensA)) pensA = null;
+      if (pensB != null && isNaN(pensB)) pensB = null;
 
-      db.prepare('INSERT OR REPLACE INTO match_results (match_id, score_a, score_b) VALUES (?, ?, ?)').run(dbMatch.id, scoreA, scoreB);
+      // On a pens-only backfill the score is unchanged; skip if there is still
+      // no shootout data to add (avoids a no-op write loop on a true draw).
+      if (isBackfill && pensA == null && pensB == null) continue;
+
+      db.prepare('INSERT OR REPLACE INTO match_results (match_id, score_a, score_b, pens_a, pens_b) VALUES (?, ?, ?, ?, ?)').run(dbMatch.id, scoreA, scoreB, pensA, pensB);
       existingResults.add(dbMatch.id);
-      newlyResolved.push(dbMatch.id);
-      console.log(`ESPN-result: ${dbMatch.team_a} ${scoreA}-${scoreB} ${dbMatch.team_b}`);
+      const pensStr = (pensA != null && pensB != null) ? ` (pens ${pensA}-${pensB})` : '';
+      if (isBackfill) {
+        backfilled++;
+        console.log(`ESPN-backfill pens: ${dbMatch.team_a} ${scoreA}-${scoreB} ${dbMatch.team_b}${pensStr}`);
+      } else {
+        newlyResolved.push(dbMatch.id);
+        console.log(`ESPN-result: ${dbMatch.team_a} ${scoreA}-${scoreB} ${dbMatch.team_b}${pensStr}`);
+      }
       autoFillMissing();
     }
   }
@@ -1719,7 +1749,7 @@ async function doFetchScoresEspn() {
   for (const id of newlyResolved) {
     try { await notifyResult(db, id); } catch (e) { console.error('notifyResult failed:', e.message); }
   }
-  return { updated: newlyResolved.length, total };
+  return { updated: newlyResolved.length, backfilled, total };
 }
 
 // --- API endpoints ---
@@ -1762,18 +1792,22 @@ function startAutoFetch() {
   autoFetchInterval = setInterval(async () => {
     const now = new Date();
     const mins = (m) => (now - new Date(m.kickoff_utc)) / 1000 / 60;
-    // Any finished match (>100 min past kickoff, <5 days) still missing a result.
+    // Any finished match (>100 min past kickoff, <5 days) still missing a
+    // result, OR a finished knockout tie still missing its shootout decider.
     const unresolved = db.prepare('SELECT * FROM matches WHERE kickoff_utc IS NOT NULL').all()
       .filter(m => { const d = mins(m); return d > 100 && d < 5 * 24 * 60; })
-      .filter(m => !db.prepare('SELECT 1 FROM match_results WHERE match_id = ?').get(m.id));
+      .filter(m => {
+        const r = db.prepare('SELECT * FROM match_results WHERE match_id = ?').get(m.id);
+        return !r || (r.score_a === r.score_b && r.pens_a == null);
+      });
 
     if (unresolved.length === 0) return;
 
     // Quota-free ESPN source — safe to poll every cycle while results are pending.
     try {
       const result = await doFetchScoresEspn();
-      if (result.updated > 0) {
-        console.log(`Auto-fetch (ESPN): updated ${result.updated} match results`);
+      if (result.updated > 0 || result.backfilled > 0) {
+        console.log(`Auto-fetch (ESPN): ${result.updated} new result(s), ${result.backfilled} pens backfill(s)`);
         try { const r = resolveBracket(db, { computeDefaultOdds }); if (r.changed) console.log(`Bracket resolver: filled ${r.changed} knockout match(es)`); }
         catch (e) { console.error('resolveBracket failed:', e.message); }
       }
@@ -1858,9 +1892,12 @@ app.get('/api/settings/:key', (req, res) => {
 app.post('/api/matches/:id/result', (req, res) => {
   if (!isAdmin(req)) return res.status(403).json({ error: 'אין הרשאה' });
   const { score_a, score_b } = req.body;
+  // Optional shootout decider for a level knockout tie (advances the bracket).
+  const pens_a = req.body.pens_a != null && req.body.pens_a !== '' ? parseInt(req.body.pens_a) : null;
+  const pens_b = req.body.pens_b != null && req.body.pens_b !== '' ? parseInt(req.body.pens_b) : null;
   const matchId = req.params.id;
   const existed = db.prepare('SELECT 1 FROM match_results WHERE match_id = ?').get(matchId);
-  db.prepare('INSERT OR REPLACE INTO match_results (match_id, score_a, score_b) VALUES (?, ?, ?)').run(matchId, score_a, score_b);
+  db.prepare('INSERT OR REPLACE INTO match_results (match_id, score_a, score_b, pens_a, pens_b) VALUES (?, ?, ?, ?, ?)').run(matchId, score_a, score_b, Number.isNaN(pens_a) ? null : pens_a, Number.isNaN(pens_b) ? null : pens_b);
   // A new/updated result may complete the group stage (fills R32) or decide a
   // knockout tie (advances the winner), so re-resolve the bracket immediately.
   try { resolveBracket(db, { computeDefaultOdds }); } catch (e) { console.error('resolveBracket failed:', e.message); }

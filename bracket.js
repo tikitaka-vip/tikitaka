@@ -179,10 +179,13 @@ function computeBracket(matchArray) {
   for (const m of matchArray) {
     if (m.stage === GROUP_STAGE || !m.result) continue;
     if (m.team_a === TBD || m.team_b === TBD) continue;
-    const { score_a: sa, score_b: sb } = m.result;
-    if (sa === sb) continue; // no penalty data stored -> undecided
-    winners[m.id] = sa > sb ? m.team_a : m.team_b;
-    losers[m.id] = sa > sb ? m.team_b : m.team_a;
+    const { score_a: sa, score_b: sb, pens_a: pa, pens_b: pb } = m.result;
+    let aWon;
+    if (sa !== sb) aWon = sa > sb;
+    else if (pa != null && pb != null && pa !== pb) aWon = pa > pb; // shootout decider
+    else continue; // tied, no shootout data stored -> undecided
+    winners[m.id] = aWon ? m.team_a : m.team_b;
+    losers[m.id] = aWon ? m.team_b : m.team_a;
   }
 
   const resolve = makeResolver(standings, winners, losers, thirdAssign);
@@ -203,7 +206,7 @@ function resolveBracket(db, opts = {}) {
   const matches = db.prepare('SELECT * FROM matches').all();
   const results = db.prepare('SELECT * FROM match_results').all();
   const rmap = {};
-  results.forEach(r => rmap[r.match_id] = { score_a: r.score_a, score_b: r.score_b });
+  results.forEach(r => rmap[r.match_id] = { score_a: r.score_a, score_b: r.score_b, pens_a: r.pens_a, pens_b: r.pens_b });
   const arr = matches.map(m => ({ ...m, result: rmap[m.id] || null }));
 
   const { desired, standings } = computeBracket(arr);
